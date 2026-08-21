@@ -13,7 +13,9 @@ param(
     [string]$Message = "Update site"
 )
 
-$ErrorActionPreference = "Stop"
+# Not "Stop": native commands write probes to stderr, which under Stop become
+# terminating errors in Windows PowerShell 5.1. Exit codes are checked instead.
+$ErrorActionPreference = "Continue"
 Set-Location $PSScriptRoot
 
 $repo = "$User.github.io"
@@ -57,13 +59,13 @@ $gh = Get-Command gh -ErrorAction SilentlyContinue
 
 # Create the repo if it does not exist yet
 if ($gh) {
-    gh repo view "$User/$repo" *> $null
+    gh repo view "$User/$repo" --json name | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Creating github.com/$User/$repo ..." -ForegroundColor Cyan
         gh repo create "$User/$repo" --public --source=. --remote=origin --push
         Write-Host "Enabling GitHub Pages ..." -ForegroundColor Cyan
         try {
-            gh api -X POST "repos/$User/$repo/pages" -f "source[branch]=main" -f "source[path]=/" *> $null
+            gh api -X POST "repos/$User/$repo/pages" -f "source[branch]=main" -f "source[path]=/" | Out-Null
         } catch {
             Write-Host "  (Pages may already be on, or needs enabling in Settings > Pages)" -ForegroundColor DarkYellow
         }
