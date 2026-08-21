@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Syed Furqan Ali — Robotics &amp; Embodied AI</title>
+<meta name="description" content="Robotics research portfolio: language-queryable aerial memory for UAV search and rescue, vision-language-action policies on the SO-101 manipulator, and VLM-guided precision landing.">
+<meta property="og:title" content="Syed Furqan Ali — Robotics &amp; Embodied AI">
+<meta property="og:description" content="Language-queryable aerial memory, vision-language-action manipulation, and VLM-guided autonomous landing.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style-modern.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="nav-brand" href="#top" data-bind="name">Syed Furqan Ali</a>
+    <nav class="nav-links" aria-label="Section navigation">
+      <a href="#research">Research</a>
+      <a href="#projects">Projects</a>
+      <a href="#results">Results</a>
+      <a href="#stack">Stack</a>
+      <a class="nav-cta" href="#meet">Book a meeting</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme" title="Toggle colour theme">
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.2 8.2 0 0 1 9.5 4 8.3 8.3 0 1 0 20 14.5Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="top">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <p class="eyebrow">Applying for PhD positions</p>
+    <h1 class="hero-name" data-bind="name">Syed Furqan Ali</h1>
+    <p class="hero-tagline">
+      I build robots that take instructions in plain language — a drone that flies an
+      area once and afterwards answers <em>“go to the park with the fountain,”</em> and a
+      manipulator that learns tasks from demonstration.
+    </p>
+
+    <div class="hero-actions" id="heroActions"></div>
+
+    <dl class="hero-stats">
+      <div><dt>Retrieval precision@1</dt><dd>0.93</dd></div>
+      <div><dt>Closed-loop flights hit</dt><dd>7<span>/8</span></dd></div>
+      <div><dt>Median arrival error</dt><dd>19.1<span>m</span></dd></div>
+      <div><dt>SAR triage enrichment</dt><dd>6<span>×</span></dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ========================== RESEARCH =========================== -->
+<section class="section" id="research">
+  <div class="wrap">
+    <h2 class="section-title"><span class="num">01</span> Research interest</h2>
+    <div class="prose lede">
+      <p>
+        I work on <strong>grounding language models in physical systems that have to act under
+        real constraints</strong> — limited onboard compute, limited battery, and no assumption
+        of connectivity.
+      </p>
+      <p>
+        The thread running through my projects is that foundation models are most useful when
+        they are placed <em>where their cost is affordable</em>, not simply dropped into the
+        control loop. In my aerial work a vision-language model never touches the millisecond
+        retrieval path; it supplies vocabulary offline, and honesty — the ability to say
+        <em>“not here”</em> — only when retrieval is genuinely ambiguous. That framing came out
+        of measurement, not intuition, and measuring it honestly meant discovering that my first
+        evaluation was circular and throwing the result away.
+      </p>
+      <p>
+        I am looking for a PhD position where I can push this further: open-vocabulary spatial
+        memory, vision-language-action policies, and the evaluation methodology that keeps
+        claims about them trustworthy.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== PROJECTS =========================== -->
+<section class="section alt" id="projects">
+  <div class="wrap">
+    <h2 class="section-title"><span class="num">02</span> Selected projects</h2>
+
+    <!-- ---------------- Project 1: Survey-RAG ---------------- -->
+    <article class="project">
+      <div class="project-head">
+        <div>
+          <p class="project-kicker">Aerial autonomy · Open-vocabulary retrieval</p>
+          <h3 class="project-title">Survey-RAG — Language-Queryable Aerial Memory</h3>
+        </div>
+        <div class="project-links" data-repo="surveyrag"></div>
+      </div>
+
+      <p class="project-lede">
+        A drone surveys an area <strong>once</strong>, converts everything it sees into a searchable
+        spatial memory, and afterwards answers natural-language requests — “go to the park with the
+        fountain” — by retrieving the matching view in milliseconds and flying to its recorded
+        coordinates. Built for post-disaster response, where the question is never known at capture
+        time, flights are the scarce resource, and connectivity cannot be assumed.
+      </p>
+
+      <div class="video-slot" data-video="surveyrag"></div>
+
+      <div class="project-body">
+        <div class="col">
+          <h4>What makes it work</h4>
+          <ul class="tick">
+            <li><strong>Battery-tiered compute.</strong> Four tiers place each model where its energy
+              cost is affordable — image embedding in flight, cosine retrieval at query time,
+              a local VLM only when the top-1/top-2 margin is thin, and captioning offline while
+              charging. A no-VLM configuration costs only −0.07 P@1.</li>
+            <li><strong>Tiled dual-render embeddings instead of a detector.</strong> Each snap is
+              indexed as 5 tiles × 2 renderings (raw and deglared), max-pooled at query time. A
+              fountain is tiny in a 60×45 m footprint and a single global embedding dilutes it;
+              quadrant embeddings recover most of what an open-vocabulary detector would add, with
+              zero extra models — and the winning quadrant gives the flight controller a
+              quarter-footprint offset toward the object.</li>
+            <li><strong>Geometric non-overlap.</strong> Snap centres are planned one camera footprint
+              apart and flown serpentine with yaw locked to zero, so image-up is North in every frame
+              and no two snaps overlap.</li>
+          </ul>
+        </div>
+        <div class="col">
+          <h4>What I measured</h4>
+          <ul class="tick">
+            <li><strong>P@1 0.93</strong> [0.84–1.00] on 44 human-labelled queries, against 0.86 for
+              embeddings alone and 0.64 for a caption/BM25 baseline.</li>
+            <li><strong>Beat an open-vocabulary detector baseline</strong> — OWLv2 reached 0.68 P@1 and
+              had the worst false-confidence on absent objects of any method tested.</li>
+            <li><strong>Generalised with zero retuning</strong> to three real-world datasets —
+              including 1.00 judged P@1 on real geotagged Ohio imagery and, on Hurricane Harvey
+              UAV footage, <strong>6× enrichment</strong> of genuinely flooded scenes in the top-20.</li>
+            <li><strong>A scoped, honest failure.</strong> Objects below ~1% of frame area defeat every
+              configuration tested — and the one closed-loop flight that missed was exactly the object
+              the benchmark predicted would miss.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h4>The lesson I keep</h4>
+        <p>
+          My first evaluation graded retrieval using pseudo-ground-truth derived from the system's own
+          captions. Under that scheme a keyword baseline “won” at 0.85 — because it was searching the
+          answer key. Hand-labelling all 192 images across 14 categories inverted the ranking: that
+          baseline was in fact the <em>worst</em> method at 0.64. Ground-truth hygiene decided which
+          conclusion was real, and I would not have caught it without doing the labelling myself.
+        </p>
+      </div>
+
+      <ul class="chips">
+        <li>SigLIP2</li><li>CLIP</li><li>Qwen2.5-VL</li><li>AirSim</li><li>PX4 SITL</li>
+        <li>MAVSDK offboard</li><li>CPU-only, fully local</li>
+      </ul>
+    </article>
+
+    <!-- ---------------- Project 2: SO-101 ---------------- -->
+    <article class="project">
+      <div class="project-head">
+        <div>
+          <p class="project-kicker">Manipulation · Vision-language-action policies</p>
+          <h3 class="project-title">SO-101 — Learning Manipulation from Demonstration</h3>
+        </div>
+        <div class="project-links" data-repo="so101"></div>
+      </div>
+
+      <p class="project-lede">
+        A full imitation-learning stack on the SO-101 arm: a <strong>physical leader arm drives a
+        simulated follower</strong> in Isaac Sim over a 50 Hz UDP bridge, demonstrations are recorded
+        with synchronised top and wrist cameras, and the resulting dataset trains vision-language-action
+        policies for pick-and-place.
+      </p>
+
+      <div class="video-slot" data-video="so101"></div>
+
+      <div class="project-body">
+        <div class="col">
+          <h4>The pipeline I built</h4>
+          <ul class="tick">
+            <li><strong>Cross-environment teleoperation.</strong> The real SO-101 leader arm and Isaac
+              Sim need incompatible Python environments, so the leader is read in its own process and
+              streamed as packed joint radians over a local UDP socket — with per-joint sign and offset
+              correction tunable live from JSON while the simulator keeps running.</li>
+            <li><strong>Scripted and teleoperated data collection.</strong> A persistent pick-place loop
+              launches Isaac Sim once and re-reads its tuning parameters every cycle, so grasp depth,
+              object position and gripper travel can be tuned without a relaunch — turning a
+              multi-minute iteration into seconds.</li>
+            <li><strong>Dataset.</strong> Episodes recorded as synchronised state, action, top-camera
+              and wrist-camera streams, in LeRobot format.</li>
+          </ul>
+        </div>
+        <div class="col">
+          <h4>Policies trained &amp; compared</h4>
+          <ul class="tick">
+            <li><strong>ACT</strong> — action-chunking transformer, the imitation-learning baseline.
+              <strong>7/8 successful pick-and-place trials</strong> with the block repositioned by
+              hand between every attempt: the policy sees only camera images and joint states, and
+              is never told where the block is.</li>
+            <li><strong>SmolVLA</strong> — a compact vision-language-action model, trained locally.</li>
+            <li><strong>π0.5</strong> — flow-matching VLA, fine-tuned on the recorded task.</li>
+            <li><strong>DiT-Flow</strong> — a diffusion-transformer policy with a flow-matching
+              objective, integrated as a LeRobot policy package.</li>
+          </ul>
+          <h4 class="mt">Tooling</h4>
+          <ul class="tick">
+            <li><strong>LeRobot Studio</strong> — a local web app I wrote so teleoperation, recording,
+              training and inference can be launched without composing CLI invocations by hand. It
+              never modifies the LeRobot source tree; it builds and supervises the commands.</li>
+          </ul>
+        </div>
+      </div>
+
+      <ul class="chips">
+        <li>LeRobot</li><li>Isaac Sim</li><li>SO-101 / SO-ARM100</li><li>ACT</li><li>SmolVLA</li>
+        <li>π0.5</li><li>DiT + flow matching</li><li>Lula IK</li><li>Gradio</li>
+      </ul>
+    </article>
+
+    <!-- ---------------- Project 3: Hexagrid landing ---------------- -->
+    <article class="project">
+      <div class="project-head">
+        <div>
+          <p class="project-kicker">Aerial autonomy · VLM-in-the-loop control</p>
+          <h3 class="project-title">Hexagrid — VLM-Guided Precision Landing</h3>
+        </div>
+        <div class="project-links" data-repo="landing"></div>
+      </div>
+
+      <p class="project-lede">
+        Autonomous landing-site selection with a vision-language model in the decision loop. The drone
+        captures six candidate views, a <strong>single VLM call</strong> chooses the safest, and a
+        confidence loop then locks onto one cell of a grid overlaid on the winner before descent.
+      </p>
+
+      <div class="video-slot" data-video="landing"></div>
+
+      <div class="project-body">
+        <div class="col">
+          <h4>Design</h4>
+          <ul class="tick">
+            <li><strong>One call, not six.</strong> The six candidate snaps are composited into a
+              single labelled 3×2 mosaic so the VLM compares them in one forward pass instead of
+              scoring each independently — comparison is the actual task, and it costs one inference.</li>
+            <li><strong>Confidence lock, not a single verdict.</strong> A numbered 4×4 grid is overlaid
+              on the winning view and repeatedly re-queried, with cell scores decayed and boosted until
+              one crosses a lock threshold — so a single hallucinated answer cannot commit the aircraft
+              to a landing.</li>
+            <li><strong>World-frame alignment</strong> converts the locked cell into a metric offset
+              for the flight controller.</li>
+          </ul>
+        </div>
+        <div class="col">
+          <h4>Operator interface</h4>
+          <ul class="tick">
+            <li>Every phase pushes its overlay and a status line into the
+              <strong>QGroundControl live video feed</strong> — so the operator watches the reasoning
+              (which view was chosen, which cell is winning) rather than a raw camera stream.</li>
+            <li>Hands off from the Survey-RAG arrival hold, making the two systems a single
+              search-and-land pipeline.</li>
+          </ul>
+        </div>
+      </div>
+
+      <ul class="chips">
+        <li>Qwen2.5-VL</li><li>AirSim</li><li>PX4</li><li>OpenCV</li><li>QGroundControl</li><li>GStreamer</li>
+      </ul>
+    </article>
+
+    <!-- ---------------- Also built ---------------- -->
+    <div class="also">
+      <h3>Also built</h3>
+      <div class="also-grid">
+        <div class="also-card">
+          <h4>ViT grid-forwarding study</h4>
+          <p>A comparison of five strategies for extracting region features from a vision transformer —
+             full forward, attention masking, crop-and-forward, sliding window and multi-scale — measured
+             on aerial imagery for compute, spatial context and interpretability.</p>
+        </div>
+        <div class="also-card">
+          <h4>Monocular depth for UAV landing</h4>
+          <p>Evaluation of Depth-Anything-V2 and Depth Pro on nadir aerial frames, assessing whether
+             monocular metric depth is reliable enough to inform landing-surface selection.</p>
+        </div>
+        <div class="also-card">
+          <h4>Jetson &amp; RealSense flight stack</h4>
+          <p>Companion-computer work: MAVSDK offboard control from a Jetson, and a RealSense
+             capture pipeline for synchronised RGB-D data collection.</p>
+        </div>
+        <div class="also-card">
+          <h4>Benchmark harness</h4>
+          <p>A reusable evaluation harness with stratified query sets, bootstrap confidence intervals,
+             negative queries for absent objects, and three independent grading systems that
+             cross-corroborate.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== RESULTS ============================ -->
+<section class="section" id="results">
+  <div class="wrap">
+    <h2 class="section-title"><span class="num">03</span> Selected results</h2>
+    <p class="section-sub">
+      From the Survey-RAG benchmark: 56 stratified queries, human labels over 192 images across
+      14 categories, 95% bootstrap confidence intervals.
+    </p>
+
+    <div class="tables">
+      <div class="table-card">
+        <h3>Retrieval method comparison</h3>
+        <div class="table-scroll">
+          <table>
+            <caption class="sr-only">Precision at 1, precision at 3, recall at 10 and MRR for four retrieval methods</caption>
+            <thead><tr><th scope="col">Method</th><th scope="col">P@1</th><th scope="col">P@3</th><th scope="col">R@10</th><th scope="col">MRR</th></tr></thead>
+            <tbody>
+              <tr class="win"><th scope="row">Hybrid <span class="tag">ours</span></th><td><strong>0.93</strong></td><td>0.79</td><td>0.86</td><td>0.95</td></tr>
+              <tr><th scope="row">Embeddings only (SigLIP2)</th><td>0.86</td><td>0.73</td><td>0.86</td><td>0.92</td></tr>
+              <tr><th scope="row">OWLv2 detector baseline</th><td>0.68</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><th scope="row">Captions only (BM25)</th><td>0.64</td><td>0.55</td><td>0.60</td><td>0.72</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <h3>Backend A/B — CLIP vs SigLIP2</h3>
+        <div class="table-scroll">
+          <table>
+            <caption class="sr-only">Precision at 1 for CLIP and SigLIP2 across query categories</caption>
+            <thead><tr><th scope="col">P@1 by category</th><th scope="col">CLIP B/32</th><th scope="col">SigLIP2</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Overall (embeddings)</th><td>0.68</td><td class="hi">0.86</td></tr>
+              <tr><th scope="row">Overall (hybrid)</th><td>0.82</td><td class="hi">0.93</td></tr>
+              <tr><th scope="row">Small objects</th><td>0.29</td><td class="hi">0.57</td></tr>
+              <tr><th scope="row">Compositional</th><td>0.25</td><td class="hi">0.75</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">
+          A 7-query pilot suggested the two backends were equivalent. Scaling to 44 queries with honest
+          labels showed the gap <em>widening</em> — backend choice outweighed every preprocessing trick tested.
+        </p>
+      </div>
+    </div>
+
+    <div class="table-card wide">
+      <h3>Closed-loop trials — eight typed requests, one flight</h3>
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">Arrival error and outcome for eight natural-language flight requests</caption>
+          <thead><tr><th scope="col">Request</th><th scope="col">Retrieval</th><th scope="col">Arrival error</th><th scope="col">Object in view</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">“the fountain”</th><td class="ok">HIT</td><td>3.0 m</td><td class="ok">yes</td></tr>
+            <tr><th scope="row">“bridge”</th><td class="ok">HIT</td><td>16.3 m</td><td class="ok">yes</td></tr>
+            <tr><th scope="row">“playground swings”</th><td class="ok">HIT</td><td>16.9 m</td><td class="ok">yes</td></tr>
+            <tr><th scope="row">“soccer field with goal posts”</th><td class="ok">HIT</td><td>18.4 m</td><td class="ok">yes</td></tr>
+            <tr><th scope="row">“pond with water”</th><td class="ok">HIT</td><td>19.8 m</td><td class="ok">yes</td></tr>
+            <tr><th scope="row">“baseball diamond”</th><td class="ok">HIT</td><td>20.1 m</td><td class="ok">yes</td></tr>
+            <tr><th scope="row">“parking lot with cars”</th><td class="ok">HIT</td><td>21.3 m</td><td class="ok">yes</td></tr>
+            <tr class="miss"><th scope="row">“picnic table”</th><td class="no">MISS</td><td>99.1 m</td><td class="no">no</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">
+        7/8 correct, median error 19.1 m — well inside the 60×45 m camera footprint. The single failure
+        is the sub-1%-of-frame object that the retrieval benchmark had already predicted would fail,
+        and it fails end-to-end for exactly the predicted reason.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STACK ============================= -->
+<section class="section alt" id="stack">
+  <div class="wrap">
+    <h2 class="section-title"><span class="num">04</span> Technical stack</h2>
+    <div class="stack-grid">
+      <div class="stack-card">
+        <h3>Learning &amp; perception</h3>
+        <ul><li>PyTorch, Hugging Face Transformers</li><li>CLIP, SigLIP2, DINOv2</li>
+            <li>Qwen2.5-VL, SmolVLA, π0.5 — local inference and fine-tuning</li>
+            <li>Diffusion and flow-matching policies (DiT-Flow, ACT)</li>
+            <li>SAM, OWLv2, Depth-Anything-V2, Depth Pro</li></ul>
+      </div>
+      <div class="stack-card">
+        <h3>Robotics &amp; simulation</h3>
+        <ul><li>AirSim / Project AirSim, Isaac Sim and Isaac Lab</li><li>PX4 SITL, MAVSDK offboard, QGroundControl</li>
+            <li>LeRobot, SO-101 / SO-ARM100</li><li>Lula inverse kinematics, URDF and USD pipelines</li>
+            <li>Intel RealSense, NVIDIA Jetson</li></ul>
+      </div>
+      <div class="stack-card">
+        <h3>Engineering</h3>
+        <ul><li>Python, NumPy, OpenCV, Gradio</li><li>Benchmark design: stratified queries, bootstrap CIs, negative controls</li>
+            <li>Real-time IPC — UDP joint streaming, GStreamer video sinks</li>
+            <li>Conda and pixi environment isolation across incompatible toolchains</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ MEET ============================== -->
+<section class="section meet" id="meet">
+  <div class="wrap">
+    <h2 class="section-title"><span class="num">05</span> Let's talk</h2>
+    <p class="section-sub meet-sub">
+      If my work looks relevant to your group, I would genuinely welcome a conversation — about
+      your research directions, whether my background fits, or anything on this page. Pick a time
+      that suits you, or just email me.
+    </p>
+    <div id="scheduler"></div>
+    <div class="meet-actions" id="meetActions"></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <p class="footer-name" data-bind="name">Syed Furqan Ali</p>
+    <div class="footer-links" id="footerLinks"></div>
+  </div>
+</footer>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

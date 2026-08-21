@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Syed Furqan Ali</title>
+<meta name="description" content="Robotics and embodied AI: language-queryable aerial memory for UAV search and rescue, vision-language-action policies on the SO-101 manipulator, and VLM-guided precision landing.">
+<meta property="og:title" content="Syed Furqan Ali — Robotics &amp; Embodied AI">
+<meta property="og:description" content="Language-queryable aerial memory, imitation learning on the SO-101 manipulator, and VLM-guided autonomous landing.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme" title="Toggle colour theme">
+  <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+  <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.2 8.2 0 0 1 9.5 4 8.3 8.3 0 1 0 20 14.5Z"/></svg>
+</button>
+
+<main id="main" class="page">
+
+<!-- ============================ HEADER ============================ -->
+<header class="masthead">
+  <div class="portrait" id="portrait"></div>
+
+  <div class="ident">
+    <h1 class="name" data-bind="name">Syed Furqan Ali</h1>
+    <p class="role" id="roleLine"></p>
+
+    <div class="bio">
+      <p>
+        I build robots that take instructions in plain language. My work sits at the point where
+        vision-language models meet systems that have to act under real constraints — limited
+        onboard compute, a finite battery, and no assumption of connectivity.
+      </p>
+      <p>
+        Most recently I built <a href="#survey-rag">Survey-RAG</a>, a drone that surveys an area once
+        and afterwards answers requests like <em>"go to the park with the fountain"</em> by retrieving
+        the matching aerial view and flying to it; and an imitation-learning stack on the
+        <a href="#so101">SO-101 manipulator</a> that learns pick-and-place from teleoperated
+        demonstration. I care as much about measuring these systems honestly as about building them.
+      </p>
+      <p>
+        I am applying for PhD positions in embodied AI and robot learning.
+      </p>
+    </div>
+
+    <nav class="contact-row" id="contactRow" aria-label="Contact and profiles"></nav>
+  </div>
+</header>
+
+<!-- ======================= RESEARCH INTERESTS ====================== -->
+<section class="block" id="interests">
+  <h2>Research interests</h2>
+  <p class="block-intro">
+    I want to work on agents that build their own usable memory of the physical world and act on
+    language instructions in it. Concretely:
+  </p>
+
+  <div class="interest-grid">
+    <div class="interest">
+      <h3>Vision-language-action policies</h3>
+      <p>
+        End-to-end policies that map pixels and instructions to actions. I have trained and compared
+        ACT, SmolVLA, π0.5 and a diffusion-transformer flow-matching policy on the same task, and I
+        am interested in what actually transfers between them — architecture, pretraining, or data.
+      </p>
+    </div>
+    <div class="interest">
+      <h3>Open-vocabulary spatial memory</h3>
+      <p>
+        Representations that let a robot answer questions about a place it has already visited, when
+        the question was not known at capture time. The retrieval index, not the caption, is the
+        interesting object: captions are lossy compression committed to before the query exists.
+      </p>
+    </div>
+    <div class="interest">
+      <h3>Foundation models under embodied constraints</h3>
+      <p>
+        A VLM that takes seconds per call cannot sit in a control loop. I am interested in the
+        architecture question this forces: which competence belongs at which latency and energy tier,
+        and what a system gives up when the large model is not always available.
+      </p>
+    </div>
+    <div class="interest">
+      <h3>Learning from demonstration</h3>
+      <p>
+        Teleoperation, data collection, and what makes a demonstration dataset good rather than merely
+        large — especially when a real leader arm drives a simulated follower and the sim-to-real gap
+        runs in both directions.
+      </p>
+    </div>
+    <div class="interest">
+      <h3>Evaluation methodology</h3>
+      <p>
+        Benchmarks that can actually be wrong. My own first evaluation was circular and inverted the
+        method ranking; catching it changed which conclusion I believed. I think ground-truth hygiene
+        is undervalued relative to how often it decides published results.
+      </p>
+    </div>
+    <div class="interest">
+      <h3>Aerial autonomy &amp; search-and-rescue</h3>
+      <p>
+        Post-disaster response as a forcing function: one flight, no connectivity, unknown queries,
+        and a real cost to getting it wrong. It makes the resource constraints concrete instead of
+        hypothetical.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= NEWS ============================= -->
+<section class="block" id="news">
+  <h2>News</h2>
+  <ul class="news-list">
+    <li><span class="when">Aug 2026</span><span class="what">Survey-RAG technical report completed — 0.93 P@1 on a human-labelled benchmark and 7/8 natural-language requests flown successfully in a single closed-loop flight.</span></li>
+    <li><span class="when">Aug 2026</span><span class="what">Survey-RAG retrieval generalises with zero retuning to three real-world datasets, including 6× enrichment of flooded scenes on Hurricane Harvey UAV imagery.</span></li>
+    <li><span class="when">Jun 2026</span><span class="what">ACT policy trained on the SO-101 reaches 7/8 successful pick-and-place trials with the object repositioned by hand between attempts.</span></li>
+    <li><span class="when">Jun 2026</span><span class="what">Built a leader-arm teleoperation bridge streaming the physical SO-101 into Isaac Sim at 50 Hz for demonstration collection.</span></li>
+    <li><span class="when">Feb 2026</span><span class="what">Integrated a diffusion-transformer policy with a flow-matching objective (DiT-Flow) as a LeRobot policy package.</span></li>
+    <li><span class="when">Jan 2026</span><span class="what">Hexagrid VLM-guided precision landing pipeline running end to end in AirSim with a live QGroundControl overlay.</span></li>
+  </ul>
+</section>
+
+<!-- ========================= CURRENT WORK ========================= -->
+<section class="block" id="current">
+  <h2>Current work</h2>
+  <p class="block-intro">
+    Ongoing threads, mostly aimed at the weakest parts of my own results rather than the strongest.
+  </p>
+
+  <div class="current-grid">
+    <article class="current">
+      <h3>Energy accounting on real flight hardware</h3>
+      <p>
+        The battery-tiered design was an argument until I measured it. On the drone's actual companion
+        computer — a Jetson Orin NX 16GB, sampled through <code>tegrastats</code> board input power —
+        indexing a full 192-snap survey on GPU costs <strong>~270 J, about 0.10% of a 74 Wh battery</strong>,
+        and a fully loaded query costs ~7 J. Against propulsion, compute is
+        <strong>4–6% of total draw</strong>. The interesting number is the asymmetry: a SigLIP2 image
+        embed is 0.14 J, a VLM verification is 4.37 J — roughly 30× — which is precisely why the VLM
+        belongs at a conditional tier rather than in the retrieval path.
+      </p>
+    </article>
+
+    <article class="current">
+      <h3>Multi-environment generalization</h3>
+      <p>
+        Every number in my report comes from a single 800×800 m park survey, which is the honest
+        reviewer-facing weakness of the work. I am flying the unchanged pipeline across the other
+        packaged simulation environments, without touching the original code path, so each new map is
+        simultaneously a generalization datapoint and a <strong>contamination-free training corpus</strong> —
+        the eval set cannot double as training data without the result becoming circular.
+      </p>
+    </article>
+
+    <article class="current">
+      <h3>Domain-pretrained retrieval backends</h3>
+      <p>
+        Testing whether aerial-specific pretraining beats general vision-language pretraining on this
+        task: SkyCLIP against SigLIP2, and a LoRA fine-tune on remote-sensing captions, all scored on
+        the same human-labelled benchmark with the same ten-vector indexing. So far the general
+        backend holds up better than expected, which is itself the finding.
+      </p>
+    </article>
+
+    <article class="current">
+      <h3>Judge robustness</h3>
+      <p>
+        If a VLM grades my results, the conclusions should survive changing the grader. I am re-running
+        judged evaluations under a different model family to separate what the method does from what
+        one particular judge believes about it.
+      </p>
+    </article>
+  </div>
+</section>
+
+<!-- =========================== PROJECTS =========================== -->
+<section class="block" id="projects">
+  <h2>Projects</h2>
+
+  <!-- ---------- Survey-RAG ---------- -->
+  <article class="entry" id="survey-rag">
+    <div class="entry-media"><div class="video-slot" data-video="surveyrag"></div></div>
+    <div class="entry-body">
+      <h3 class="entry-title">Survey-RAG: Language-Queryable Aerial Memory for One-Pass Surveys</h3>
+      <p class="entry-meta">Solo project · AirSim + PX4 SITL · CPU-only, fully local</p>
+      <p class="entry-abstract">
+        A drone surveys an area <strong>once</strong>, converts everything it sees into a searchable
+        spatial memory, and afterwards answers natural-language requests by retrieving the matching
+        view in milliseconds and flying to its recorded coordinates. Each snap is indexed as five
+        tiles under two renderings rather than one global embedding, which recovers most of what an
+        open-vocabulary detector would add at zero extra model cost. Compute is placed in four
+        battery tiers, so the VLM never sits in the retrieval path — it supplies vocabulary offline
+        and verification only when the top-1/top-2 margin is thin.
+      </p>
+      <ul class="findings">
+        <li><strong>0.93 P@1</strong> [0.84–1.00] on 44 human-labelled queries — against 0.86 for embeddings alone, 0.68 for an OWLv2 detector baseline, and 0.64 for a caption/BM25 baseline.</li>
+        <li><strong>7/8 typed requests flown correctly</strong> in one closed-loop flight, median arrival error 19.1 m — inside the 60×45 m camera footprint.</li>
+        <li><strong>Generalises with zero retuning</strong> to three real-world datasets; on Hurricane Harvey UAV imagery a single query enriches genuinely flooded scenes in the top-20 by <strong>6× over chance</strong>.</li>
+        <li><strong>A measured floor, not a vague one.</strong> Objects below ~1% of frame area defeat every configuration tested — and the single closed-loop failure was exactly the object the benchmark predicted would fail.</li>
+      </ul>
+      <p class="entry-links" data-links="surveyrag"></p>
+    </div>
+  </article>
+
+  <!-- ---------- SO-101 ---------- -->
+  <article class="entry" id="so101">
+    <div class="entry-media"><div class="video-slot" data-video="so101"></div></div>
+    <div class="entry-body">
+      <h3 class="entry-title">Imitation Learning on the SO-101 Manipulator</h3>
+      <p class="entry-meta">Solo project · LeRobot + Isaac Sim · physical leader arm</p>
+      <p class="entry-abstract">
+        A full learning-from-demonstration stack. A <strong>physical SO-101 leader arm drives a
+        simulated follower</strong> in Isaac Sim over a 50 Hz UDP bridge — the two need incompatible
+        Python environments, so the leader is read in its own process and streamed as packed joint
+        radians, with per-joint sign and offset correction tunable live while the simulator keeps
+        running. Demonstrations are recorded as synchronised state, action, top-camera and
+        wrist-camera streams, and the resulting dataset trains vision-language-action policies.
+      </p>
+      <ul class="findings">
+        <li><strong>7/8 successful pick-and-place trials</strong> under the trained ACT policy, with the block repositioned by hand between attempts rather than reset to a fixed pose.</li>
+        <li><strong>Four policy families trained and compared</strong> on the same task — ACT, SmolVLA, π0.5, and DiT-Flow, a diffusion transformer with a flow-matching objective integrated as a LeRobot policy package.</li>
+        <li><strong>Iteration speed as a design goal.</strong> A persistent pick-place loop launches Isaac Sim once and re-reads its tuning parameters every cycle, so grasp depth, object placement and gripper travel are tuned without a relaunch.</li>
+        <li><strong>LeRobot Studio</strong> — a local web app I wrote so teleoperation, recording, training and inference launch without hand-composing CLI invocations. It builds and supervises the commands; it never modifies the LeRobot source tree.</li>
+      </ul>
+      <p class="entry-links" data-links="so101"></p>
+    </div>
+  </article>
+
+  <!-- ---------- Hexagrid ---------- -->
+  <article class="entry" id="hexagrid">
+    <div class="entry-media"><div class="video-slot" data-video="landing"></div></div>
+    <div class="entry-body">
+      <h3 class="entry-title">Hexagrid: VLM-Guided Precision Landing</h3>
+      <p class="entry-meta">Solo project · AirSim + PX4 · Qwen2.5-VL</p>
+      <p class="entry-abstract">
+        Autonomous landing-site selection with a vision-language model in the decision loop. Six
+        candidate views are composited into a single labelled mosaic so the VLM compares them in
+        <strong>one forward pass</strong> — comparison is the actual task, and framing it that way
+        costs one inference instead of six. A numbered grid is then overlaid on the winning view and
+        repeatedly re-queried, with cell scores decayed and boosted until one crosses a lock
+        threshold, so no single hallucinated answer can commit the aircraft to a landing.
+      </p>
+      <ul class="findings">
+        <li><strong>Confidence lock rather than a single verdict</strong> — the decay/boost loop turns an unreliable one-shot judgement into a stable decision.</li>
+        <li><strong>Reasoning surfaced to the operator.</strong> Every phase pushes its overlay and status line into the QGroundControl live video feed, so the operator watches which view was chosen and which cell is winning, not a raw camera stream.</li>
+        <li><strong>Composes with Survey-RAG</strong> — hands off from the arrival hold, making search and landing a single pipeline.</li>
+      </ul>
+      <p class="entry-links" data-links="landing"></p>
+    </div>
+  </article>
+</section>
+
+<!-- ======================== SELECTED RESULTS ====================== -->
+<section class="block" id="results">
+  <h2>Selected results</h2>
+  <p class="block-intro">
+    From the Survey-RAG benchmark: 56 stratified queries spanning object size classes, phrasing
+    variants, compositional queries and negative queries for absent objects; ground truth from
+    hand-labelling 192 images across 14 categories; 95% bootstrap confidence intervals.
+  </p>
+
+  <div class="result-pair">
+    <figure class="result">
+      <figcaption>Retrieval method comparison</figcaption>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th scope="col">Method</th><th scope="col">P@1</th><th scope="col">P@3</th><th scope="col">R@10</th><th scope="col">MRR</th></tr></thead>
+          <tbody>
+            <tr class="win"><th scope="row">Hybrid <span class="tag">ours</span></th><td><strong>0.93</strong></td><td>0.79</td><td>0.86</td><td>0.95</td></tr>
+            <tr><th scope="row">Embeddings only (SigLIP2)</th><td>0.86</td><td>0.73</td><td>0.86</td><td>0.92</td></tr>
+            <tr><th scope="row">OWLv2 detector baseline</th><td>0.68</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><th scope="row">Captions only (BM25)</th><td>0.64</td><td>0.55</td><td>0.60</td><td>0.72</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <figure class="result">
+      <figcaption>Backend ablation — CLIP vs SigLIP2</figcaption>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th scope="col">P@1 by category</th><th scope="col">CLIP B/32</th><th scope="col">SigLIP2</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Overall (embeddings)</th><td>0.68</td><td class="hi">0.86</td></tr>
+            <tr><th scope="row">Overall (hybrid)</th><td>0.82</td><td class="hi">0.93</td></tr>
+            <tr><th scope="row">Small objects</th><td>0.29</td><td class="hi">0.57</td></tr>
+            <tr><th scope="row">Compositional</th><td>0.25</td><td class="hi">0.75</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="result-note">
+        A 7-query pilot suggested the backends were equivalent. Scaling to 44 queries with honest
+        labels showed the gap <em>widening</em> — backend choice outweighed every preprocessing trick tested.
+      </p>
+    </figure>
+  </div>
+
+  <figure class="result wide">
+    <figcaption>Closed-loop trials — eight typed requests, one flight</figcaption>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Request</th><th scope="col">Retrieval</th><th scope="col">Arrival error</th><th scope="col">Object in view</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">"the fountain"</th><td class="ok">HIT</td><td>3.0 m</td><td class="ok">yes</td></tr>
+          <tr><th scope="row">"bridge"</th><td class="ok">HIT</td><td>16.3 m</td><td class="ok">yes</td></tr>
+          <tr><th scope="row">"playground swings"</th><td class="ok">HIT</td><td>16.9 m</td><td class="ok">yes</td></tr>
+          <tr><th scope="row">"soccer field with goal posts"</th><td class="ok">HIT</td><td>18.4 m</td><td class="ok">yes</td></tr>
+          <tr><th scope="row">"pond with water"</th><td class="ok">HIT</td><td>19.8 m</td><td class="ok">yes</td></tr>
+          <tr><th scope="row">"baseball diamond"</th><td class="ok">HIT</td><td>20.1 m</td><td class="ok">yes</td></tr>
+          <tr><th scope="row">"parking lot with cars"</th><td class="ok">HIT</td><td>21.3 m</td><td class="ok">yes</td></tr>
+          <tr class="miss"><th scope="row">"picnic table"</th><td class="no">MISS</td><td>99.1 m</td><td class="no">no</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="result-note">
+      7/8 correct, median error 19.1 m. The single failure is the sub-1%-of-frame object the
+      retrieval benchmark had already predicted would fail, and it fails end to end for exactly the
+      predicted reason.
+    </p>
+  </figure>
+
+  <aside class="lesson">
+    <h3>A note on ground truth</h3>
+    <p>
+      My first evaluation graded retrieval using pseudo-ground-truth derived from the system's own
+      captions. Under that scheme a keyword baseline "won" at 0.85 — because it was searching the
+      answer key. Hand-labelling all 192 images inverted the ranking: that baseline was in fact the
+      <em>worst</em> method at 0.64. Ground-truth hygiene decided which conclusion was real, and I
+      would not have caught it without doing the labelling myself.
+    </p>
+  </aside>
+</section>
+
+<!-- ======================== OTHER WORK ============================ -->
+<section class="block" id="other">
+  <h2>Other work</h2>
+  <ul class="other-list">
+    <li>
+      <strong>ViT grid-forwarding study.</strong> A comparison of five strategies for extracting
+      region features from a vision transformer — full forward, attention masking, crop-and-forward,
+      sliding window and multi-scale — measured on aerial imagery for compute, spatial context and
+      interpretability.
+    </li>
+    <li>
+      <strong>Monocular depth for UAV landing.</strong> Evaluation of Depth-Anything-V2 and Depth Pro
+      on nadir aerial frames, assessing whether monocular metric depth is reliable enough to inform
+      landing-surface selection.
+    </li>
+    <li>
+      <strong>Benchmark harness.</strong> A reusable evaluation harness with stratified query sets,
+      bootstrap confidence intervals, negative queries for absent objects, and three independent
+      grading systems — human labels, official segmentation masks, and a VLM judge — that
+      cross-corroborate.
+    </li>
+    <li>
+      <strong>Companion-computer flight stack.</strong> MAVSDK offboard control from an NVIDIA Jetson,
+      and an Intel RealSense pipeline for synchronised RGB-D capture.
+    </li>
+  </ul>
+</section>
+
+<!-- ============================ STACK ============================= -->
+<section class="block" id="stack">
+  <h2>Technical background</h2>
+  <dl class="stack-list">
+    <div>
+      <dt>Learning &amp; perception</dt>
+      <dd>PyTorch · Hugging Face Transformers · CLIP, SigLIP2, DINOv2 · Qwen2.5-VL, SmolVLA, π0.5 (local inference and fine-tuning) · ACT, diffusion and flow-matching policies · SAM, OWLv2, Depth-Anything-V2, Depth Pro</dd>
+    </div>
+    <div>
+      <dt>Robotics &amp; simulation</dt>
+      <dd>Isaac Sim · Isaac Lab · AirSim / Project AirSim · PX4 SITL · MAVSDK offboard · QGroundControl · LeRobot · SO-101 / SO-ARM100 · Lula inverse kinematics · URDF and USD pipelines</dd>
+    </div>
+    <div>
+      <dt>Systems</dt>
+      <dd>Python · NumPy · OpenCV · Gradio · real-time IPC (UDP joint streaming, GStreamer video sinks) · benchmark design with stratified sampling, bootstrap CIs and negative controls · environment isolation across incompatible toolchains</dd>
+    </div>
+  </dl>
+</section>
+
+<!-- ============================ CONTACT =========================== -->
+<section class="block" id="contact">
+  <h2>Contact</h2>
+  <p class="block-intro contact-intro">
+    If my work looks relevant to your group, I would welcome a conversation — about your research
+    directions, whether my background fits, or anything on this page. Book a time below, or just
+    email me.
+  </p>
+  <div id="scheduler"></div>
+  <div class="contact-actions" id="contactActions"></div>
+</section>
+
+<footer class="foot">
+  <p><span data-bind="name">Syed Furqan Ali</span> · <span id="footYear"></span></p>
+</footer>
+
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
