@@ -23,6 +23,7 @@ const CONFIG = {
   scholar:   "",                       // "https://scholar.google.com/citations?user=XXXX"
   linkedin:  "",                       // "https://linkedin.com/in/yourusername"
   twitter:   "",                       // "https://x.com/yourusername"
+  huggingface: "https://huggingface.co/Syed-Furqan",
   cv:        "",                       // "assets/CV.pdf" — drop the PDF in assets/
 
   /* --- Scheduling ---------------------------------------------------
@@ -73,13 +74,22 @@ const CONFIG = {
 
   /* --- Per-project links (optional) --------------------------------- */
   repos: {
-    surveyrag: "",
-    so101:     "",
-    landing:   "",
+    surveyrag: "",   // private for now — set when you make it public
+    so101:     "https://github.com/furqi98/so101-imitation-learning",
+    landing:   "https://github.com/furqi98/hexagrid-vlm-landing",
   },
   reports: {
     surveyrag: "",                     // e.g. "assets/survey-rag-report.pdf"
     so101:     "",
     landing:   "",
+  },
+
+  /* --- Extra per-project links (shown after Video/Short/Code) -------- */
+  extraLinks: {
+    so101: [
+      { label: "Dataset",  url: "https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" },
+      { label: "Policy",   url: "https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" },
+      { label: "Episodes", url: "https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Fpick_place_1_grid%2Fepisode_0" },
+    ],
   },
 };

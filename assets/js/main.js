@@ -19,6 +19,7 @@
     github:   '<svg viewBox="0 0 24 24"><path d="M9 19c-4.5 1.4-4.5-2.3-6.2-2.8m12.4 5.8v-3.6a3.1 3.1 0 0 0-.9-2.4c3-.3 6.1-1.5 6.1-6.6a5.1 5.1 0 0 0-1.4-3.6 4.8 4.8 0 0 0-.1-3.6s-1.1-.3-3.7 1.4a12.6 12.6 0 0 0-6.6 0C5.9 1.9 4.8 2.2 4.8 2.2a4.8 4.8 0 0 0-.1 3.6 5.1 5.1 0 0 0-1.4 3.6c0 5.1 3.1 6.3 6.1 6.6a3.1 3.1 0 0 0-.9 2.4V22"/></svg>',
     scholar:  '<svg viewBox="0 0 24 24"><path d="M12 3 2 8.5 12 14l10-5.5L12 3Z"/><path d="M6 11v5.2c0 1.6 2.7 2.9 6 2.9s6-1.3 6-2.9V11"/></svg>',
     linkedin: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7.5 10.5V17M7.5 7.4v.1M11.5 17v-3.7a2.3 2.3 0 0 1 4.6 0V17"/></svg>',
+    hf:       '<svg viewBox="0 0 24 24"><circle cx="12" cy="11" r="8"/><path d="M9 9.5v.01M15 9.5v.01M8.5 14a4.2 4.2 0 0 0 7 0"/></svg>',
     twitter:  '<svg viewBox="0 0 24 24"><path d="m3 3 7.6 10.2L3.3 21M20.5 3l-7.2 7.8L21 21h-5.3L3.4 3h5.3Z"/></svg>',
     doc:      '<svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>',
     film:     '<svg viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M7.5 4.5v15M16.5 4.5v15M2.5 12h19M2.5 8.2h5M2.5 15.8h5M16.5 8.2h5M16.5 15.8h5"/></svg>',
@@ -107,6 +108,7 @@
     if (C.scholar)  host.appendChild(link(C.scholar, "Google Scholar", ICON.scholar, base, true));
     if (C.github)   host.appendChild(link(C.github, "GitHub", ICON.github, base, true));
     if (C.linkedin) host.appendChild(link(C.linkedin, "LinkedIn", ICON.linkedin, base, true));
+    if (C.huggingface) host.appendChild(link(C.huggingface, "Hugging Face", ICON.hf, base, true));
     if (C.twitter)  host.appendChild(link(C.twitter, "Twitter", ICON.twitter, base, true));
   }
 
@@ -122,6 +124,9 @@
       if (v.short)   host.appendChild(link("https://youtube.com/shorts/" + v.short, "Short", null, "", true));
       if (repos[key])   host.appendChild(link(repos[key], "Code", null, "", true));
       if (reports[key]) host.appendChild(link(reports[key], "Report", null, "", true));
+      ((C.extraLinks || {})[key] || []).forEach(function (x) {
+        if (x && x.url) host.appendChild(link(x.url, x.label, null, "", true));
+      });
     });
 
     /* older layout: a bare repo button slot */
