@@ -140,8 +140,7 @@ h1 {
 /**************************************************/
 
 .recent-work {
-    /* clip height + label block + scrollbar gutter */
-    height: 258px;
+    height: 200px;
     width: 900px;
     padding-bottom: 35px;
     overflow-x: scroll;
@@ -149,38 +148,19 @@ h1 {
     margin: 6px auto 30px 30px;
 }
 
-.slider { width: 3600px; }
+.slider { width: 3200px; }
 
 .slider a:hover { border: none; }
-
-/* each slide is an <a> wrapping a clip and its label */
-.slider .slide {
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 20px;
-    border-bottom: none;
-}
-.slider .slide:hover { border-bottom: none; }
 
 .slider img,
 .slider video {
     height: 205px;
     border-radius: 10px;
-    display: block;
+    margin-right: 20px;
+    display: inline-block;
+    vertical-align: top;
     background: #f4f6f8;
 }
-
-.slide-label {
-    display: block;
-    margin-top: 9px;
-    font-size: 12px;
-    line-height: 17px;
-    color: #a0a8b0;
-    max-width: 260px;
-}
-.slide-label b { color: #003373; font-weight: 700; }
-.slider .slide:hover .slide-label { color: #4a85c8; }
-.slider .slide:hover .slide-label b { color: #4a85c8; }
 
 .recent-work::-webkit-scrollbar { background: none; height: 8px; }
 .recent-work::-webkit-scrollbar-track {
