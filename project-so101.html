@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SO-101 Imitation Learning — Syed Furqan Ali</title>
+<meta name="description" content="Learning pick-and-place on a physical SO-101 arm from teleoperated demonstration: 76 dual-camera episodes, four policy families compared.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body id="body">
+<div id="main">
+
+<div id="header">
+  <a href="index.html">Home</a>
+  <a href="projects.html" class="active">Projects</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<a class="back-link" href="projects.html">&larr; All projects</a>
+
+<div class="proj-header">
+  <div class="proj-title">SO-101: Learning Manipulation from Demonstration</div>
+  <p class="proj-subtitle">
+    A full learning-from-demonstration stack on a physical SO-101 arm. Demonstrations are collected
+    by teleoperation, recorded as synchronised dual-camera video and joint trajectories, and used to
+    train vision-language-action policies for pick-and-place. Datasets and trained policies are
+    public on the Hugging Face Hub.
+  </p>
+  <p class="proj-linkbar">
+    <a href="https://youtu.be/oDDR4Vwr4Uo" target="_blank" rel="noopener">Full video</a>
+    <a href="https://youtube.com/shorts/2M_eX9eejPE" target="_blank" rel="noopener">Short</a>
+    <a href="https://github.com/furqi98/so101-imitation-learning" target="_blank" rel="noopener">Code</a>
+    <a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener">Dataset</a>
+    <a href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener">Policy</a>
+  </p>
+</div>
+
+<div class="hero-video">
+  <iframe src="https://www.youtube-nocookie.com/embed/oDDR4Vwr4Uo?rel=0&modestbranding=1"
+          title="SO-101 ACT policy rollout" allowfullscreen
+          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
+</div>
+
+<div class="two-up">
+  <figure>
+    <video src="assets/video/so101-top.mp4" autoplay loop muted playsinline preload="metadata"></video>
+    <figcaption>Top camera during a policy rollout — the block is repositioned by hand between trials.</figcaption>
+  </figure>
+  <figure>
+    <video src="assets/video/so101-wrist.mp4" autoplay loop muted playsinline preload="metadata"></video>
+    <figcaption>Wrist camera on approach. Both streams are observations the policy actually sees.</figcaption>
+  </figure>
+</div>
+
+<div class="divider" style="margin-top:30px"></div>
+
+<div class="section">
+  <h1>Result</h1>
+  <div class="body-copy">
+    <p>
+      The ACT policy trained on <code>pick_place_1_grid</code> completed <b>7 of 8 pick-and-place
+      trials</b>. The block was repositioned by hand between attempts rather than reset to a fixed
+      pose, so the policy had to generalise across starting positions rather than replay a single
+      trajectory.
+    </p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h1>The dataset</h1>
+
+  <table class="data-table">
+    <thead><tr><th>Dataset</th><th class="num">Episodes</th><th class="num">Frames</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr class="highlight"><td>pick_place_1_grid</td><td class="num">76</td><td class="num">30,110</td><td>training</td></tr>
+      <tr><td>eval_pick_place_1_grid1</td><td class="num">9</td><td class="num">4,533</td><td>held-out rollouts</td></tr>
+      <tr><td>pick_place_box_grid</td><td class="num">101</td><td class="num">55,001</td><td>training</td></tr>
+    </tbody>
+  </table>
+  <p class="table-note">
+    Recorded on a physical SO-101 follower arm at 30 fps in LeRobot v3.0 format, Apache-2.0.
+    Every frame carries a top camera (480&times;640), a wrist camera (640&times;480), 6-DoF joint
+    state and 6-DoF action.
+  </p>
+
+  <div class="two-up">
+    <figure>
+      <video src="assets/video/hf-dataset-top.mp4" autoplay loop muted playsinline preload="metadata"></video>
+      <figcaption>Rendered directly from <code>pick_place_1_grid</code> on the Hub — a training demonstration, top camera.</figcaption>
+    </figure>
+  </div>
+
+  <p class="proj-linkbar" style="margin-left:30px">
+    <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Fpick_place_1_grid%2Fepisode_0" target="_blank" rel="noopener">Browse training episodes</a>
+    <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_0" target="_blank" rel="noopener">Browse evaluation rollouts</a>
+  </p>
+  <p class="table-note">
+    The LeRobot dataset viewer plays every episode frame by frame with the joint trajectories
+    plotted alongside the camera streams.
+  </p>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h1>Policies trained</h1>
+  <table class="data-table">
+    <thead><tr><th>Policy</th><th>Architecture</th><th>Trained on</th></tr></thead>
+    <tbody>
+      <tr class="highlight"><td><a href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener">act_pick_place_1_grid_policy</a></td><td>ACT (action-chunking transformer)</td><td>pick_place_1_grid</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_pick_place_box_grid" target="_blank" rel="noopener">act_pick_place_box_grid</a></td><td>ACT</td><td>pick_place_box_grid</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/smolvla_pick_place_box_grid" target="_blank" rel="noopener">smolvla_pick_place_box_grid</a></td><td>SmolVLA</td><td>pick_place_box_grid</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_cup_ball_policy" target="_blank" rel="noopener">act_cup_ball_policy</a></td><td>ACT</td><td>cup-and-ball</td></tr>
+    </tbody>
+  </table>
+  <p class="table-note">
+    I also fine-tuned &#960;0.5 on the recorded task, and integrated DiT-Flow — a diffusion
+    transformer with a flow-matching objective — as a LeRobot policy package. DiT-Flow is an
+    integration of existing work, not my own architecture.
+  </p>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h1>Engineering</h1>
+
+  <h3>Cross-environment teleoperation</h3>
+  <div class="body-copy">
+    <p>
+      The LeRobot teleoperator stack and Isaac Sim require incompatible Python environments and
+      cannot share a process. The leader arm is therefore read in its own interpreter and streamed
+      as six packed joint radians over a local UDP socket at roughly 50 Hz, with per-joint sign and
+      offset correction adjustable from JSON <i>while the simulator keeps running</i> — so
+      calibration is a live loop rather than a restart cycle.
+    </p>
+  </div>
+
+  <h3>Iteration speed as a design goal</h3>
+  <div class="body-copy">
+    <p>
+      A persistent pick-place loop launches Isaac Sim <b>once</b> and re-reads its tuning parameters
+      every cycle. Grasp depth, object placement and gripper travel are tuned without a relaunch,
+      turning a multi-minute iteration into seconds. Most of the useful parameter search happened
+      only because it became cheap enough to actually do.
+    </p>
+  </div>
+
+  <h3>LeRobot Studio</h3>
+  <div class="body-copy">
+    <p>
+      A local web app I wrote so teleoperation, recording, training and inference launch without
+      hand-composing CLI invocations. It builds and supervises the commands and reads datasets and
+      checkpoints from disk — it never modifies the LeRobot source tree.
+    </p>
+  </div>
+</div>
+
+<div id="footer">
+  <p><a href="projects.html">&larr; All projects</a> &middot; Syed Furqan Ali &middot; <span id="footYear"></span></p>
+</div>
+
+</div>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>
