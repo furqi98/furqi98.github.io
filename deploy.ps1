@@ -47,6 +47,12 @@ if (-not $existing) {
     git remote set-url origin $url
 }
 
+if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+    $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" +
+                [Environment]::GetEnvironmentVariable("Path","User")
+    $fallback = "C:\Program Files\GitHub CLI"
+    if (Test-Path "$fallback\gh.exe") { $env:Path = "$fallback;$env:Path" }
+}
 $gh = Get-Command gh -ErrorAction SilentlyContinue
 
 # Create the repo if it does not exist yet
