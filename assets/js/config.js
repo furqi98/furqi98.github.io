@@ -14,7 +14,7 @@ const CONFIG = {
   /* Photo: drop a file in assets/img/ and reference it here.
      A headshot works; you working with the SO-101 arm works better.
      Leave "" and a neutral initials block is shown instead.           */
-  photo:       "",
+  photo:       "assets/img/profile.jpg",
 
   /* --- Contact & links --------------------------------------------- */
   /* Leave any value as "" and its link disappears automatically.      */
