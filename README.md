@@ -105,15 +105,15 @@ git init
 git add .
 git commit -m "Portfolio site"
 git branch -M main
-git remote add origin https://github.com/YOURNAME/YOURNAME.github.io.git
+git remote add origin https://github.com/furqi98/furqi98.github.io.git
 git push -u origin main
 ```
 
 Then: repo → **Settings** → **Pages** → Source: `main` / root → **Save**.
-Live at `https://YOURNAME.github.io` in about a minute.
+Live at `https://furqi98.github.io` in about a minute.
 
-Naming the repo exactly `YOURNAME.github.io` gives you the clean root URL.
-Any other name puts the site at `YOURNAME.github.io/reponame` instead.
+Naming the repo exactly `furqi98.github.io` gives you the clean root URL.
+Any other name puts the site at `furqi98.github.io/reponame` instead.
 
 ### Netlify — free, no git needed
 

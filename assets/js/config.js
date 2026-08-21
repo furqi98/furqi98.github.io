@@ -19,7 +19,7 @@ const CONFIG = {
   /* --- Contact & links --------------------------------------------- */
   /* Leave any value as "" and its link disappears automatically.      */
   email:     "syed.furqan.ali.1998@gmail.com",
-  github:    "",                       // "https://github.com/yourusername"
+  github:    "https://github.com/furqi98",
   scholar:   "",                       // "https://scholar.google.com/citations?user=XXXX"
   linkedin:  "",                       // "https://linkedin.com/in/yourusername"
   twitter:   "",                       // "https://x.com/yourusername"
