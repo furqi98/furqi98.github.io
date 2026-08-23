@@ -64,24 +64,16 @@ const CONFIG = {
       poster:  "",
       caption: "ACT policy on the SO-101 — 7/8 trials, block repositioned by hand each time",
     },
-    landing: {
-      id:      "",
-      short:   "",
-      poster:  "",
-      caption: "VLM landing-zone selection and grid-lock descent",
-    },
   },
 
   /* --- Per-project links (optional) --------------------------------- */
   repos: {
     surveyrag: "",   // private for now — set when you make it public
     so101:     "https://github.com/furqi98/so101-imitation-learning",
-    landing:   "https://github.com/furqi98/hexagrid-vlm-landing",
   },
   reports: {
     surveyrag: "",                     // e.g. "assets/survey-rag-report.pdf"
     so101:     "",
-    landing:   "",
   },
 
   /* --- Extra per-project links (shown after Video/Short/Code) -------- */
