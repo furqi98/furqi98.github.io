@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SO-101 Imitation Learning — Syed Furqan Ali</title>
-<meta name="description" content="Learning pick-and-place on a physical SO-101 arm from teleoperated demonstration: 76 dual-camera episodes, four policy families compared.">
+<meta name="description" content="Learning pick-and-place on a physical SO-101 arm from teleoperated demonstration — and what three rounds of data collection showed about where demonstrations need to be.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -24,10 +24,11 @@
 <div class="proj-header">
   <div class="proj-title">SO-101: Learning Manipulation from Demonstration</div>
   <p class="proj-subtitle">
-    A full learning-from-demonstration stack on a physical SO-101 arm. Demonstrations are collected
-    by teleoperation, recorded as synchronised dual-camera video and joint trajectories, and used to
-    train vision-language-action policies for pick-and-place. Datasets and trained policies are
-    public on the Hugging Face Hub.
+    A full learning-from-demonstration stack on a physical SO-101 arm — teleoperated collection,
+    synchronised dual-camera recording, and vision-language-action policies trained for
+    pick-and-place. Three rounds of data collection, each one a deliberate change to <i>where</i>
+    demonstrations were taken from, turned out to matter more than how many there were. All
+    datasets and policies are public on the Hugging Face Hub.
   </p>
   <p class="proj-linkbar">
     <a href="https://youtu.be/oDDR4Vwr4Uo" target="_blank" rel="noopener">Full video</a>
@@ -58,13 +59,96 @@
 <div class="divider" style="margin-top:30px"></div>
 
 <div class="section">
-  <h1>Result</h1>
+  <h1>Three rounds of data collection</h1>
+
   <div class="body-copy">
     <p>
-      The ACT policy trained on <code>pick_place_1_grid</code> completed <b>7 of 8 pick-and-place
-      trials</b>. The block was repositioned by hand between attempts rather than reset to a fixed
-      pose, so the policy had to generalise across starting positions rather than replay a single
-      trajectory.
+      The task never changed: pick up a green block and place it in a box. What changed across three
+      rounds was how the starting position of the block was chosen when recording demonstrations.
+      Each round was a response to the evaluation results of the one before it.
+    </p>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Round</th><th>How demonstrations were sampled</th>
+        <th class="num">Episodes</th><th class="num">Frames</th><th>Trained policy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 &mdash; unmeasured</td>
+        <td>Block placed by hand wherever it happened to land; no position recorded</td>
+        <td class="num">50 / 51</td><td class="num">26,519 / 33,370</td>
+        <td class="no">weak</td>
+      </tr>
+      <tr>
+        <td>2 &mdash; spread across 6 cells</td>
+        <td>Workspace divided into a 6-cell grid, demonstrations drawn from every cell</td>
+        <td class="num">101</td><td class="num">55,001</td>
+        <td class="no">weak</td>
+      </tr>
+      <tr class="highlight">
+        <td>3 &mdash; one cell only</td>
+        <td>All demonstrations taken from a single grid cell</td>
+        <td class="num">76</td><td class="num">30,110</td>
+        <td class="yes">strong, in-cell</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="table-note">
+    Round 1 spans two recording sessions, <code>pick_and_place</code> and <code>picknplace</code>.
+    Round 2 is <code>pick_place_box_grid</code>, round 3 is <code>pick_place_1_grid</code>. All
+    recorded on a physical SO-101 follower arm at 30 fps in LeRobot v3.0 format, Apache-2.0. Every
+    frame carries a top camera (640&times;480), a wrist camera, 6-DoF joint state and 6-DoF action.
+  </p>
+
+  <h3>Round 1 — no measured position</h3>
+  <div class="body-copy">
+    <p>
+      The first datasets were recorded without tracking where the block started. An ACT policy
+      trained on them evaluated poorly. With no record of the starting positions there was also no
+      way to ask the useful diagnostic question — whether the failures clustered anywhere in
+      particular — because the coverage of the workspace was simply unknown.
+    </p>
+  </div>
+
+  <h3>Round 2 — measured, and spread across six cells</h3>
+  <div class="body-copy">
+    <p>
+      So the workspace was divided into a grid of six cells and demonstrations were drawn from every
+      cell, with the starting cell recorded. This is the intuitive fix: cover the space evenly and
+      the policy should learn the whole space. It produced the largest dataset of the three &mdash;
+      101 episodes, 55,001 frames &mdash; and the policy trained on it was still not good.
+    </p>
+  </div>
+
+  <h3>Round 3 — a single cell</h3>
+  <div class="body-copy">
+    <p>
+      As a diagnostic rather than a solution, the next dataset was recorded entirely from
+      <i>one</i> cell. It is smaller than round 2 in both episodes and frames. The ACT policy
+      trained on it performed markedly better than either predecessor.
+    </p>
+  </div>
+
+  <div class="callout">
+    <h4>The same demonstration budget, spread thin, taught less than a fraction of it concentrated</h4>
+    <p>
+      Round 2 had more episodes and nearly twice the frames of round 3, distributed across the whole
+      workspace. Round 3 had fewer, all in one place. Round 3 won. Spreading a fixed number of
+      demonstrations over six cells left every cell too thinly covered to learn from; concentrating
+      them made one region dense enough to actually fit.
+    </p>
+    <p>
+      The honest reading is a limit, not a win. The round-3 policy is strong <b>where it was
+      demonstrated</b> and degrades as the block moves away from that region &mdash; so its result
+      is not evidence of general pick-and-place capability, and it should not be compared directly
+      against the round-2 policy, which was asked to cover six times the area. What the comparison
+      does establish is that demonstration <i>density</i> per unit of workspace, not total episode
+      count, was the binding constraint. Covering the full workspace at round-3 density is the
+      obvious next experiment, and it is a much larger collection effort than any round so far.
     </p>
   </div>
 </div>
@@ -72,36 +156,82 @@
 <div class="divider"></div>
 
 <div class="section">
-  <h1>The dataset</h1>
+  <h1>Training data</h1>
 
-  <table class="data-table">
-    <thead><tr><th>Dataset</th><th class="num">Episodes</th><th class="num">Frames</th><th>Role</th></tr></thead>
-    <tbody>
-      <tr class="highlight"><td>pick_place_1_grid</td><td class="num">76</td><td class="num">30,110</td><td>training</td></tr>
-      <tr><td>eval_pick_place_1_grid1</td><td class="num">9</td><td class="num">4,533</td><td>held-out rollouts</td></tr>
-      <tr><td>pick_place_box_grid</td><td class="num">101</td><td class="num">55,001</td><td>training</td></tr>
-    </tbody>
-  </table>
-  <p class="table-note">
-    Recorded on a physical SO-101 follower arm at 30 fps in LeRobot v3.0 format, Apache-2.0.
-    Every frame carries a top camera (480&times;640), a wrist camera (640&times;480), 6-DoF joint
-    state and 6-DoF action.
-  </p>
+  <div class="body-copy">
+    <p>
+      Every episode is a complete teleoperated demonstration &mdash; approach, grasp, transport,
+      release &mdash; recorded from both cameras simultaneously with the joint trajectory that
+      produced it. The clip below is one episode from <code>pick_place_1_grid</code>, the round-3
+      dataset, rendered from the top camera as stored on the Hub.
+    </p>
+  </div>
 
   <div class="two-up">
     <figure>
-      <video src="assets/video/hf-dataset-top.mp4" autoplay loop muted playsinline preload="metadata"></video>
-      <figcaption>Rendered directly from <code>pick_place_1_grid</code> on the Hub — a training demonstration, top camera.</figcaption>
+      <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Fpick_place_1_grid%2Fepisode_6" target="_blank" rel="noopener">
+        <video src="assets/video/so101-demo-ep6.mp4" autoplay loop muted playsinline preload="metadata"></video>
+      </a>
+      <figcaption>
+        Episode 6 of <code>pick_place_1_grid</code> — a teleoperated training demonstration, top
+        camera. Click to open it in the LeRobot dataset viewer.
+      </figcaption>
     </figure>
   </div>
 
   <p class="proj-linkbar" style="margin-left:30px">
-    <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Fpick_place_1_grid%2Fepisode_0" target="_blank" rel="noopener">Browse training episodes</a>
-    <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_0" target="_blank" rel="noopener">Browse evaluation rollouts</a>
+    <a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener">pick_place_1_grid</a>
+    <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Fpick_place_1_grid%2Fepisode_0" target="_blank" rel="noopener">Browse all episodes</a>
+    <a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_box_grid" target="_blank" rel="noopener">pick_place_box_grid</a>
   </p>
   <p class="table-note">
-    The LeRobot dataset viewer plays every episode frame by frame with the joint trajectories
-    plotted alongside the camera streams.
+    The LeRobot dataset viewer plays any episode frame by frame with the joint trajectories plotted
+    alongside both camera streams.
+  </p>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h1>Evaluation</h1>
+
+  <div class="body-copy">
+    <p>
+      Evaluation rollouts are recorded as their own dataset, so a policy's behaviour is inspectable
+      after the fact rather than reduced to a pass/fail tally.
+      <code>eval_pick_place_1_grid1</code> holds 9 rollouts of the round-3 ACT policy, 4,533 frames
+      in total. The block was repositioned by hand between attempts rather than reset to a fixed
+      pose, so the policy had to handle a starting position it had not been placed in.
+    </p>
+  </div>
+
+  <div class="two-up">
+    <figure>
+      <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_7" target="_blank" rel="noopener">
+        <video src="assets/video/so101-eval-ep7.mp4" autoplay loop muted playsinline preload="metadata"></video>
+      </a>
+      <figcaption>
+        Evaluation episode 7 — the policy locates the block, grasps it and places it in the box.
+        Shown from the start of the episode; the recording continues for another 47 s with the task
+        already complete. Click to open the full rollout in the viewer.
+      </figcaption>
+    </figure>
+  </div>
+
+  <table class="data-table">
+    <thead><tr><th>Dataset</th><th class="num">Rollouts</th><th class="num">Frames</th><th>Policy under test</th></tr></thead>
+    <tbody>
+      <tr class="highlight"><td><a href="https://huggingface.co/datasets/Syed-Furqan/eval_pick_place_1_grid1" target="_blank" rel="noopener">eval_pick_place_1_grid1</a></td><td class="num">9</td><td class="num">4,533</td><td>act_pick_place_1_grid_policy</td></tr>
+      <tr><td><a href="https://huggingface.co/datasets/Syed-Furqan/eval_cup_ball" target="_blank" rel="noopener">eval_cup_ball</a></td><td class="num">&mdash;</td><td class="num">&mdash;</td><td>act_cup_ball_policy</td></tr>
+    </tbody>
+  </table>
+  <p class="table-note">
+    Episode lengths vary from 9 s to a 60 s cap; the cap is the recording limit, not a failure
+    signal, and several rollouts complete the task well inside it and then idle.
+  </p>
+
+  <p class="proj-linkbar" style="margin-left:30px">
+    <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_0" target="_blank" rel="noopener">Browse evaluation rollouts</a>
   </p>
 </div>
 
@@ -109,19 +239,33 @@
 
 <div class="section">
   <h1>Policies trained</h1>
+
+  <div class="body-copy">
+    <p>
+      Seven policies across three architectures, trained on the datasets above and on a separate
+      cup-and-ball task. Each links to its checkpoint on the Hub.
+    </p>
+  </div>
+
   <table class="data-table">
-    <thead><tr><th>Policy</th><th>Architecture</th><th>Trained on</th></tr></thead>
+    <thead><tr><th>Policy</th><th>Architecture</th><th>Trained on</th><th>Round</th></tr></thead>
     <tbody>
-      <tr class="highlight"><td><a href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener">act_pick_place_1_grid_policy</a></td><td>ACT (action-chunking transformer)</td><td>pick_place_1_grid</td></tr>
-      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_pick_place_box_grid" target="_blank" rel="noopener">act_pick_place_box_grid</a></td><td>ACT</td><td>pick_place_box_grid</td></tr>
-      <tr><td><a href="https://huggingface.co/Syed-Furqan/smolvla_pick_place_box_grid" target="_blank" rel="noopener">smolvla_pick_place_box_grid</a></td><td>SmolVLA</td><td>pick_place_box_grid</td></tr>
-      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_cup_ball_policy" target="_blank" rel="noopener">act_cup_ball_policy</a></td><td>ACT</td><td>cup-and-ball</td></tr>
+      <tr class="highlight"><td><a href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener">act_pick_place_1_grid_policy</a></td><td>ACT (action-chunking transformer)</td><td>pick_place_1_grid</td><td>3</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_pick_place_box_grid" target="_blank" rel="noopener">act_pick_place_box_grid</a></td><td>ACT</td><td>pick_place_box_grid</td><td>2</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/smolvla_pick_place_box_grid" target="_blank" rel="noopener">smolvla_pick_place_box_grid</a></td><td>SmolVLA</td><td>pick_place_box_grid</td><td>2</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_pick_and_place_policy" target="_blank" rel="noopener">act_pick_and_place_policy</a></td><td>ACT</td><td>pick_and_place</td><td>1</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_picknplace_policy" target="_blank" rel="noopener">act_picknplace_policy</a></td><td>ACT</td><td>picknplace</td><td>1</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_picknplace_blocks_in_box_policy" target="_blank" rel="noopener">act_picknplace_blocks_in_box_policy</a></td><td>ACT</td><td>blocks-in-box variant</td><td>1</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_cup_ball_policy" target="_blank" rel="noopener">act_cup_ball_policy</a></td><td>ACT</td><td>cup_ball</td><td>&mdash;</td></tr>
     </tbody>
   </table>
   <p class="table-note">
-    I also fine-tuned &#960;0.5 on the recorded task, and integrated DiT-Flow — a diffusion
-    transformer with a flow-matching objective — as a LeRobot policy package. DiT-Flow is an
-    integration of existing work, not my own architecture.
+    Running the same ACT recipe across every round is what makes the rounds comparable &mdash; the
+    architecture is held fixed and only the data changes. SmolVLA was trained on the round-2 data to
+    check whether a pretrained vision-language backbone could recover what ACT could not from the
+    same thinly-spread demonstrations. I also fine-tuned &#960;0.5 on the recorded task, and
+    integrated DiT-Flow &mdash; a diffusion transformer with a flow-matching objective &mdash; as a
+    LeRobot policy package. DiT-Flow is an integration of existing work, not my own architecture.
   </p>
 </div>
 
