@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SO-101 Imitation Learning — Syed Furqan Ali</title>
-<meta name="description" content="Learning pick-and-place on a physical SO-101 arm from teleoperated demonstration — and what three rounds of data collection showed about where demonstrations need to be.">
+<title>SO-101 Imitation Learning | Syed Furqan Ali</title>
+<meta name="description" content="Learning pick-and-place on a physical SO-101 arm from teleoperated demonstration, and what three rounds of data collection showed about where demonstrations need to be.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
 <div class="proj-header">
   <div class="proj-title">SO-101: Learning Manipulation from Demonstration</div>
   <p class="proj-subtitle">
-    A full learning-from-demonstration stack on a physical SO-101 arm — teleoperated collection,
+    A full learning-from-demonstration stack on a physical SO-101 arm: teleoperated collection,
     synchronised dual-camera recording, and vision-language-action policies trained for
     pick-and-place. Three rounds of data collection, each one a deliberate change to <i>where</i>
     demonstrations were taken from, turned out to matter more than how many there were. All
@@ -48,7 +48,7 @@
 <div class="two-up">
   <figure>
     <video src="assets/video/so101-top.mp4" autoplay loop muted playsinline preload="metadata"></video>
-    <figcaption>Top camera during a policy rollout — the block is repositioned by hand between trials.</figcaption>
+    <figcaption>Top camera during a policy rollout. The block is repositioned by hand between trials.</figcaption>
   </figure>
   <figure>
     <video src="assets/video/so101-wrist.mp4" autoplay loop muted playsinline preload="metadata"></video>
@@ -78,19 +78,19 @@
     </thead>
     <tbody>
       <tr>
-        <td>1 &mdash; unmeasured</td>
+        <td>1: unmeasured</td>
         <td>Block placed by hand wherever it happened to land; no position recorded</td>
         <td class="num">50 / 51</td><td class="num">26,519 / 33,370</td>
         <td class="no">weak</td>
       </tr>
       <tr>
-        <td>2 &mdash; spread across 6 cells</td>
+        <td>2: spread across 6 cells</td>
         <td>Workspace divided into a 6-cell grid, demonstrations drawn from every cell</td>
         <td class="num">101</td><td class="num">55,001</td>
         <td class="no">weak</td>
       </tr>
       <tr class="highlight">
-        <td>3 &mdash; one cell only</td>
+        <td>3: one cell only</td>
         <td>All demonstrations taken from a single grid cell</td>
         <td class="num">76</td><td class="num">30,110</td>
         <td class="yes">strong, in-cell</td>
@@ -104,27 +104,25 @@
     frame carries a top camera (640&times;480), a wrist camera, 6-DoF joint state and 6-DoF action.
   </p>
 
-  <h3>Round 1 — no measured position</h3>
+  <h3>Round 1: no measured position</h3>
   <div class="body-copy">
     <p>
       The first datasets were recorded without tracking where the block started. An ACT policy
       trained on them evaluated poorly. With no record of the starting positions there was also no
-      way to ask the useful diagnostic question — whether the failures clustered anywhere in
-      particular — because the coverage of the workspace was simply unknown.
+      way to ask the useful diagnostic question, whether the failures clustered anywhere in particular, because the coverage of the workspace was simply unknown.
     </p>
   </div>
 
-  <h3>Round 2 — measured, and spread across six cells</h3>
+  <h3>Round 2: measured, and spread across six cells</h3>
   <div class="body-copy">
     <p>
       So the workspace was divided into a grid of six cells and demonstrations were drawn from every
       cell, with the starting cell recorded. This is the intuitive fix: cover the space evenly and
-      the policy should learn the whole space. It produced the largest dataset of the three &mdash;
-      101 episodes, 55,001 frames &mdash; and the policy trained on it was still not good.
+      the policy should learn the whole space. It produced the largest dataset of the three (101 episodes, 55,001 frames), and the policy trained on it was still not good.
     </p>
   </div>
 
-  <h3>Round 3 — a single cell</h3>
+  <h3>Round 3: a single cell</h3>
   <div class="body-copy">
     <p>
       As a diagnostic rather than a solution, the next dataset was recorded entirely from
@@ -143,7 +141,7 @@
     </p>
     <p>
       The honest reading is a limit, not a win. The round-3 policy is strong <b>where it was
-      demonstrated</b> and degrades as the block moves away from that region &mdash; so its result
+      demonstrated</b> and degrades as the block moves away from that region, so its result
       is not evidence of general pick-and-place capability, and it should not be compared directly
       against the round-2 policy, which was asked to cover six times the area. What the comparison
       does establish is that demonstration <i>density</i> per unit of workspace, not total episode
@@ -160,8 +158,7 @@
 
   <div class="body-copy">
     <p>
-      Every episode is a complete teleoperated demonstration &mdash; approach, grasp, transport,
-      release &mdash; recorded from both cameras simultaneously with the joint trajectory that
+      Every episode is a complete teleoperated demonstration (approach, grasp, transport, release) recorded from both cameras simultaneously with the joint trajectory that
       produced it. The clip below is one episode from <code>pick_place_1_grid</code>, the round-3
       dataset, rendered from the top camera as stored on the Hub.
     </p>
@@ -173,7 +170,7 @@
         <video src="assets/video/so101-demo-ep6.mp4" autoplay loop muted playsinline preload="metadata"></video>
       </a>
       <figcaption>
-        Episode 6 of <code>pick_place_1_grid</code> — a teleoperated training demonstration, top
+        Episode 6 of <code>pick_place_1_grid</code>: a teleoperated training demonstration, top
         camera. Click to open it in the LeRobot dataset viewer.
       </figcaption>
     </figure>
@@ -211,7 +208,7 @@
         <video src="assets/video/so101-eval-ep7.mp4" autoplay loop muted playsinline preload="metadata"></video>
       </a>
       <figcaption>
-        Evaluation episode 7 — the policy locates the block, grasps it and places it in the box.
+        Evaluation episode 7: the policy locates the block, grasps it and places it in the box.
         Shown from the start of the episode; the recording continues for another 47 s with the task
         already complete. Click to open the full rollout in the viewer.
       </figcaption>
@@ -222,7 +219,7 @@
     <thead><tr><th>Dataset</th><th class="num">Rollouts</th><th class="num">Frames</th><th>Policy under test</th></tr></thead>
     <tbody>
       <tr class="highlight"><td><a href="https://huggingface.co/datasets/Syed-Furqan/eval_pick_place_1_grid1" target="_blank" rel="noopener">eval_pick_place_1_grid1</a></td><td class="num">9</td><td class="num">4,533</td><td>act_pick_place_1_grid_policy</td></tr>
-      <tr><td><a href="https://huggingface.co/datasets/Syed-Furqan/eval_cup_ball" target="_blank" rel="noopener">eval_cup_ball</a></td><td class="num">&mdash;</td><td class="num">&mdash;</td><td>act_cup_ball_policy</td></tr>
+      <tr><td><a href="https://huggingface.co/datasets/Syed-Furqan/eval_cup_ball" target="_blank" rel="noopener">eval_cup_ball</a></td><td class="num">n/a</td><td class="num">n/a</td><td>act_cup_ball_policy</td></tr>
     </tbody>
   </table>
   <p class="table-note">
@@ -256,16 +253,14 @@
       <tr><td><a href="https://huggingface.co/Syed-Furqan/act_pick_and_place_policy" target="_blank" rel="noopener">act_pick_and_place_policy</a></td><td>ACT</td><td>pick_and_place</td><td>1</td></tr>
       <tr><td><a href="https://huggingface.co/Syed-Furqan/act_picknplace_policy" target="_blank" rel="noopener">act_picknplace_policy</a></td><td>ACT</td><td>picknplace</td><td>1</td></tr>
       <tr><td><a href="https://huggingface.co/Syed-Furqan/act_picknplace_blocks_in_box_policy" target="_blank" rel="noopener">act_picknplace_blocks_in_box_policy</a></td><td>ACT</td><td>blocks-in-box variant</td><td>1</td></tr>
-      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_cup_ball_policy" target="_blank" rel="noopener">act_cup_ball_policy</a></td><td>ACT</td><td>cup_ball</td><td>&mdash;</td></tr>
+      <tr><td><a href="https://huggingface.co/Syed-Furqan/act_cup_ball_policy" target="_blank" rel="noopener">act_cup_ball_policy</a></td><td>ACT</td><td>cup_ball</td><td>n/a</td></tr>
     </tbody>
   </table>
   <p class="table-note">
-    Running the same ACT recipe across every round is what makes the rounds comparable &mdash; the
-    architecture is held fixed and only the data changes. SmolVLA was trained on the round-2 data to
+    Running the same ACT recipe across every round is what makes the rounds comparable: the architecture is held fixed and only the data changes. SmolVLA was trained on the round-2 data to
     check whether a pretrained vision-language backbone could recover what ACT could not from the
     same thinly-spread demonstrations. I also fine-tuned &#960;0.5 on the recorded task, and
-    integrated DiT-Flow &mdash; a diffusion transformer with a flow-matching objective &mdash; as a
-    LeRobot policy package. DiT-Flow is an integration of existing work, not my own architecture.
+    integrated DiT-Flow, a diffusion transformer with a flow-matching objective, as a LeRobot policy package. DiT-Flow is an integration of existing work, not my own architecture.
   </p>
 </div>
 
@@ -280,8 +275,7 @@
       The LeRobot teleoperator stack and Isaac Sim require incompatible Python environments and
       cannot share a process. The leader arm is therefore read in its own interpreter and streamed
       as six packed joint radians over a local UDP socket at roughly 50 Hz, with per-joint sign and
-      offset correction adjustable from JSON <i>while the simulator keeps running</i> — so
-      calibration is a live loop rather than a restart cycle.
+      offset correction adjustable from JSON <i>while the simulator keeps running</i>, so calibration is a live loop rather than a restart cycle.
     </p>
   </div>
 
@@ -300,7 +294,7 @@
     <p>
       A local web app I wrote so teleoperation, recording, training and inference launch without
       hand-composing CLI invocations. It builds and supervises the commands and reads datasets and
-      checkpoints from disk — it never modifies the LeRobot source tree.
+      checkpoints from disk, and it never modifies the LeRobot source tree.
     </p>
   </div>
 </div>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hexagrid VLM — Syed Furqan Ali</title>
+<title>Hexagrid VLM | Syed Furqan Ali</title>
 <meta name="description" content="Autonomous landing-site selection with a vision-language model in the loop: six views compared in one inference, a confidence lock on a single grid cell, then an automatic descent.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,7 @@
   <p class="proj-subtitle">
     A drone flies a hexagon over an unknown area, captures the view from each vertex, and asks a
     vision-language model which direction is safest to land. It then narrows that view to a single
-    grid cell, converts the cell to a GPS coordinate, flies there and lands &mdash; with no operator
+    grid cell, converts the cell to a GPS coordinate, flies there and lands, with no operator
     input at any step. Runs against PX4 SITL in AirSim with a local VLM; nothing leaves the machine.
   </p>
   <p class="proj-linkbar">
@@ -44,11 +44,11 @@
 <div class="two-up">
   <figure>
     <video src="assets/video/hexagrid-edge-select.mp4" autoplay loop muted playsinline preload="metadata"></video>
-    <figcaption>Phase 1 &mdash; the six captured views composited into one labelled mosaic, and the edge the VLM picks out of it.</figcaption>
+    <figcaption>Phase 1: the six captured views composited into one labelled mosaic, and the edge the VLM picks out of it.</figcaption>
   </figure>
   <figure>
     <video src="assets/video/hexagrid-align.mp4" autoplay loop muted playsinline preload="metadata"></video>
-    <figcaption>Phase 3 &mdash; the locked cell frozen above, the live nadir feed below; the blue centre cell closes on the red target as the vehicle flies in.</figcaption>
+    <figcaption>Phase 3: the locked cell frozen above, the live nadir feed below; the blue centre cell closes on the red target as the vehicle flies in.</figcaption>
   </figure>
 </div>
 
@@ -65,7 +65,7 @@
     </p>
   </div>
 
-  <h3>Phase 1 &mdash; six views, one inference</h3>
+  <h3>Phase 1: six views, one inference</h3>
   <div class="body-copy">
     <p>
       The vehicle flies a hexagon and captures a snapshot at each vertex. Those six images are
@@ -74,13 +74,13 @@
     </p>
     <p>
       Comparison is the actual task here. Scoring six images independently costs six inferences and
-      still leaves the model unable to see the alternatives it is ranking against &mdash; it can only
+      still leaves the model unable to see the alternatives it is ranking against. It can only
       say "this looks fine", never "this one, rather than that one". Compositing makes the comparison
       native to the prompt, and costs a single call.
     </p>
   </div>
 
-  <h3>Phase 2 &mdash; grid confidence lock</h3>
+  <h3>Phase 2: grid confidence lock</h3>
   <div class="body-copy">
     <p>
       A numbered 4&times;4 grid is overlaid on the winning snapshot and re-queried repeatedly. Cell
@@ -95,7 +95,7 @@
     </p>
   </div>
 
-  <h3>Phase 3 &mdash; pixel to GPS</h3>
+  <h3>Phase 3: pixel to GPS</h3>
   <div class="body-copy">
     <p>
       The locked cell is still just a patch of pixels. Its offset from the centre of the frame is
@@ -105,11 +105,11 @@
     </p>
   </div>
 
-  <h3>Phase 4 &mdash; automatic landing</h3>
+  <h3>Phase 4: automatic landing</h3>
   <div class="body-copy">
     <p>
       Once telemetry shows the vehicle has arrived and settled over the target, the land command
-      fires on its own &mdash; there is no button and no operator step. Arrival is judged from ground
+      fires on its own. There is no button and no operator step. Arrival is judged from ground
       speed and altitude, and touchdown is confirmed the same way, so the sequence never waits on an
       acknowledgement the flight controller was not built to send.
     </p>
@@ -124,7 +124,7 @@
       produce.
     </p>
     <p>
-      Alongside it runs a local mission-control page &mdash; a phase stepper, the snapshot tray and
+      Alongside it runs a local mission-control page: a phase stepper, the snapshot tray and
       the model's reasoning as they arrive, the grid-lock vote history, and during alignment a live
       nadir feed with the locked cell frozen above it, so convergence is something you watch happen
       rather than a claim to take on faith.
@@ -147,11 +147,11 @@
   <div class="two-up">
     <figure>
       <img src="assets/img/hexagrid-edge-capture.jpg" alt="Mission-control dashboard during phase one: a phase stepper across the top, the snapshot tray filling in on the right, and a live nadir camera feed in the centre">
-      <figcaption>Phase 1 &mdash; the snapshot tray fills in as each vertex of the hexagon is captured, with the live nadir feed alongside.</figcaption>
+      <figcaption>Phase 1: the snapshot tray fills in as each vertex of the hexagon is captured, with the live nadir feed alongside.</figcaption>
     </figure>
     <figure>
       <video src="assets/video/hexagrid-landed.mp4" autoplay loop muted playsinline preload="metadata"></video>
-      <figcaption>Phase 4 &mdash; the descent onto the chosen cell, confirmed from the vehicle's own telemetry.</figcaption>
+      <figcaption>Phase 4: the descent onto the chosen cell, confirmed from the vehicle's own telemetry.</figcaption>
     </figure>
   </div>
 </div>
@@ -165,7 +165,7 @@
     <h4>The camera that pointed the wrong way</h4>
     <p>
       An AirSim <code>settings.json</code> with <code>"Pitch": 0</code> produces a <i>forward-facing</i>
-      "down" camera &mdash; which I confirmed by seeing the horizon and the vehicle's own rotors in
+      "down" camera, which I confirmed by seeing the horizon and the vehicle's own rotors in
       frame. The fix is pitch &minus;90 <b>plus</b> a stabilised gimbal block, so the image stays
       truly nadir at any airspeed and body tilt. Worth stating plainly, because it silently
       invalidates every geometric assumption downstream: the pixel-to-metre conversion in Phase 3 is
