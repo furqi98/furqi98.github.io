@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Projects — Syed Furqan Ali</title>
-<meta name="description" content="Robotics projects: language-queryable aerial memory, SO-101 imitation learning.">
+<meta name="description" content="Robotics projects: language-queryable aerial memory, SO-101 imitation learning, and VLM-guided autonomous landing.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -61,6 +61,25 @@
       <a href="https://youtube.com/shorts/2M_eX9eejPE" target="_blank" rel="noopener">Short</a>
       <a href="https://github.com/furqi98/so101-imitation-learning" target="_blank" rel="noopener">Code</a>
       <a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener">Dataset</a>
+    </p>
+  </div>
+
+  <div class="research-proj">
+    <a class="research-thumb" href="project-hexagrid.html">
+      <video src="assets/video/hexagrid-align.mp4" autoplay loop muted playsinline preload="metadata"></video>
+    </a>
+    <p>
+      <a class="research-proj-title" href="project-hexagrid.html">Hexagrid VLM: Autonomous Landing-Site Selection</a><br>
+      <span class="proj-meta">VLM-in-the-loop control &middot; AirSim + PX4 SITL &middot; Qwen2.5-VL, local</span><br>
+      A drone flies a hexagon over unknown terrain and asks a vision-language model which way is
+      safest to land. Six views are compared in a <strong>single inference</strong>, a confidence
+      loop locks onto one grid cell rather than trusting one answer, and the cell becomes a GPS
+      target for a fully automatic descent &mdash; no operator step anywhere in the sequence.
+    </p>
+    <p class="proj-links">
+      <a href="project-hexagrid.html">Details</a>
+      <a href="https://youtu.be/y4rDqmTjzoo" target="_blank" rel="noopener">Video</a>
+      <a href="https://github.com/furqi98/hexagrid-vlm-landing" target="_blank" rel="noopener">Code</a>
     </p>
   </div>
 </div>

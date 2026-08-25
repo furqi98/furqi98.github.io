@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hexagrid VLM — Syed Furqan Ali</title>
+<meta name="description" content="Autonomous landing-site selection with a vision-language model in the loop: six views compared in one inference, a confidence lock on a single grid cell, then an automatic descent.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body id="body">
+<div id="main">
+
+<div id="header">
+  <a href="index.html">Home</a>
+  <a href="projects.html" class="active">Projects</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<a class="back-link" href="projects.html">&larr; All projects</a>
+
+<div class="proj-header">
+  <div class="proj-title">Hexagrid VLM: Autonomous Landing-Site Selection</div>
+  <p class="proj-subtitle">
+    A drone flies a hexagon over an unknown area, captures the view from each vertex, and asks a
+    vision-language model which direction is safest to land. It then narrows that view to a single
+    grid cell, converts the cell to a GPS coordinate, flies there and lands &mdash; with no operator
+    input at any step. Runs against PX4 SITL in AirSim with a local VLM; nothing leaves the machine.
+  </p>
+  <p class="proj-linkbar">
+    <a href="https://youtu.be/y4rDqmTjzoo" target="_blank" rel="noopener">Full video</a>
+    <a href="https://github.com/furqi98/hexagrid-vlm-landing" target="_blank" rel="noopener">Code</a>
+  </p>
+</div>
+
+<div class="hero-video">
+  <iframe src="https://www.youtube-nocookie.com/embed/y4rDqmTjzoo?rel=0&modestbranding=1"
+          title="Hexagrid VLM autonomous landing" allowfullscreen
+          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
+</div>
+
+<div class="two-up">
+  <figure>
+    <video src="assets/video/hexagrid-edge-select.mp4" autoplay loop muted playsinline preload="metadata"></video>
+    <figcaption>Phase 1 &mdash; the six captured views composited into one labelled mosaic, and the edge the VLM picks out of it.</figcaption>
+  </figure>
+  <figure>
+    <video src="assets/video/hexagrid-align.mp4" autoplay loop muted playsinline preload="metadata"></video>
+    <figcaption>Phase 3 &mdash; the locked cell frozen above, the live nadir feed below; the blue centre cell closes on the red target as the vehicle flies in.</figcaption>
+  </figure>
+</div>
+
+<div class="divider" style="margin-top:30px"></div>
+
+<div class="section">
+  <h1>How it works</h1>
+
+  <div class="body-copy">
+    <p>
+      The problem is choosing where to put an aircraft down in terrain nobody has surveyed, using a
+      model that is good at describing scenes and bad at being trusted. Each of the four phases
+      exists to take one more decision away from a single model output.
+    </p>
+  </div>
+
+  <h3>Phase 1 &mdash; six views, one inference</h3>
+  <div class="body-copy">
+    <p>
+      The vehicle flies a hexagon and captures a snapshot at each vertex. Those six images are
+      composited into a single labelled mosaic and sent to the VLM as <b>one image</b>, which returns
+      the number of the safest edge.
+    </p>
+    <p>
+      Comparison is the actual task here. Scoring six images independently costs six inferences and
+      still leaves the model unable to see the alternatives it is ranking against &mdash; it can only
+      say "this looks fine", never "this one, rather than that one". Compositing makes the comparison
+      native to the prompt, and costs a single call.
+    </p>
+  </div>
+
+  <h3>Phase 2 &mdash; grid confidence lock</h3>
+  <div class="body-copy">
+    <p>
+      A numbered 4&times;4 grid is overlaid on the winning snapshot and re-queried repeatedly. Cell
+      scores decay each round and are boosted when a cell is named again, until one crosses a lock
+      threshold.
+    </p>
+    <p>
+      This is the part that matters for safety. A single VLM answer is not trustworthy enough to
+      commit an aircraft to a landing. Requiring a cell to win <i>repeatedly</i> turns an unreliable
+      one-shot judgement into a stable decision, and an answer that was a one-off hallucination
+      simply decays away instead of being acted on.
+    </p>
+  </div>
+
+  <h3>Phase 3 &mdash; pixel to GPS</h3>
+  <div class="body-copy">
+    <p>
+      The locked cell is still just a patch of pixels. Its offset from the centre of the frame is
+      converted to a metric ground distance using the camera's field of view and the vehicle's
+      altitude, rotated by the current heading into a north/east offset, and added to the vehicle's
+      position to produce a target coordinate the flight controller can actually fly to.
+    </p>
+  </div>
+
+  <h3>Phase 4 &mdash; automatic landing</h3>
+  <div class="body-copy">
+    <p>
+      Once telemetry shows the vehicle has arrived and settled over the target, the land command
+      fires on its own &mdash; there is no button and no operator step. Arrival is judged from ground
+      speed and altitude, and touchdown is confirmed the same way, so the sequence never waits on an
+      acknowledgement the flight controller was not built to send.
+    </p>
+  </div>
+
+  <h3>Operator interface</h3>
+  <div class="body-copy">
+    <p>
+      Every phase pushes its current overlay and a status line into the QGroundControl video feed, so
+      the operator watches the reasoning as it happens rather than a raw camera stream. An autonomous
+      system that cannot be watched cannot be trusted, and the overlay costs almost nothing to
+      produce.
+    </p>
+    <p>
+      Alongside it runs a local mission-control page &mdash; a phase stepper, the snapshot tray and
+      the model's reasoning as they arrive, the grid-lock vote history, and during alignment a live
+      nadir feed with the locked cell frozen above it, so convergence is something you watch happen
+      rather than a claim to take on faith.
+    </p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h1>Mission control</h1>
+  <div class="body-copy">
+    <p>
+      The dashboard is served by a local web server with no dependencies beyond the Python standard
+      library, streaming events to the page as the mission runs. It replaced a scatter of pop-up
+      OpenCV windows that could not be arranged, recorded or watched from anywhere but the machine
+      running the flight.
+    </p>
+  </div>
+  <div class="two-up">
+    <figure>
+      <img src="assets/img/hexagrid-edge-capture.jpg" alt="Mission-control dashboard during phase one: a phase stepper across the top, the snapshot tray filling in on the right, and a live nadir camera feed in the centre">
+      <figcaption>Phase 1 &mdash; the snapshot tray fills in as each vertex of the hexagon is captured, with the live nadir feed alongside.</figcaption>
+    </figure>
+    <figure>
+      <video src="assets/video/hexagrid-landed.mp4" autoplay loop muted playsinline preload="metadata"></video>
+      <figcaption>Phase 4 &mdash; the descent onto the chosen cell, confirmed from the vehicle's own telemetry.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <h1>Notes</h1>
+
+  <div class="callout">
+    <h4>The camera that pointed the wrong way</h4>
+    <p>
+      An AirSim <code>settings.json</code> with <code>"Pitch": 0</code> produces a <i>forward-facing</i>
+      "down" camera &mdash; which I confirmed by seeing the horizon and the vehicle's own rotors in
+      frame. The fix is pitch &minus;90 <b>plus</b> a stabilised gimbal block, so the image stays
+      truly nadir at any airspeed and body tilt. Worth stating plainly, because it silently
+      invalidates every geometric assumption downstream: the pixel-to-metre conversion in Phase 3 is
+      only meaningful if the camera really is looking straight down.
+    </p>
+  </div>
+
+  <div class="callout">
+    <h4>Confirming touchdown without a flight-controller handshake</h4>
+    <p>
+      The flight controller is a separate C++ program communicating over UDP, and it has no message
+      for "I have landed". Rather than add one and couple the two halves more tightly, arrival and
+      touchdown are both read from the simulator's own state. It keeps the Python side authoritative
+      about what phase the mission is in, and means the pipeline degrades to a stall rather than a
+      false confirmation if the vehicle never actually settles.
+    </p>
+  </div>
+
+  <div class="callout">
+    <h4>Composes with Survey-RAG</h4>
+    <p>
+      The pipeline picks up from the <a href="project-survey-rag.html">Survey-RAG</a> arrival hold,
+      making search and landing a single flow: retrieve a target from a plain-language request, fly
+      to it, then choose a safe touchdown point once overhead.
+    </p>
+  </div>
+</div>
+
+<div id="footer">
+  <p><a href="projects.html">&larr; All projects</a> &middot; Syed Furqan Ali &middot; <span id="footYear"></span></p>
+</div>
+
+</div>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

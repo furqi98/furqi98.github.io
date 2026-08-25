@@ -64,12 +64,19 @@ const CONFIG = {
       poster:  "",
       caption: "ACT policy on the SO-101 — 7/8 trials, block repositioned by hand each time",
     },
+    hexagrid: {
+      id:      "y4rDqmTjzoo",
+      short:   "",
+      poster:  "",
+      caption: "Hexagon survey, VLM edge selection, grid lock, and an automatic landing",
+    },
   },
 
   /* --- Per-project links (optional) --------------------------------- */
   repos: {
     surveyrag: "",   // private for now — set when you make it public
     so101:     "https://github.com/furqi98/so101-imitation-learning",
+    hexagrid:  "https://github.com/furqi98/hexagrid-vlm-landing",
   },
   reports: {
     surveyrag: "",                     // e.g. "assets/survey-rag-report.pdf"
