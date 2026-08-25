@@ -34,8 +34,11 @@ const CONFIG = {
      inlineWidget: true embeds the calendar directly in the page.
   -------------------------------------------------------------------- */
   scheduling: {
-    provider:      "cal",              // "cal" | "calendly" | "google" | "none"
-    url:           "",                 // paste your booking link here
+    provider:      "calendly",         // "cal" | "calendly" | "google" | "none"
+    /* embed_domain + embed_type switch Calendly to its embedded view — without
+       them the iframe renders the full standalone booking page. site.js appends
+       hide_gdpr_banner=1 to whatever is set here.                          */
+    url:           "https://calendly.com/syed-furqan-ali-1998/graduate-research-discussion?embed_domain=furqi98.github.io&embed_type=Inline",
     inlineWidget:  true,
   },
 
