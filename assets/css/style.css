@@ -148,7 +148,13 @@ h1 {
     margin: 6px auto 30px 30px;
 }
 
-.slider { width: 3200px; }
+/* Sized by its contents, not a fixed guess — a hard-coded width leaves
+   dead space after the last clip whenever the strip changes. */
+.slider {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 20px;
+}
 
 .slider a:hover { border: none; }
 
@@ -156,9 +162,7 @@ h1 {
 .slider video {
     height: 205px;
     border-radius: 10px;
-    margin-right: 20px;
-    display: inline-block;
-    vertical-align: top;
+    display: block;
     background: #f4f6f8;
 }
 
