@@ -21,7 +21,7 @@ const CONFIG = {
   email:     "syed.furqan.ali.1998@gmail.com",
   github:    "https://github.com/furqi98",
   scholar:   "",                       // "https://scholar.google.com/citations?user=XXXX"
-  linkedin:  "",                       // "https://linkedin.com/in/yourusername"
+  linkedin:  "https://www.linkedin.com/in/syed-furqan-ali",
   twitter:   "",                       // "https://x.com/yourusername"
   huggingface: "https://huggingface.co/Syed-Furqan",
   cv:        "",                       // "assets/CV.pdf" — drop the PDF in assets/
