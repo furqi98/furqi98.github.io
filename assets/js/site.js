@@ -1,12 +1,6 @@
-/* =====================================================================
-   site.js — fills in personal links and the booking widget from config.js.
-   Edit config.js, not this file.
-   ===================================================================== */
 (function () {
   "use strict";
 
-  /* config.js declares `const CONFIG`, which lives in script scope rather
-     than on window — read the binding directly.                        */
   var C = (typeof CONFIG !== "undefined" && CONFIG) || window.CONFIG || {};
 
   function a(href, label, blank) {
@@ -20,7 +14,6 @@
     return p.slice(0, 3).map(function (w) { return w[0]; }).join("").toUpperCase();
   }
 
-  /* ------------------------- name & photo -------------------------- */
   function profile() {
     if (C.name) {
       var n = document.getElementById("profile-name");
@@ -44,7 +37,6 @@
     }
   }
 
-  /* ------------------------- profile links ------------------------- */
   function links() {
     var host = document.getElementById("profileLinks");
     if (!host) return;
@@ -60,7 +52,6 @@
     host.innerHTML = out.join(" &middot; ");
   }
 
-  /* ---------------------------- contact ---------------------------- */
   function contact() {
     var host = document.getElementById("contactLinks");
     if (host) {
@@ -97,15 +88,11 @@
                       '" title="Booking calendar" loading="lazy"></iframe></div>';
   }
 
-  /* ----------------------------- misc ------------------------------ */
   function misc() {
     document.querySelectorAll("#footYear").forEach(function (e) {
       e.textContent = new Date().getFullYear();
     });
 
-    /* The autoplay attribute alone does not reliably start a clip that was
-       laid out in a background tab, or one scrolled out of a horizontal
-       strip. Start them explicitly, and again whenever the tab is shown. */
     function playAll() {
       document.querySelectorAll("video[autoplay]").forEach(function (v) {
         if (v.paused) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }

@@ -1,22 +1,10 @@
-# Compress a flight recording into a web-friendly clip.
-#
-# Only needed if you decide to host video files yourself instead of using
-# YouTube. Requires ffmpeg on PATH:  winget install Gyan.FFmpeg
-#
-# Usage:
-#   .\compress_video.ps1 -In "..\..\airsim scripts\survey_rag\survey_data\survey_flight.mp4" -Out "..\assets\video\survey.mp4"
-#   .\compress_video.ps1 -In in.mp4 -Out out.mp4 -Seconds 45 -Start 00:01:30
-#
-# A 380 MB raw capture typically lands around 8-15 MB at 720p, which is
-# fine to commit and serve from any static host.
-
 param(
     [Parameter(Mandatory = $true)][string]$In,
     [Parameter(Mandatory = $true)][string]$Out,
-    [int]$Seconds = 0,            # 0 = whole file
-    [string]$Start = "00:00:00",  # trim start point
-    [int]$Height = 720,           # output height; 1080 for more detail
-    [int]$Crf = 28                # lower = better quality, bigger file (23-30 sensible)
+    [int]$Seconds = 0,
+    [string]$Start = "00:00:00",
+    [int]$Height = 720,
+    [int]$Crf = 28
 )
 
 if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
@@ -35,8 +23,8 @@ $args += @(
     "-vf", "scale=-2:$Height",
     "-c:v", "libx264", "-crf", "$Crf", "-preset", "slow",
     "-profile:v", "high", "-pix_fmt", "yuv420p",
-    "-movflags", "+faststart",     # lets playback start before the full download
-    "-an",                         # drop audio; sim captures have none worth keeping
+    "-movflags", "+faststart",
+    "-an",
     $Out
 )
 

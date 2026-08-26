@@ -1,20 +1,8 @@
-# Publish this site to GitHub Pages as https://<username>.github.io
-#
-#   .\deploy.ps1 -User yourgithubusername
-#
-# First run: creates the repo on GitHub (if gh is installed), pushes, and
-# turns Pages on. Later runs: commits any changes and pushes them.
-#
-# Requires git. The GitHub CLI (gh) is optional but does the repo creation
-# and Pages setup for you — install with:  winget install GitHub.cli
-
 param(
     [Parameter(Mandatory = $true)][string]$User,
     [string]$Message = "Update site"
 )
 
-# Not "Stop": native commands write probes to stderr, which under Stop become
-# terminating errors in Windows PowerShell 5.1. Exit codes are checked instead.
 $ErrorActionPreference = "Continue"
 Set-Location $PSScriptRoot
 
@@ -28,7 +16,6 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
 
 if (-not (Test-Path ".git")) { git init -q }
 
-# Make sure we are on main
 $branch = git rev-parse --abbrev-ref HEAD 2>$null
 if ($branch -ne "main") { git branch -M main }
 
@@ -41,7 +28,6 @@ if ($staged) {
     Write-Host "No changes to commit." -ForegroundColor DarkGray
 }
 
-# Point at the right remote
 $existing = git remote get-url origin 2>$null
 if (-not $existing) {
     git remote add origin $url
@@ -57,7 +43,6 @@ if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
 }
 $gh = Get-Command gh -ErrorAction SilentlyContinue
 
-# Create the repo if it does not exist yet
 if ($gh) {
     gh repo view "$User/$repo" --json name | Out-Null
     if ($LASTEXITCODE -ne 0) {

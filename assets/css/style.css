@@ -1,5 +1,3 @@
-/* CSS Reset: http://meyerweb.com/eric/tools/css/reset */
-
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -27,8 +25,6 @@ footer, header, hgroup, menu, nav, section {
 body { line-height: 1; }
 ol, ul { list-style: none; }
 table { border-collapse: collapse; border-spacing: 0; }
-
-/**************************************************/
 
 #main {
     width: 960px;
@@ -61,13 +57,11 @@ b, strong { font-weight: 700; }
 h1 {
     font-size: 24px;
     line-height: 24px;
-    /* width:100% + margin-left:30px would overflow a fluid container */
+
     width: auto;
     margin: 30px 30px 20px 30px;
     color: #003373;
 }
-
-/**************************************************/
 
 #header {
     height: 58px;
@@ -89,8 +83,6 @@ h1 {
 #header a:hover { color: #4a85c8; }
 #header a.active { color: #003373; }
 
-/**************************************************/
-
 #profile {
     padding: 30px 30px 10px 30px;
     border-bottom: 1px solid #ddd;
@@ -108,7 +100,6 @@ h1 {
     margin-bottom: 18px;
 }
 
-/* placeholder shown until a photo is added */
 .no-photo {
     width: 220px;
     height: 220px;
@@ -137,8 +128,6 @@ h1 {
 
 #profile p { margin-bottom: 20px; }
 
-/**************************************************/
-
 .recent-work {
     height: 200px;
     width: 900px;
@@ -148,8 +137,6 @@ h1 {
     margin: 6px auto 30px 30px;
 }
 
-/* Sized by its contents, not a fixed guess — a hard-coded width leaves
-   dead space after the last clip whenever the strip changes. */
 .slider {
     display: inline-flex;
     align-items: flex-start;
@@ -174,13 +161,9 @@ h1 {
 .recent-work::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 .recent-work::-webkit-scrollbar-thumb:hover { background: #999; }
 
-/**************************************************/
-
 .divider { width: 100%; border-bottom: 1px solid #ddd; }
 
 .section { padding-bottom: 10px; }
-
-/**************************************************/
 
 ul {
     font-size: 14px;
@@ -213,8 +196,6 @@ ul li { margin-bottom: 4px; }
 #moreNews { display: none; }
 #lessNewsBtn { display: none; }
 
-/**************************************************/
-
 h3 {
     margin-left: 30px;
     font-size: 16px;
@@ -222,8 +203,6 @@ h3 {
     margin-bottom: 15px;
     color: #003373;
 }
-
-/**************************************************/
 
 .research-proj {
     margin: 0 30px 26px 30px;
@@ -269,9 +248,6 @@ h3 {
 
 .proj-links { font-size: 13px; line-height: 22px; margin-top: 6px; }
 .proj-links a { margin-right: 14px; }
-
-/**************************************************/
-/* project detail pages                            */
 
 .back-link {
     font-size: 13px;
@@ -351,7 +327,6 @@ h3 {
     background: #fff;
 }
 
-/* tables */
 .data-table {
     margin: 0 30px 10px 30px;
     width: calc(100% - 60px);
@@ -394,8 +369,6 @@ h3 {
 .callout h4 { color: #003373; font-size: 14px; line-height: 22px; margin-bottom: 8px; font-weight: 700; }
 .callout p { margin: 0; }
 
-/**************************************************/
-
 .contact-block { margin: 0 30px 30px 30px; }
 .cal-embed {
     width: 100%;
@@ -423,14 +396,11 @@ h3 {
     line-height: 22px;
 }
 
-/**************************************************/
-
 @media (max-width: 1000px) {
     #main { width: 100%; }
     .recent-work { width: calc(100% - 60px); }
     #profile-pic { float: none; margin-right: 0; text-align: left; }
-    /* the thumb is an <a>; without the float it reverts to inline and
-       width/max-width stop applying, so blockify it explicitly */
+
     .research-thumb { float: none; display: block; width: 100%; max-width: 420px; padding-right: 0; }
     .hero-video iframe { height: 52vw; }
     .data-table { width: calc(100% - 60px); display: block; overflow-x: auto; }
