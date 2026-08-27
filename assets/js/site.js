@@ -23,16 +23,25 @@
       });
     }
 
-    var slot = document.getElementById("photoSlot");
-    if (slot) {
-      if (C.photo) {
-        var img = new Image();
-        img.src = C.photo;
-        img.alt = C.name || "";
-        img.onload = function () { slot.replaceWith(img); };
-        img.onerror = function () { slot.textContent = initials(C.name); };
+    // The photo is in the HTML so it starts downloading during parse rather
+    // than waiting for config.js and this script to run. Only intervene if
+    // config points somewhere else, or has no photo at all.
+    var photo = document.getElementById("profilePhoto");
+    if (photo) {
+      if (!C.photo) {
+        var ph = document.createElement("div");
+        ph.className = "no-photo";
+        ph.textContent = initials(C.name);
+        photo.replaceWith(ph);
       } else {
-        slot.textContent = initials(C.name);
+        if (C.photo !== photo.getAttribute("src")) photo.src = C.photo;
+        if (C.name) photo.alt = C.name;
+        photo.onerror = function () {
+          var f = document.createElement("div");
+          f.className = "no-photo";
+          f.textContent = initials(C.name);
+          photo.replaceWith(f);
+        };
       }
     }
   }
@@ -93,6 +102,9 @@
       e.textContent = new Date().getFullYear();
     });
 
+    // Clips are muted+loop+autoplay, so the browser drives them. This only
+    // nudges any that the autoplay policy left paused, and again when the tab
+    // is brought back to the foreground.
     function playAll() {
       document.querySelectorAll("video[autoplay]").forEach(function (v) {
         if (v.paused) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
