@@ -44,7 +44,7 @@ const CONFIG = {
 
   repos: {
     surveyrag: "",
-    so101:     "https://github.com/furqi98/so101-imitation-learning",
+    so101:     "",
     hexagrid:  "https://github.com/furqi98/hexagrid-vlm-landing",
   },
   reports: {
