@@ -156,12 +156,29 @@ h1 {
 }
 
 .featured-card-media {
-    display: block;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
     background: #f4f6f8;
     border-bottom: 1px solid #e6eaee;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 51, 115, 0.25) transparent;
 }
 
-.featured-card-media:hover { border-bottom: 1px solid #e6eaee; }
+.featured-card-media::-webkit-scrollbar { height: 5px; }
+.featured-card-media::-webkit-scrollbar-track { background: transparent; }
+.featured-card-media::-webkit-scrollbar-thumb {
+    background: rgba(0, 51, 115, 0.25);
+    border-radius: 3px;
+}
+
+.featured-card-media a {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    display: block;
+}
+
+.featured-card-media a:hover { border-bottom: none; }
 
 .featured-card-media video {
     width: 100%;
