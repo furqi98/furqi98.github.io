@@ -139,7 +139,16 @@
     while embeddings are indexed once and answer any future query in milliseconds.
   </p>
 
-  <h3>Closed-loop flight: eight typed requests, one flight</h3>
+  <h3>Closed-loop flight &mdash; AirSim + PX4 SITL simulation</h3>
+  <div class="body-copy" style="margin-bottom:14px">
+    <p style="margin-bottom:0">
+      The retrieval system is evaluated end-to-end through an AirSim + PX4 SITL flight loop. The
+      eight requests below were issued to the real retrieval pipeline, which selected spatial
+      targets and passed them to the simulated vehicle for navigation. The flight results therefore
+      measure closed-loop system behavior in simulation, not real-drone flight performance;
+      real-drone closed-loop evaluation remains future work.
+    </p>
+  </div>
   <table class="data-table">
     <thead><tr><th>Request</th><th>Retrieval</th><th class="num">Arrival error</th><th class="num">Object in view</th></tr></thead>
     <tbody>
@@ -160,7 +169,7 @@
     fails end to end for exactly the predicted reason.
   </p>
 
-  <h3>Generalization: three real-world datasets, zero retuning</h3>
+  <h3>Generalization: three real-world datasets, zero retuning (SigLIP2 retrieval on external datasets)</h3>
   <table class="data-table">
     <thead><tr><th>Dataset</th><th>Content</th><th>Ground truth</th><th class="num">Result</th></tr></thead>
     <tbody>
