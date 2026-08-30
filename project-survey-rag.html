@@ -126,12 +126,17 @@
   <table class="data-table">
     <thead><tr><th>Method</th><th class="num">P@1</th><th class="num">P@3</th><th class="num">R@10</th><th class="num">MRR</th></tr></thead>
     <tbody>
-      <tr class="highlight"><td>Hybrid (ours)</td><td class="num">0.93</td><td class="num">0.79</td><td class="num">0.86</td><td class="num">0.95</td></tr>
+      <tr class="highlight"><td>Hybrid (ours) *</td><td class="num">0.93</td><td class="num">0.79</td><td class="num">0.86</td><td class="num">0.95</td></tr>
       <tr><td>Embeddings only (SigLIP2)</td><td class="num">0.86</td><td class="num">0.73</td><td class="num">0.86</td><td class="num">0.92</td></tr>
       <tr><td>OWLv2 detector baseline</td><td class="num">0.68</td><td class="num">n/a</td><td class="num">n/a</td><td class="num">n/a</td></tr>
       <tr><td>Captions only (BM25)</td><td class="num">0.64</td><td class="num">0.55</td><td class="num">0.60</td><td class="num">0.72</td></tr>
     </tbody>
   </table>
+  <p class="table-note">
+    * Hybrid = SigLIP2 embedding retrieval plus a caption keyword bonus. It does not call the VLM
+    &mdash; the ambiguity-gated VLM verification described above is a query-time feature (the
+    <code>goto</code>/<code>query</code> CLI), not part of this offline benchmark's scoring.
+  </p>
   <p class="table-note">
     95% bootstrap CI on the hybrid result: [0.84 to 1.00]. The detector baseline also had the
     worst false-confidence on absent objects of any method tested (0.77 versus 0.52), and its
