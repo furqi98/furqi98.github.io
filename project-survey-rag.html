@@ -118,6 +118,11 @@
   <h1>Results</h1>
 
   <h3>Retrieval: 44 queries, human-labelled ground truth</h3>
+  <div class="body-copy" style="margin-bottom:14px">
+    <p style="margin-bottom:0">
+      <b>41 of 44 queries retrieved the correct image at rank 1</b> (P@1 = 0.93).
+    </p>
+  </div>
   <table class="data-table">
     <thead><tr><th>Method</th><th class="num">P@1</th><th class="num">P@3</th><th class="num">R@10</th><th class="num">MRR</th></tr></thead>
     <tbody>
@@ -149,9 +154,10 @@
     </tbody>
   </table>
   <p class="table-note">
-    7/8 correct, median error 19.1 m, well inside the 60&times;45 m camera footprint. The single
-    failure is the sub-1%-of-frame object the retrieval benchmark had already predicted would fail,
-    and it fails end to end for exactly the predicted reason.
+    7/8 requests successfully reached a view containing the queried object. Median arrival error
+    was 19.1 m across all 8 trials (18.4 m among the 7 successful trials). The single failure is
+    the sub-1%-of-frame object the retrieval benchmark had already predicted would fail, and it
+    fails end to end for exactly the predicted reason.
   </p>
 
   <h3>Generalization: three real-world datasets, zero retuning</h3>
@@ -164,8 +170,10 @@
     </tbody>
   </table>
   <p class="table-note">
-    The search-and-rescue headline: on FloodNet, the query <i>"flooded area after a hurricane"</i>
-    returns 16 of 20 genuinely flooded scenes in the top-20, against 2.6 of 20 at chance, a <b>6&times; enrichment</b>. Small objects score 1.00 on FloodNet's full-resolution imagery,
+    Flooded-scene enrichment: on FloodNet, the query <i>"flooded area after a hurricane"</i>
+    returns 16 of 20 genuinely flooded scenes in the top-20, versus 2.6 of 20 expected by chance
+    &mdash; flooded scenes appear in the retrieved set <b>6&times;</b> more often than chance, not
+    a 6&times; accuracy gain. Small objects score 1.00 on FloodNet's full-resolution imagery,
     confirming that the small-object floor is camera resolution, not method.
   </p>
 
@@ -176,12 +184,14 @@
       <tr><td>SigLIP2 image embed (720p frame)</td><td>GPU</td><td class="num">13 ms</td><td class="num">0.14 J</td></tr>
       <tr><td>YOLO-World detection</td><td>GPU</td><td class="num">68 ms</td><td class="num">0.77 J</td></tr>
       <tr><td>Qwen2.5-VL 7B verification</td><td>GPU</td><td class="num">540 ms</td><td class="num">4.37 J</td></tr>
-      <tr class="highlight"><td>Full 192-snap survey indexing</td><td>GPU</td><td class="num">n/a</td><td class="num">~270 J, 0.10% of battery</td></tr>
+      <tr class="highlight"><td>Full 192-snap survey indexing (compute only)</td><td>GPU</td><td class="num">n/a</td><td class="num">~270 J, 0.10% of battery</td></tr>
     </tbody>
   </table>
   <p class="table-note">
     Jetson Orin NX 16GB, JetPack 6, measured via <code>tegrastats</code> board input power at 5 Hz
-    against a 74 Wh battery. Compute draws 11 to 17 W against roughly 278 W of propulsion, 4 to 6% of total draw.
+    against a 74 Wh battery. Compute draws 11 to 17 W against roughly 278 W of propulsion, 4 to 6%
+    of total draw. The 270 J / 0.10% figures above are companion-computer compute energy only,
+    not total flight energy &mdash; propulsion dominates the battery budget.
   </p>
 </div>
 
