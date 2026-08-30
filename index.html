@@ -30,13 +30,11 @@
     <div id="profile-name">Syed Furqan Ali</div>
     <p>
       Hi, I&rsquo;m Syed Furqan Ali. I work on <b>Embodied AI</b>, building systems that connect
-      perception and language-based reasoning to action in the physical world. I have been
-      exploring this through several research projects, including language-queryable drone
-      navigation in <a href="project-survey-rag.html">Survey-RAG</a> and VLM-guided safe landing
-      area selection in an unknown environment in <a href="project-hexagrid.html">Hexagrid</a>. I
-      have also been collecting teleoperated demonstration datasets for training an
-      <a href="project-so101.html">SO-101 follower arm</a>, where I trained an ACT policy that
-      successfully performs pick-and-place tasks.
+      multimodal perception and language-based reasoning to action in the physical world. My
+      recent work spans aerial robotics and physical manipulation: language-queryable drone
+      navigation in <a href="project-survey-rag.html">Survey-RAG</a>, VLM-guided landing
+      selection in <a href="project-hexagrid.html">Hexagrid</a>, and learning manipulation
+      policies on a physical <a href="project-so101.html">SO-101</a> arm.
     </p>
   </div>
   <div style="clear: both;"></div>
@@ -73,7 +71,10 @@
 <div class="divider"></div>
 
 <div class="section">
-  <h1>Embodied AI projects</h1>
+  <h1>Featured Research</h1>
+  <p class="section-subtitle">
+    Selected work on multimodal perception, spatial reasoning, and robot learning.
+  </p>
   <div class="featured-grid">
     <div class="featured-card">
       <div class="featured-card-media">
@@ -104,7 +105,8 @@
         <div class="featured-card-title"><a href="project-hexagrid.html">Hexagrid</a></div>
         <p>
           A vision-language model evaluates candidate landing areas from six views in a single
-          inference and grounds its choice into a GPS flight target for a fully autonomous descent.
+          inference and grounds its choice into a metric flight target for a fully autonomous
+          descent.
         </p>
         <p class="featured-card-result">
           <b>Six views</b> compared per decision &middot; no operator step anywhere in the loop
@@ -143,10 +145,11 @@
 <div class="section">
   <h1>Research interests</h1>
   <ul>
-    <li><b>Vision-language-action policies</b></li>
-    <li><b>Open-vocabulary spatial memory</b></li>
-    <li><b>Learning from demonstration</b></li>
-    <li><b>Aerial autonomy for search and rescue</b></li>
+    <li><b>Vision-language-action models and robot learning</b></li>
+    <li><b>Multimodal perception and open-vocabulary spatial memory</b></li>
+    <li><b>Learning from demonstration and data-efficient policy learning</b></li>
+    <li><b>Foundation models for embodied systems</b></li>
+    <li><b>Autonomous aerial systems and spatial reasoning</b></li>
   </ul>
 </div>
 
@@ -158,25 +161,23 @@
   <h3>Aug 2026 &mdash; Survey-RAG</h3>
   <div class="body-copy">
     <p>
-      Completed evaluation of an open-vocabulary UAV spatial-memory system, achieving
-      <b>0.93 P@1</b> on a 44-query benchmark and <b>7/8 successful natural-language
-      retrieval-to-flight requests</b>.
+      Completed the retrieval benchmark and closed-loop flight evaluation, and published the full
+      technical report.
     </p>
   </div>
 
   <h3>Jun 2026 &mdash; Hexagrid</h3>
   <div class="body-copy">
     <p>
-      Developed an end-to-end VLM-guided UAV landing pipeline that compares six candidate views in
-      a single inference and converts the selected landing region into a metric flight target.
+      Integrated VLM-guided landing selection with PX4 for a fully autonomous, end-to-end descent.
     </p>
   </div>
 
   <h3>May 2026 &mdash; Physical Robot Learning</h3>
   <div class="body-copy">
     <p>
-      Trained and deployed an ACT policy on a physical SO-101 arm, achieving <b>7/8 successful
-      pick-and-place trials</b>, and released the associated teleoperation dataset on Hugging Face.
+      Completed the first physical ACT policy evaluation on the SO-101 arm and released the
+      teleoperation dataset on Hugging Face.
     </p>
   </div>
 </div>

@@ -64,6 +64,13 @@ h1 {
     color: #003373;
 }
 
+.section-subtitle {
+    font-size: 14px;
+    line-height: 22px;
+    color: #68717c;
+    margin: -12px 30px 22px 30px;
+}
+
 #header {
     height: 58px;
     font-size: 14px;
