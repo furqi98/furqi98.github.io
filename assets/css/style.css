@@ -136,67 +136,67 @@ h1 {
 
 #profile p { margin-bottom: 20px; }
 
-.featured-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+.project-strip {
+    overflow-x: auto;
+    overflow-y: hidden;
     margin: 6px 30px 26px 30px;
+    padding-bottom: 14px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #eee;
 }
 
-.featured-card {
-    flex: 1 1 220px;
-    min-width: 0;
-    box-sizing: border-box;
+.project-strip::-webkit-scrollbar { height: 8px; }
+.project-strip::-webkit-scrollbar-track { background: #eee; border-radius: 4px; }
+.project-strip::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+.project-strip::-webkit-scrollbar-thumb:hover { background: #999; }
+
+.project-slider {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 44px;
+}
+
+.project-slide {
     display: flex;
     flex-direction: column;
-    border: 1px solid #dde3e9;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 1px 2px rgba(0, 51, 115, 0.06), 0 6px 16px rgba(0, 51, 115, 0.07);
-    transition: box-shadow 0.15s ease, transform 0.15s ease;
-}
-
-.featured-card:hover {
-    box-shadow: 0 2px 4px rgba(0, 51, 115, 0.08), 0 10px 24px rgba(0, 51, 115, 0.1);
-    transform: translateY(-2px);
-}
-
-.featured-card-media {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    background: #f4f6f8;
-    border-bottom: 1px solid #e6eaee;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 51, 115, 0.25) transparent;
-}
-
-.featured-card-media::-webkit-scrollbar { height: 5px; }
-.featured-card-media::-webkit-scrollbar-track { background: transparent; }
-.featured-card-media::-webkit-scrollbar-thumb {
-    background: rgba(0, 51, 115, 0.25);
-    border-radius: 3px;
-}
-
-.featured-card-media a {
-    flex: 0 0 100%;
     scroll-snap-align: start;
+}
+
+.project-slide + .project-slide {
+    border-left: 1px solid #e6eaee;
+    padding-left: 22px;
+    margin-left: -22px;
+}
+
+.project-clips {
+    display: flex;
+    gap: 10px;
+}
+
+.project-clips a:hover { border: none; }
+
+.project-clips video {
+    height: 205px;
+    width: auto;
+    border-radius: 10px;
     display: block;
+    background: #f4f6f8;
 }
 
-.featured-card-media a:hover { border-bottom: none; }
-
-.featured-card-media video {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    display: block;
+.project-desc {
+    width: 0;
+    min-width: 100%;
+    box-sizing: border-box;
+    padding: 14px 44px 0 44px;
 }
 
-.featured-card-body {
-    padding: 16px 20px 18px 20px;
-}
+.project-desc .featured-card-title { text-align: center; }
+.project-desc p { margin-bottom: 10px; text-align: justify; }
+.project-desc p:last-child { margin-bottom: 0; }
+.project-desc .proj-links { text-align: center; }
+.project-desc .proj-links a { margin: 0 7px; }
+.project-desc .result-links { display: flex; flex-wrap: wrap; justify-content: space-between; }
 
 .featured-card-title {
     font-size: 16px;
@@ -207,35 +207,10 @@ h1 {
 .featured-card-title a { color: #003373; }
 .featured-card-title a:hover { border-bottom: 1px solid #003373; }
 
-.featured-card-body p { margin-bottom: 10px; }
-.featured-card-body p:last-child { margin-bottom: 0; }
-
 .featured-card-result {
     color: #003373;
     font-size: 13px;
     line-height: 20px;
-}
-
-.research-statement {
-    font-size: 18px;
-    line-height: 28px;
-    color: #003373;
-    max-width: 760px;
-    margin: 0 30px 22px 30px;
-}
-
-.domain-card h3 {
-    margin: 0 0 6px 0;
-    font-size: 16px;
-    line-height: 22px;
-    color: #003373;
-}
-
-.domain-card p {
-    margin: 0;
-    font-size: 13px;
-    line-height: 20px;
-    color: #68717c;
 }
 
 .recent-work {
@@ -514,4 +489,13 @@ h3 {
     .research-thumb { float: none; display: block; width: 100%; max-width: 420px; padding-right: 0; }
     .hero-video iframe { height: 52vw; }
     .data-table { width: calc(100% - 60px); display: block; overflow-x: auto; }
+}
+
+@media (max-width: 640px) {
+    .project-slider { gap: 24px; }
+    .project-slide { width: calc(100vw - 60px); }
+    .project-slide + .project-slide { border-left: none; padding-left: 0; margin-left: 0; }
+    .project-clips a { flex: 1 1 0; min-width: 0; }
+    .project-clips video { width: 100%; height: 160px; object-fit: cover; }
+    .project-desc { padding: 14px 0 0 0; }
 }

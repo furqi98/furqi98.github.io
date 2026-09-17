@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Survey-RAG | Syed Furqan Ali</title>
-<meta name="description" content="A drone surveys an area once and afterwards answers natural-language requests by retrieving the matching aerial view and flying to it.">
+<title>Survey-RAG: Language-Queryable Aerial Memory | Syed Furqan Ali</title>
+<meta name="description" content="Survey-RAG turns a one-time UAV survey into a searchable spatial memory that can be queried in natural language and used to relocate the UAV to relevant locations.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/research.css">
 </head>
 <body id="body">
 <div id="main">
@@ -19,229 +20,418 @@
   <a href="contact.html">Contact</a>
 </div>
 
-<a class="back-link" href="projects.html">&larr; All projects</a>
+<div class="so">
 
-<div class="proj-header">
-  <div class="proj-title">Survey-RAG: Language-Queryable Aerial Memory</div>
-  <p class="proj-subtitle">
-    A drone surveys an area <b>once</b>, turning what it sees into a searchable spatial memory.
-    Afterwards, it can answer natural-language requests like <i>&ldquo;go to the park with the
-    fountain&rdquo;</i> by retrieving the matching view and flying to its recorded coordinates.
+<a class="back-link so-back" href="projects.html">&larr; All projects</a>
+
+<!-- HERO -->
+<header class="so-hero">
+  <p class="eyebrow">Aerial robotics &middot; multimodal retrieval</p>
+  <h1 class="so-title">Survey-RAG: Language-Queryable Aerial Memory</h1>
+  <p class="so-lede">Turning a UAV survey into searchable spatial memory for post-hoc natural-language retrieval and relocation.</p>
+  <p class="so-intro">
+    A UAV surveys an area once, indexing what it sees together with its spatial information. Later, an operator
+    can ask natural-language questions such as <b>&ldquo;Where is the fountain?&rdquo;</b> or <b>&ldquo;Show me the
+    flooded area&rdquo;</b> and retrieve the most relevant surveyed location before sending the UAV there.
   </p>
-  <p class="proj-linkbar">
-    <a href="https://youtu.be/lmt_aM5NoCk" target="_blank" rel="noopener">Full video</a>
-    <a href="https://youtube.com/shorts/38rppjAhm9I" target="_blank" rel="noopener">Short</a>
+  <p class="so-actions">
+    <a class="btn primary" href="https://youtu.be/lmt_aM5NoCk" target="_blank" rel="noopener">Watch the demonstration</a>
+    <a href="https://youtube.com/shorts/38rppjAhm9I" target="_blank" rel="noopener">Short video</a>
+    <a href="#benchmark">Benchmark</a>
   </p>
-</div>
 
-<div class="hero-video">
-  <iframe src="https://www.youtube-nocookie.com/embed/lmt_aM5NoCk?rel=0&modestbranding=1"
-          title="Survey-RAG demonstration" allowfullscreen
-          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
-</div>
+  <div class="hero-media">
+    <figure style="flex:1">
+      <video poster="assets/poster/survey-query.jpg" src="assets/video/survey-query.mp4" width="666" height="420" autoplay loop muted playsinline preload="metadata"></video>
+      <figcaption><span class="step-n">01</span> Ask: a typed request returns ranked survey photos with scores and GPS.</figcaption>
+    </figure>
+    <figure style="flex:1">
+      <video poster="assets/poster/survey-flight.jpg" src="assets/video/survey-flight.mp4" width="666" height="420" autoplay loop muted playsinline preload="metadata"></video>
+      <figcaption><span class="step-n">02</span> Fly: the simulated UAV relocates to the retrieved location.</figcaption>
+    </figure>
+  </div>
 
-<div class="two-up">
-  <figure>
-    <video src="assets/video/survey-query.mp4" autoplay loop muted playsinline preload="metadata"></video>
-    <figcaption>A typed request returns ranked survey photos with match scores and GPS, then flies there.</figcaption>
+  <ol class="loop" aria-label="Survey-RAG loop">
+    <li>Survey</li><li>Store + index</li><li>Searchable memory</li><li>Natural-language query</li><li>Retrieve</li><li>Recover location</li><li>Fly there</li>
+  </ol>
+
+  <p class="identity">Survey-RAG turns a one-time UAV survey into a searchable spatial memory that can be queried in natural language and used to relocate the UAV to relevant locations.</p>
+
+  <dl class="stats">
+    <div><dt>44</dt><dd>Human-labelled queries</dd></div>
+    <div><dt>0.93</dt><dd>P@1 retrieval</dd></div>
+    <div><dt>7 / 8</dt><dd>Successful retrieval-to-flight requests</dd></div>
+    <div><dt>3</dt><dd>External real-world datasets</dd></div>
+    <div><dt>6&times;</dt><dd>Flooded-scene enrichment</dd></div>
+  </dl>
+  <p class="note">The survey and the closed-loop flights run in Microsoft AirSim with PX4 SITL. The three external datasets are real UAV imagery.</p>
+</header>
+
+<!-- PROBLEM -->
+<section class="so-sec">
+  <p class="eyebrow">The problem</p>
+  <h2>A Survey Is Usually Forgotten After It Is Completed</h2>
+  <div class="prose">
+    <p>A UAV survey can capture hundreds of images and cover a large physical area, but once the survey is complete, answering a new question often requires manually inspecting those images, or flying the UAV again.</p>
+    <p>The problem is that the questions are not always known when the survey is conducted. An operator may later want to know:</p>
+  </div>
+  <div class="asks">
+    <span>Where was the fountain?</span>
+    <span>Which area was flooded?</span>
+    <span>Where was the playground?</span>
+    <span>Where were damaged structures visible?</span>
+  </div>
+  <div class="prose">
+    <p>A conventional detector can only answer questions about the object categories it was designed or trained to recognize. Survey-RAG takes a different approach:</p>
+  </div>
+  <p class="pull big">Store the survey as searchable visual-spatial memory and ask the questions later.</p>
+</section>
+
+<!-- KEY IDEA -->
+<section class="so-sec">
+  <p class="eyebrow">The key idea</p>
+  <h2>Survey Once. Ask Later.</h2>
+
+  <div class="timelines">
+    <div class="tl">
+      <p class="tl-h">Conventional workflow</p>
+      <ol><li>Question</li><li>Detect</li><li>Fly / search</li></ol>
+      <p class="tl-note">The question has to exist before the flight.</p>
+    </div>
+    <div class="tl hi">
+      <p class="tl-h">Survey-RAG</p>
+      <ol><li>Survey once</li><li>Store visual + spatial memory</li><li class="gap">Question later</li><li>Retrieve</li><li>Relocate</li></ol>
+      <p class="tl-note">The operator does not need to know the query at the time of the survey.</p>
+    </div>
+  </div>
+
+  <div class="idea">
+    <div class="idea-box">
+      <p class="idea-k">UAV survey</p>
+      <ul class="idea-list"><li>Image + GPS</li><li>Image + GPS</li><li>Image + GPS</li><li>Image + GPS</li></ul>
+    </div>
+    <div class="idea-arrow" aria-hidden="true"></div>
+    <div class="idea-box">
+      <p class="idea-k">Spatial memory</p>
+      <ul class="idea-list"><li>Visual embeddings</li><li>Spatial metadata</li><li>Survey imagery</li></ul>
+    </div>
+    <div class="idea-arrow later" aria-hidden="true"><span>later</span></div>
+    <div class="idea-box">
+      <p class="idea-k">Natural-language query</p>
+      <p class="idea-quote">&ldquo;fly to the tennis court&rdquo;</p>
+    </div>
+    <div class="idea-arrow" aria-hidden="true"></div>
+    <div class="idea-box">
+      <p class="idea-k">Retrieval</p>
+      <img src="assets/img/survey/snap-150.jpg" width="404" height="302" alt="Retrieved survey image" loading="lazy">
+      <p class="idea-small">Relevant image + location</p>
+    </div>
+    <div class="idea-arrow" aria-hidden="true"></div>
+    <div class="idea-box">
+      <p class="idea-k">UAV relocates</p>
+      <img src="assets/img/survey/arrival.jpg" width="666" height="420" alt="Simulated UAV arriving over the retrieved location" loading="lazy">
+      <p class="idea-small">to the retrieved location</p>
+    </div>
+  </div>
+</section>
+
+<!-- DETECTOR -->
+<section class="so-sec">
+  <p class="eyebrow">Why not just use a detector?</p>
+  <h2>Open-Vocabulary Retrieval Instead of a Fixed Detector</h2>
+  <div class="prose">
+    <p>A detector-based system can be very effective when the objects of interest are known in advance. But post-hoc survey analysis creates a different problem.</p>
+    <p>The operator may ask about something that was not anticipated when the survey was planned. Survey-RAG therefore treats the survey imagery as a searchable visual memory rather than committing the system to a fixed list of object classes.</p>
+  </div>
+  <div class="flows">
+    <div class="flow"><em class="flow-t">Detector-driven approach</em><span>Predefined classes</span><i></i><span class="flow-m">Detector</span><i></i><span>Known objects</span></div>
+    <div class="flow"><em class="flow-t">Survey-RAG</em><span>Survey imagery</span><i></i><span>Visual representation</span><i></i><span>Natural-language query</span><i></i><span class="flow-m">Retrieve relevant scene</span></div>
+  </div>
+  <p class="pull">Survey-RAG does not require the query vocabulary to be fixed when the survey is performed.</p>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="so-sec">
+  <p class="eyebrow">How it works</p>
+  <h2>From Image to Spatial Memory</h2>
+  <ol class="six">
+    <li><span class="six-n">01</span><b>Survey</b><p>The UAV flies a planned survey and captures nadir imagery. Each image is associated with its spatial information.</p></li>
+    <li><span class="six-n">02</span><b>Index</b><p>The images are converted into visual embeddings using SigLIP2 and stored together with the survey location.</p></li>
+    <li><span class="six-n">03</span><b>Query</b><p>An operator submits a natural-language request, such as &ldquo;the fountain&rdquo; or &ldquo;flooded area after a hurricane&rdquo;.</p></li>
+    <li><span class="six-n">04</span><b>Retrieve</b><p>The query is matched against the indexed imagery, returning ranked candidate images and their locations.</p></li>
+    <li><span class="six-n">05</span><b>Verify</b><p>For ambiguous matches, a VLM is used selectively to verify the candidate.</p></li>
+    <li><span class="six-n">06</span><b>Relocate</b><p>The retrieved location becomes a flight target and is sent to the simulated UAV.</p></li>
+  </ol>
+  <figure class="shot">
+    <img src="assets/img/survey/ranked-results.jpg" width="666" height="420" alt="Survey-RAG interface showing three ranked survey photos for the query fly to the tennis court" loading="lazy">
+    <figcaption>The real interface: &ldquo;fly to the tennis court&rdquo; returns ranked survey snaps, each with a match score, the best-matching tile, GPS coordinates and a fly-to button.</figcaption>
   </figure>
-  <figure>
-    <video src="assets/video/survey-flight.mp4" autoplay loop muted playsinline preload="metadata"></video>
-    <figcaption>The drone arriving over a retrieved target during a closed-loop trial.</figcaption>
-  </figure>
-</div>
+</section>
 
-<div class="divider" style="margin-top:30px"></div>
-
-<div class="section">
-  <h1>Motivation</h1>
-  <div class="body-copy">
-    <p>
-      After a disaster, responders often lack a complete picture of what areas are damaged or
-      require assistance. A single drone survey can build a searchable spatial memory that can
-      later be queried to locate damaged infrastructure, blocked routes, stranded people, or areas
-      requiring urgent assessment.
-    </p>
+<!-- RETRIEVAL -->
+<section class="so-sec">
+  <p class="eyebrow">The retrieval system</p>
+  <h2>Visual Retrieval + Selective VLM Verification</h2>
+  <div class="split">
+    <div class="prose">
+      <p>The retrieval system uses visual embeddings as the primary search mechanism.</p>
+      <p>Survey images are indexed once, allowing future queries to search the stored representation rather than reprocessing the entire image collection with a detector for every new question. An embedding search answers in milliseconds, while the OWLv2 detector baseline has to re-sweep the corpus at about 1.3 s per image for each new query.</p>
+      <p>For ambiguous retrievals, where the margin between the top two candidates is thin, a VLM is invoked as a verification step.</p>
+    </div>
+    <div class="gate">
+      <span class="g-node">Natural-language query</span><i></i>
+      <span class="g-node strong">SigLIP2 retrieval</span><i></i>
+      <span class="g-node">Ranked candidates</span>
+      <div class="g-fork">
+        <div><em>Confident</em><i></i><span class="g-node">Return</span></div>
+        <div><em>Ambiguous</em><i></i><span class="g-node vlm">VLM verification</span><i></i><span class="g-node">Final match</span></div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
-<div class="divider"></div>
-
-<div class="section">
-  <h1>How it works</h1>
-
-  <h3>Battery-tiered compute</h3>
-  <div class="body-copy">
-    <p>
-      Each model is placed where its energy cost is affordable. Image embedding runs in flight;
-      retrieval is a cosine search taking milliseconds; a local VLM is invoked <i>only</i> when the
-      margin between the top two candidates is thin; captioning happens offline while charging.
-    </p>
-    <p>
-      This is not a stylistic choice. Measured on the drone's actual companion computer, a
-      SigLIP2 image embedding costs <b>0.14 J</b> and a VLM verification costs <b>4.37 J</b>, roughly thirty times more. A VLM cannot sit in the retrieval path of a battery-limited
-      aircraft. A configuration with no VLM at all costs only &minus;0.07 P@1.
-    </p>
+<!-- TILES -->
+<section class="so-sec">
+  <p class="eyebrow">Why tiles?</p>
+  <h2>Preserving Small or Localized Objects</h2>
+  <div class="prose">
+    <p>Aerial imagery introduces a scale problem. An object can occupy only a small portion of a large nadir frame, so a single global embedding may underrepresent it.</p>
+    <p>To preserve localized information, each survey image is represented using the full frame together with four spatial quadrants. This gives the retrieval system both <b>global context</b> and <b>localized visual detail</b>.</p>
   </div>
-
-  <h3>Tiled dual-render embeddings instead of a detector</h3>
-  <div class="body-copy">
-    <p>
-      Each snap is indexed as 5 tiles (full frame plus four quadrants) under 2 renderings (raw and
-      deglared), max-pooled at query time. A fountain is tiny inside a 60&times;45 m footprint and a
-      single global embedding dilutes it away; quadrant embeddings recover most of what an
-      open-vocabulary detector would add, with zero extra models, and the winning quadrant hands
-      the flight controller a quarter-footprint offset toward the object.
-    </p>
-    <p>
-      The dual rendering came from a measured failure. Raw CLIP read sunlit water as pale grass, so
-      <i>every</i> water query failed. Deglaring fixed all water queries but pushed a picnic-table
-      snap from rank 24 to rank 54. Preprocessing shifted the operating point rather than lifting
-      it, so both renderings are indexed and each query picks its own.
-    </p>
+  <div class="panel grid-bg tiles-panel"><svg viewBox="0 0 560 196" class="diag tiles-svg" role="img" aria-label="A survey image embedded as a full frame plus four quadrant tiles; the top-left tile matched best"><text class="map-label" x="0" y="12">FULL FRAME: GLOBAL CONTEXT</text><image href="assets/img/survey/snap-151.jpg" x="0" y="20" width="202" height="151" preserveAspectRatio="none"/><rect class="tf-border" x="0" y="20" width="202" height="151"/><line class="tf-arrow" x1="222" y1="95" x2="330" y2="95"/><path class="tf-head" d="M330 89 L340 95 L330 101 Z"/><text class="map-label" x="281" y="84" text-anchor="middle">+ 4 TILES</text><text class="map-label" x="358" y="12">QUADRANTS: LOCAL DETAIL</text><image href="assets/img/survey/snap-151.jpg" x="358" y="20" width="202" height="151" preserveAspectRatio="none"/><rect class="tf-border" x="358" y="20" width="202" height="151"/><line class="tf-grid" x1="459.0" y1="20" x2="459.0" y2="171"/><line class="tf-grid" x1="358" y1="95.5" x2="560" y2="95.5"/><rect class="tf-hi" x="359.5" y="21.5" width="98.0" height="72.5"/><rect class="tf-chip" x="364.0" y="26.0" width="22" height="14" rx="3"/><text class="tf-lab" x="375.0" y="36.5" text-anchor="middle">TL</text><rect class="tf-chip" x="465.0" y="26.0" width="22" height="14" rx="3"/><text class="tf-lab" x="476.0" y="36.5" text-anchor="middle">TR</text><rect class="tf-chip" x="364.0" y="101.5" width="22" height="14" rx="3"/><text class="tf-lab" x="375.0" y="112.0" text-anchor="middle">BL</text><rect class="tf-chip" x="465.0" y="101.5" width="22" height="14" rx="3"/><text class="tf-lab" x="476.0" y="112.0" text-anchor="middle">BR</text></svg></div>
+  <p class="note">A real result: for &ldquo;fly to the tennis court&rdquo;, the best match inside snap_151 came from its top-left tile (reported as <code>tile TL+enh</code> in the interface).</p>
+  <div class="prose">
+    <p>The winning tile also helps locate the object inside the retrieved footprint: it gives the flight target a quarter-footprint offset toward the matching region.</p>
   </div>
 
-  <h3>Geometric non-overlap</h3>
-  <div class="body-copy">
-    <p>
-      Snap centres are planned one camera footprint apart and flown serpentine with yaw locked to
-      zero, so image-up is North in every frame and no two snaps overlap. PX4 treats every position
-      setpoint as "stop here", so waypoints are placed only at lane ends and captures are triggered
-      by position, so cruise speed is held down the whole lane, braking only at the turns.
-    </p>
+  <h3 class="so-h3">One Image Can Be Misleading</h3>
+  <div class="prose">
+    <p>Aerial imagery can also produce appearance-related retrieval failures. For example, glare caused raw imagery to make water resemble pale grass.</p>
+    <p>Rather than assuming one preprocessing operation would solve every query, I indexed both raw and deglared renderings and allowed the query to select the more useful representation.</p>
   </div>
-</div>
-
-<div class="divider"></div>
-
-<div class="section">
-  <h1>Results</h1>
-
-  <h3>Retrieval: 44 queries, human-labelled ground truth</h3>
-  <div class="body-copy" style="margin-bottom:14px">
-    <p style="margin-bottom:0">
-      <b>41 of 44 queries retrieved the correct image at rank 1</b> (P@1 = 0.93).
-    </p>
+  <div class="chips-row">
+    <span class="chip">Full frame + 4 tiles</span><span class="chip-x">&times;</span>
+    <span class="chip">Raw + deglared</span><span class="chip-x">=</span>
+    <span class="chip strong">10 embeddings per image, best match wins</span>
   </div>
-  <table class="data-table">
-    <thead><tr><th>Method</th><th class="num">P@1</th><th class="num">P@3</th><th class="num">R@10</th><th class="num">MRR</th></tr></thead>
-    <tbody>
-      <tr class="highlight"><td>Hybrid (ours) *</td><td class="num">0.93</td><td class="num">0.79</td><td class="num">0.86</td><td class="num">0.95</td></tr>
-      <tr><td>Embeddings only (SigLIP2)</td><td class="num">0.86</td><td class="num">0.73</td><td class="num">0.86</td><td class="num">0.92</td></tr>
-      <tr><td>OWLv2 detector baseline</td><td class="num">0.68</td><td class="num">n/a</td><td class="num">n/a</td><td class="num">n/a</td></tr>
-      <tr><td>Captions only (BM25)</td><td class="num">0.64</td><td class="num">0.55</td><td class="num">0.60</td><td class="num">0.72</td></tr>
-    </tbody>
-  </table>
-  <p class="table-note">
-    * Hybrid = SigLIP2 embedding retrieval plus a caption keyword bonus. It does not call the VLM
-    &mdash; the ambiguity-gated VLM verification described above is a query-time feature (the
-    <code>goto</code>/<code>query</code> CLI), not part of this offline benchmark's scoring.
-  </p>
-  <p class="table-note">
-    95% bootstrap CI on the hybrid result: [0.84 to 1.00]. The detector baseline also had the
-    worst false-confidence on absent objects of any method tested (0.77 versus 0.52), and its
-    scores are query-conditioned, so a new query re-sweeps the whole corpus at 1.3 s per image,
-    while embeddings are indexed once and answer any future query in milliseconds.
-  </p>
+</section>
 
-  <h3>Closed-loop flight &mdash; AirSim + PX4 SITL simulation</h3>
-  <div class="body-copy" style="margin-bottom:14px">
-    <p style="margin-bottom:0">
-      The retrieval system is evaluated end-to-end through an AirSim + PX4 SITL flight loop. The
-      eight requests below were issued to the real retrieval pipeline, which selected spatial
-      targets and passed them to the simulated vehicle for navigation. The flight results therefore
-      measure closed-loop system behavior in simulation, not real-drone flight performance;
-      real-drone closed-loop evaluation remains future work.
-    </p>
+<!-- BENCHMARK -->
+<section class="so-sec" id="benchmark">
+  <p class="eyebrow">The benchmark</p>
+  <h2>Does the Retrieved Image Actually Match the Query?</h2>
+  <div class="prose">
+    <p>To evaluate retrieval independently of the system&rsquo;s own captions, I created a human-labelled benchmark of <b>44 natural-language queries</b> and compared the hybrid retrieval system against several baselines.</p>
   </div>
-  <table class="data-table">
-    <thead><tr><th>Request</th><th>Retrieval</th><th class="num">Arrival error</th><th class="num">Object in view</th></tr></thead>
-    <tbody>
-      <tr><td>"the fountain"</td><td class="yes">HIT</td><td class="num">3.0 m</td><td class="num yes">yes</td></tr>
-      <tr><td>"bridge"</td><td class="yes">HIT</td><td class="num">16.3 m</td><td class="num yes">yes</td></tr>
-      <tr><td>"playground swings"</td><td class="yes">HIT</td><td class="num">16.9 m</td><td class="num yes">yes</td></tr>
-      <tr><td>"soccer field with goal posts"</td><td class="yes">HIT</td><td class="num">18.4 m</td><td class="num yes">yes</td></tr>
-      <tr><td>"pond with water"</td><td class="yes">HIT</td><td class="num">19.8 m</td><td class="num yes">yes</td></tr>
-      <tr><td>"baseball diamond"</td><td class="yes">HIT</td><td class="num">20.1 m</td><td class="num yes">yes</td></tr>
-      <tr><td>"parking lot with cars"</td><td class="yes">HIT</td><td class="num">21.3 m</td><td class="num yes">yes</td></tr>
-      <tr><td>"picnic table"</td><td class="no">MISS</td><td class="num">99.1 m</td><td class="num no">no</td></tr>
-    </tbody>
-  </table>
-  <p class="table-note">
-    7/8 requests successfully reached a view containing the queried object. Median arrival error
-    was 19.1 m across all 8 trials (18.4 m among the 7 successful trials). The single failure is
-    the sub-1%-of-frame object the retrieval benchmark had already predicted would fail, and it
-    fails end to end for exactly the predicted reason.
-  </p>
+  <div class="bench">
+    <div class="bars" role="img" aria-label="P@1: hybrid 0.93, SigLIP2 only 0.86, OWLv2 0.68, BM25 0.64">
+      <p class="bars-h">P@1 on 44 human-labelled queries</p>
+      <div class="bar-row hi"><span class="bar-label">Hybrid retrieval</span><span class="bar-track"><span class="bar-fill" style="width:93%"></span></span><span class="bar-val">0.93</span></div><div class="bar-row"><span class="bar-label">SigLIP2 embeddings only</span><span class="bar-track"><span class="bar-fill" style="width:86%"></span></span><span class="bar-val">0.86</span></div><div class="bar-row"><span class="bar-label">OWLv2 detector</span><span class="bar-track"><span class="bar-fill" style="width:68%"></span></span><span class="bar-val">0.68</span></div><div class="bar-row"><span class="bar-label">BM25 captions</span><span class="bar-track"><span class="bar-fill" style="width:64%"></span></span><span class="bar-val">0.64</span></div>
+    </div>
+    <div>
+      <table class="rtable"><thead><tr><th>Method</th><th class="num">P@1</th><th class="num">P@3</th><th class="num">R@10</th><th class="num">MRR</th></tr></thead><tbody><tr class="highlight"><td>Hybrid retrieval *</td><td class="num">0.93</td><td class="num">0.79</td><td class="num">0.86</td><td class="num">0.95</td></tr><tr><td>SigLIP2 embeddings only</td><td class="num">0.86</td><td class="num">0.73</td><td class="num">0.86</td><td class="num">0.92</td></tr><tr><td>OWLv2 detector</td><td class="num">0.68</td><td class="num">n/a</td><td class="num">n/a</td><td class="num">n/a</td></tr><tr><td>BM25 captions</td><td class="num">0.64</td><td class="num">0.55</td><td class="num">0.60</td><td class="num">0.72</td></tr></tbody></table>
+      <p class="note">* Hybrid = SigLIP2 embedding retrieval plus a caption keyword bonus. The VLM verification step is used at query time in the live system and is not part of this benchmark&rsquo;s scoring. 41 of 44 queries retrieved the correct image at rank 1; 95% bootstrap CI [0.84, 1.00].</p>
+    </div>
+  </div>
 
-  <h3>Generalization: three real-world datasets, zero retuning (SigLIP2 retrieval on external datasets)</h3>
-  <table class="data-table">
+  <div class="lesson">
+    <p class="lesson-k">Research lesson</p>
+    <h3>The Benchmark Changed the Conclusion</h3>
+    <p>One of the most important lessons came from evaluating the system incorrectly the first time.</p>
+    <p>My initial benchmark used pseudo-ground-truth derived from the system&rsquo;s own captions. Under that evaluation, BM25 appeared to perform extremely well (0.85 P@1), because the evaluation target was effectively built from the same representation being tested.</p>
+    <p>I therefore rebuilt the benchmark using human-labelled ground truth across the survey images.</p>
+    <div class="flip">
+      <div><span>Caption-derived labels</span><b>BM25 0.85</b></div>
+      <i aria-hidden="true"></i>
+      <div><span>Human labels</span><b>BM25 0.64</b><b class="up">Hybrid 0.93</b></div>
+    </div>
+    <p>This was a useful reminder that retrieval systems need evaluation targets that are independent of the representation being evaluated.</p>
+  </div>
+</section>
+
+<!-- GENERALIZATION -->
+<section class="so-sec">
+  <p class="eyebrow">Real-world generalization</p>
+  <h2>Does It Transfer Beyond the Original Survey?</h2>
+  <div class="prose">
+    <p>I also evaluated the retrieval approach on three external UAV imagery datasets without retuning the retrieval system for each dataset.</p>
+  </div>
+  <table class="rtable wide">
     <thead><tr><th>Dataset</th><th>Content</th><th>Ground truth</th><th class="num">Result</th></tr></thead>
-    <tbody>
-      <tr><td>ODM Aukerman</td><td>77 real geotagged nadir frames (Ohio)</td><td>VLM judge</td><td class="num">P@1 1.00 (12/12)</td></tr>
-      <tr><td>Semantic Drone</td><td>400 urban nadir images, 6000&times;4000</td><td>Official 24-class masks</td><td class="num">P@1 0.90</td></tr>
-      <tr><td>FloodNet</td><td>398 Hurricane Harvey UAV images</td><td>Official masks + flood split</td><td class="num">P@1 0.73</td></tr>
-    </tbody>
+    <tbody><tr><td><b>ODM Aukerman</b></td><td>77 real geotagged nadir frames (Ohio)</td><td>VLM judge</td><td class="num"><b>P@1 1.00</b> (12 / 12)</td></tr><tr><td><b>Semantic Drone</b></td><td>400 urban nadir images, 6000&times;4000</td><td>Official 24-class masks</td><td class="num"><b>P@1 0.90</b></td></tr><tr><td><b>FloodNet</b></td><td>398 Hurricane Harvey UAV images</td><td>Official masks + flood split</td><td class="num"><b>P@1 0.73</b></td></tr></tbody>
   </table>
-  <p class="table-note">
-    Flooded-scene enrichment: on FloodNet, the query <i>"flooded area after a hurricane"</i>
-    returns 16 of 20 genuinely flooded scenes in the top-20, versus 2.6 of 20 expected by chance
-    &mdash; flooded scenes appear in the retrieved set <b>6&times;</b> more often than chance, not
-    a 6&times; accuracy gain. Small objects score 1.00 on FloodNet's full-resolution imagery,
-    confirming that the small-object floor is camera resolution, not method.
+  <p class="note">SigLIP2 retrieval on the external datasets.</p>
+  <div class="prose">
+    <p>The results show that the retrieval representation can transfer across different aerial imagery collections rather than being limited to the original survey.</p>
+  </div>
+
+  <h3 class="so-h3">FloodNet: Searching for Scenes, Not Just Objects</h3>
+  <div class="flood">
+    <div class="fd"><span class="fd-k">Query</span><b class="fd-q">&ldquo;flooded area after a hurricane&rdquo;</b></div>
+    <i aria-hidden="true"></i>
+    <div class="fd"><span class="fd-k">Retrieved</span><b>16 / 20</b><small>flooded scenes in the top 20</small>
+      <span class="dots"><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em class="on"></em><em></em><em></em><em></em><em></em></span></div>
+    <i aria-hidden="true"></i>
+    <div class="fd"><span class="fd-k">Chance</span><b>2.6 / 20</b><small>expected at random</small></div>
+    <i aria-hidden="true"></i>
+    <div class="fd hi"><span class="fd-k">Enrichment</span><b>6&times;</b><small>more flooded scenes than chance</small></div>
+  </div>
+  <div class="prose">
+    <p>This illustrates the difference between searching for a specific object and searching for a <b>semantic scene or condition</b>. The 6&times; is enrichment of flooded scenes in the retrieved set, not a 6&times; accuracy gain.</p>
+  </div>
+</section>
+
+<!-- RETRIEVAL TO ACTION -->
+<section class="so-sec">
+  <p class="eyebrow">From retrieval to action</p>
+  <h2>A Retrieved Image Becomes a Flight Target</h2>
+  <div class="prose">
+    <p>Retrieval alone does not complete the task. The goal of Survey-RAG is to connect the retrieved visual memory back to the physical world.</p>
+    <p>Every indexed image is associated with its survey location. Once a relevant image is retrieved, its spatial information can be converted into a target for the UAV, which then flies back toward the location represented by the retrieved image.</p>
+  </div>
+  <ol class="act">
+    <li><span class="act-k">Query</span><b>&ldquo;fly to the tennis court&rdquo;</b></li>
+    <li><span class="act-k">Retrieved image</span><img src="assets/img/survey/snap-150.jpg" width="404" height="302" alt="Retrieved survey snap 150" loading="lazy"></li>
+    <li><span class="act-k">Image + GPS</span><code>snap_150<br>47.641891<br>&minus;122.137533</code></li>
+    <li><span class="act-k">Target location</span><code>GPS &rarr;<br>PX4 position<br>setpoint</code></li>
+    <li><span class="act-k">UAV flight</span><video poster="assets/poster/survey-flight.jpg" src="assets/video/survey-flight.mp4" width="666" height="420" autoplay loop muted playsinline preload="none"></video></li>
+    <li><span class="act-k">Object in view</span><img src="assets/img/survey/arrival.jpg" width="666" height="420" alt="Tennis court in view on arrival" loading="lazy"></li>
+  </ol>
+  <p class="note">Example from the demonstration video; frames and coordinates are taken from the real interface and simulation.</p>
+</section>
+
+<!-- CLOSED LOOP -->
+<section class="so-sec">
+  <p class="eyebrow">Closed-loop demonstration</p>
+  <h2>From Language to Flight</h2>
+  <div class="yt">
+    <iframe src="https://www.youtube-nocookie.com/embed/lmt_aM5NoCk?rel=0&amp;modestbranding=1" title="Survey-RAG demonstration" loading="lazy" allowfullscreen allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
+  </div>
+  <p class="so-actions center"><a class="btn primary" href="https://youtu.be/lmt_aM5NoCk" target="_blank" rel="noopener">Full video</a> <a href="https://youtube.com/shorts/38rppjAhm9I" target="_blank" rel="noopener">Short video</a></p>
+
+  <div class="big-result">
+    <b>7 / 8</b>
+    <span>retrieval-to-flight requests succeeded</span>
+    <small>Median arrival error 19.1 m across all 8 trials (18.4 m among the 7 successes)</small>
+  </div>
+  <div class="prose">
+    <p>The eight requests below were issued to the real retrieval pipeline, which selected spatial targets and passed them to a simulated vehicle in AirSim with PX4 SITL. The results measure closed-loop system behavior in simulation, not real-drone flight performance.</p>
+  </div>
+  <div class="flights" role="table" aria-label="Arrival error per request">
+    <div class="fl-row fl-head"><span class="fl-q">Request</span><span class="fl-tag">Result</span><span class="fl-track">Arrival error</span><span class="fl-err"></span><span class="fl-view">Object</span></div>
+    <div class="fl-row"><span class="fl-q">&ldquo;the fountain&rdquo;</span><span class="fl-tag">HIT</span><span class="fl-track"><span class="fl-fill" style="width:3.0%"></span></span><span class="fl-err">3.0 m</span><span class="fl-view">in view</span></div><div class="fl-row"><span class="fl-q">&ldquo;bridge&rdquo;</span><span class="fl-tag">HIT</span><span class="fl-track"><span class="fl-fill" style="width:16.3%"></span></span><span class="fl-err">16.3 m</span><span class="fl-view">in view</span></div><div class="fl-row"><span class="fl-q">&ldquo;playground swings&rdquo;</span><span class="fl-tag">HIT</span><span class="fl-track"><span class="fl-fill" style="width:16.9%"></span></span><span class="fl-err">16.9 m</span><span class="fl-view">in view</span></div><div class="fl-row"><span class="fl-q">&ldquo;soccer field with goal posts&rdquo;</span><span class="fl-tag">HIT</span><span class="fl-track"><span class="fl-fill" style="width:18.4%"></span></span><span class="fl-err">18.4 m</span><span class="fl-view">in view</span></div><div class="fl-row"><span class="fl-q">&ldquo;pond with water&rdquo;</span><span class="fl-tag">HIT</span><span class="fl-track"><span class="fl-fill" style="width:19.8%"></span></span><span class="fl-err">19.8 m</span><span class="fl-view">in view</span></div><div class="fl-row"><span class="fl-q">&ldquo;baseball diamond&rdquo;</span><span class="fl-tag">HIT</span><span class="fl-track"><span class="fl-fill" style="width:20.1%"></span></span><span class="fl-err">20.1 m</span><span class="fl-view">in view</span></div><div class="fl-row"><span class="fl-q">&ldquo;parking lot with cars&rdquo;</span><span class="fl-tag">HIT</span><span class="fl-track"><span class="fl-fill" style="width:21.3%"></span></span><span class="fl-err">21.3 m</span><span class="fl-view">in view</span></div><div class="fl-row miss"><span class="fl-q">&ldquo;picnic table&rdquo;</span><span class="fl-tag">MISS</span><span class="fl-track"><span class="fl-fill" style="width:99.1%"></span></span><span class="fl-err">99.1 m</span><span class="fl-view">not in view</span></div>
+  </div>
+</section>
+
+<!-- FAILURE -->
+<section class="so-sec">
+  <p class="eyebrow">The failure</p>
+  <h2>The System Also Shows Where the Approach Breaks</h2>
+  <div class="prose">
+    <p>The system failed on the picnic-table request.</p>
+    <p>This was consistent with a limitation already visible in the retrieval benchmark: very small objects can occupy too little of the aerial frame to produce a reliable representation.</p>
+    <p>The failure therefore connected the retrieval benchmark to the end-to-end flight experiment: the weak retrieval produced the wrong target, which then produced the wrong flight destination.</p>
+  </div>
+  <ol class="chain-boxes">
+    <li><span>Request</span><b>&ldquo;picnic table&rdquo;</b></li>
+    <li><span>Retrieval</span><b>Ranked poorly</b></li>
+    <li><span>Target</span><b>Wrong location</b></li>
+    <li class="bad"><span>Flight</span><b>99.1 m off, not in view</b></li>
+  </ol>
+
+  <h3 class="so-h3">Resolution, Not an Abstract &ldquo;AI Limitation&rdquo;</h3>
+  <div class="split">
+    <div class="prose">
+      <p>The current limitation is strongly related to object scale. Objects occupying roughly less than 1% of the frame were difficult for the configurations tested.</p>
+      <p>In the picnic-table example, different retrieval configurations still ranked the object poorly, and the captioner never named it, so no keyword bonus could rescue it.</p>
+      <p>This suggests that the limiting factor is partly the resolution at which the object is represented in the aerial image. On FloodNet&rsquo;s full-resolution imagery, small-object queries scored 1.00.</p>
+    </div>
+    <div class="ranks">
+      <p class="bars-h">Picnic table rank (lower is better)</p>
+      <div class="rk"><span>Raw CLIP</span><b>24</b></div>
+      <div class="rk"><span>SigLIP2</span><b>36</b></div>
+      <div class="rk"><span>Dual render</span><b>46</b></div>
+      <div class="rk"><span>Deglared</span><b>54</b></div>
+    </div>
+  </div>
+  <p class="fix-lead">The most direct ways to address this are:</p>
+  <div class="fixes"><span>Fly lower</span><span>Use finer spatial tiling</span><span>Add a dedicated detection stage when needed</span></div>
+</section>
+
+<!-- LEARNED -->
+<section class="so-sec">
+  <p class="eyebrow">What I learned</p>
+  <h2>The Hardest Part Was Not Retrieval</h2>
+  <div class="prose">
+    <p>The project began as a retrieval problem, but several of the most important lessons came from how the system was evaluated.</p>
+  </div>
+  <ol class="lessons">
+    <li>The benchmark itself must be independent of the retrieval representation.</li>
+    <li>A higher retrieval score is not enough: the retrieved result must still correspond to a useful physical location.</li>
+    <li>The same representation can support very different queries, including objects, places and scene-level conditions.</li>
+    <li>Retrieval quality and physical navigation are coupled: a retrieval error becomes a navigation error once the system acts on the result.</li>
+  </ol>
+  <p class="pull big">Survey-RAG is ultimately about connecting semantic retrieval to physical action.</p>
+</section>
+
+<!-- CONTRIBUTION -->
+<section class="so-sec">
+  <p class="eyebrow">The research contribution</p>
+  <h2>What Survey-RAG Adds</h2>
+  <div class="contrib">
+    <div><span class="six-n">01</span><b>Post-hoc querying</b><p>Questions can be asked after the UAV has completed the survey.</p></div>
+    <div><span class="six-n">02</span><b>Open-vocabulary visual retrieval</b><p>The survey is represented as searchable visual memory rather than a fixed list of detector classes.</p></div>
+    <div><span class="six-n">03</span><b>Spatial grounding</b><p>Retrieved imagery is linked to the physical location where it was captured.</p></div>
+    <div><span class="six-n">04</span><b>Retrieval-to-flight</b><p>The retrieved location can be converted into a UAV navigation target.</p></div>
+  </div>
+  <p class="closing-line">language <i>&rarr;</i> memory <i>&rarr;</i> location <i>&rarr;</i> action</p>
+  <p class="note center">The system closes the loop from language to memory to location to action.</p>
+</section>
+
+<!-- NEXT -->
+<section class="so-sec">
+  <p class="eyebrow">Next step</p>
+  <h2>From Searchable Memory to More Capable Aerial Agents</h2>
+  <div class="prose">
+    <p>The current system assumes that the UAV first completes a survey and answers questions afterward. The next step is to investigate how searchable aerial memory can support more capable autonomous agents.</p>
+    <p>Instead of only answering <b>&ldquo;Where was it?&rdquo;</b>, future systems could reason about:</p>
+  </div>
+  <div class="asks next"><span>What happened?</span><span>What changed?</span><span>What should I inspect next?</span></div>
+  <div class="prose">
+    <p>This creates a bridge between aerial retrieval, multimodal reasoning and autonomous action.</p>
+  </div>
+</section>
+
+<!-- IMPLEMENTATION -->
+<section class="so-sec">
+  <details class="impl">
+    <summary>Implementation details</summary>
+    <div class="prose">
+      <p><b>Survey pattern.</b> Snap centres are planned one camera footprint apart (about 60&times;45 m) and flown serpentine with yaw locked, so image-up is North in every frame and snaps do not overlap. The benchmark survey contains 192 snaps.</p>
+      <p><b>Flight control.</b> PX4 treats every position setpoint as a stop, so waypoints are placed only at lane ends and captures are triggered by position. Cruise speed is held along each lane and the vehicle brakes only at the turns.</p>
+      <p><b>Index.</b> Each snap is embedded as 5 tiles (full frame plus four quadrants) under 2 renderings (raw and deglared), max-pooled at query time. Deglaring fixed the water queries but pushed the picnic-table snap from rank 24 to 54, which is why both renderings are kept.</p>
+      <p><b>Backbone choice.</b> A 7-query pilot suggested CLIP and SigLIP2 were roughly equivalent. At 44 queries the gap widened: 0.68 versus 0.86 overall, and 0.25 versus 0.75 on compositional queries.</p>
+      <p><b>Grading.</b> The benchmark uses three independent grading systems (human labels, official segmentation masks, and a VLM judge from a different model family than the retriever), which agree on 15 of 17 overlapping verdicts. On absent objects, the OWLv2 baseline showed the highest false confidence of any method tested (0.77 versus 0.52).</p>
+    </div>
+  </details>
+</section>
+
+<!-- FINAL -->
+<section class="so-sec final">
+  <p class="eyebrow">Survey once</p>
+  <h2>Survey Once. Remember What You Saw.</h2>
+  <div class="prose">
+    <p>Survey-RAG explores a simple idea: <b>a UAV should not have to forget everything it saw once the survey is over.</b></p>
+    <p>By associating aerial imagery with spatial information, the survey becomes a searchable memory. Natural-language queries can retrieve relevant scenes, and those retrieved locations can be connected back to UAV navigation.</p>
+    <p>The result is a pipeline from <b>language &rarr; visual memory &rarr; spatial retrieval &rarr; physical action.</b></p>
+  </div>
+  <p class="so-actions">
+    <a class="btn primary" href="https://youtu.be/lmt_aM5NoCk" target="_blank" rel="noopener">Watch the demonstration</a>
+    <a class="btn" href="#benchmark">Explore the benchmark</a>
+    <a class="btn" href="projects.html">View other robotics projects</a>
   </p>
+</section>
 
-  <h3>Energy: measured on real flight hardware</h3>
-  <table class="data-table">
-    <thead><tr><th>Operation</th><th>Hardware</th><th class="num">Latency</th><th class="num">Marginal energy</th></tr></thead>
-    <tbody>
-      <tr><td>SigLIP2 image embed (720p frame)</td><td>GPU</td><td class="num">13 ms</td><td class="num">0.14 J</td></tr>
-      <tr><td>YOLO-World detection</td><td>GPU</td><td class="num">68 ms</td><td class="num">0.77 J</td></tr>
-      <tr><td>Qwen2.5-VL 7B verification</td><td>GPU</td><td class="num">540 ms</td><td class="num">4.37 J</td></tr>
-      <tr class="highlight"><td>Full 192-snap survey indexing (compute only)</td><td>GPU</td><td class="num">n/a</td><td class="num">~270 J, 0.10% of battery</td></tr>
-    </tbody>
-  </table>
-  <p class="table-note">
-    Jetson Orin NX 16GB, JetPack 6, measured via <code>tegrastats</code> board input power at 5 Hz
-    against a 74 Wh battery. Compute draws 11 to 17 W against roughly 278 W of propulsion, 4 to 6%
-    of total draw. The 270 J / 0.10% figures above are companion-computer compute energy only,
-    not total flight energy &mdash; propulsion dominates the battery budget.
-  </p>
-</div>
-
-<div class="divider"></div>
-
-<div class="section">
-  <h1>What I learned</h1>
-
-  <div class="callout">
-    <h4>My first evaluation was circular, and it inverted the answer</h4>
-    <p>
-      I initially graded retrieval using pseudo-ground-truth derived from the system's own captions.
-      Under that scheme a BM25 keyword baseline "won" at 0.85, because it was searching the answer
-      key. Hand-labelling all 192 images across 14 categories inverted the ranking: BM25 was in fact
-      the <i>worst</i> method at 0.64. Ground-truth hygiene decided which conclusion was real, and I
-      would not have caught it without doing the labelling myself. The benchmark now carries three independent grading systems (human labels, official segmentation masks, and a VLM judge from a different model family than the retriever), which agree on 15 of 17 overlapping verdicts.
-    </p>
-  </div>
-
-  <div class="callout">
-    <h4>A small pilot pointed the wrong way</h4>
-    <p>
-      A 7-query pilot suggested CLIP and SigLIP2 were roughly equivalent. Scaling to 44 queries with
-      honest labels showed the gap <i>widening</i>: 0.68 versus 0.86 overall, and 0.25 versus 0.75
-      on compositional queries. Backend choice outweighed every preprocessing trick I tested.
-    </p>
-  </div>
-
-  <div class="callout">
-    <h4>The limitation is scoped, not vague</h4>
-    <p>
-      Objects below roughly 1% of frame area defeat every configuration tested. A picnic table at
-      30 m ranks 24th under raw CLIP, 54th deglared, 46th dual-render, 36th under SigLIP2, and the captioner never names it, so no keyword bonus can rescue it. The fix is known: fly lower, tile
-      finer, or add a detection pass.
-    </p>
-  </div>
 </div>
 
 <div id="footer">

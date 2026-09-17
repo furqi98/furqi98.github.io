@@ -46,14 +46,13 @@
       <video src="assets/video/so101-wrist.mp4" autoplay loop muted playsinline preload="metadata"></video>
     </a>
     <p>
-      <a class="research-proj-title" href="project-so101.html">SO-101: Learning Manipulation from Demonstration</a><br>
-      <span class="proj-meta">Imitation learning &middot; vision-language-action &middot; LeRobot + Isaac Sim</span><br>
-      A full learning-from-demonstration stack on a physical SO-101 arm: teleoperated data
-      collection, <strong>seven policies</strong> across three architectures, and three rounds of
-      data collection that each changed <i>where</i> demonstrations were sampled from.
-      Concentrating demonstrations in a single region beat spreading nearly twice as many frames
-      across the whole workspace. Demonstration density, not episode count, was the binding
-      constraint.
+      <a class="research-proj-title" href="project-so101.html">Teaching a Robot to Pick and Place Through Demonstration</a><br>
+      <span class="proj-meta">Imitation learning &middot; ACT &middot; SmolVLA &middot; Hugging Face LeRobot</span><br>
+      A physical study of how demonstration structure affects imitation learning. Using LeRobot
+      and a SO-101 leader&ndash;follower arm, I ran three progressively structured data-collection
+      experiments. The final dataset covered <strong>19 distinct locations, with four orientations
+      demonstrated at every location</strong> (76 configurations). The ACT policy was reliable
+      within that demonstrated region but did not reliably generalize to unseen regions.
     </p>
     <p class="proj-links">
       <a href="project-so101.html">Details</a>
@@ -70,10 +69,10 @@
     <p>
       <a class="research-proj-title" href="project-hexagrid.html">Hexagrid VLM: Autonomous Landing-Site Selection</a><br>
       <span class="proj-meta">VLM-in-the-loop control &middot; AirSim + PX4 SITL &middot; Qwen2.5-VL, local</span><br>
-      A drone flies a hexagon over unknown terrain and asks a vision-language model which way is
-      safest to land. Six views are compared in a <strong>single inference</strong>, a confidence
-      loop locks onto one grid cell rather than trusting one answer, and the cell becomes a GPS
-      target for a fully automatic descent, with no operator step anywhere in the sequence.
+      Turning a VLM&rsquo;s visual judgment into an executable landing decision. Six views are
+      compared in a <strong>single inference</strong>, repeated grid votes lock onto one cell rather
+      than trusting one answer, and camera geometry turns that cell into a GPS target for an
+      automatic descent. Demonstrated in simulation with PX4 SITL and AirSim.
     </p>
     <p class="proj-links">
       <a href="project-hexagrid.html">Details</a>
@@ -88,11 +87,9 @@
 <div class="section">
   <h1>Other work</h1>
   <ul>
-    <li><b>ViT grid-forwarding study</b>: five strategies for extracting region features from a vision transformer, compared on aerial imagery for compute, spatial context and interpretability.</li>
     <li><b>Monocular depth for UAV landing</b>: evaluating Depth-Anything-V2 and Depth Pro on nadir frames for landing-surface selection.</li>
-    <li><b>Benchmark harness</b>: stratified query sets, bootstrap confidence intervals, negative queries, and three independent grading systems that cross-corroborate.</li>
     <li><b>LeRobot Studio</b>: a local web app that launches teleoperation, recording, training and inference without hand-composing CLI invocations.</li>
-    <li><b>Companion-computer flight stack</b>: MAVSDK offboard control from an NVIDIA Jetson, and a RealSense pipeline for synchronised RGB-D capture.</li>
+    <li><b>Complete drone build</b>: a 550 mm carbon-fiber frame with a CUAV X7 Pro flight controller, T-Motor Antigravity 2806 EVO KV650 motors, 12-inch propellers, an NVIDIA Jetson Orin NX companion computer and an Intel RealSense camera.</li>
   </ul>
 </div>
 
