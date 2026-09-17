@@ -852,3 +852,50 @@
 
 .so .pull + .prose { margin-top: 16px; }
 .so .axis-v, .so .axis-q, .so .pull, .so .identity { text-align: left; }
+.shot.teleop { max-width: 760px; margin: 22px 0 18px 0; }
+.shot figcaption b { color: var(--ink); font-weight: 500; }
+
+/* ================= UAV platform ================= */
+.arch-panel { padding: 18px; }
+.arch .zone { fill: rgba(255, 255, 255, 0.6); stroke: #c9d2dc; stroke-width: 1; stroke-dasharray: 5 4; }
+.arch .zone.ground { fill: rgba(47, 102, 168, 0.04); }
+.arch .nd rect { fill: #fff; stroke: #b9c7d6; stroke-width: 1.2; }
+.arch .nd.hi rect { stroke: var(--navy); stroke-width: 2; }
+.arch .nd.hi2 rect { stroke: var(--link); stroke-width: 2; }
+.arch .nd.gnd rect { fill: #f4f8fc; }
+.arch .nd-t { font-size: 14px; font-weight: 500; fill: var(--navy); }
+.arch .nd-l { font-family: var(--mono); font-size: 11px; fill: var(--ink); }
+.arch .ln { stroke: #7d8a97; stroke-width: 1.5; fill: none; }
+.arch .ln.dash { stroke-dasharray: 5 4; }
+.arch .ln.pwr { stroke: var(--warn); }
+.arch .ah { fill: #7d8a97; }
+.arch .ln-t { font-family: var(--mono); font-size: 10.5px; fill: var(--link); }
+.arch .pwr-t { fill: var(--warn); }
+
+.wide-spec div { grid-template-columns: 150px 1fr; }
+.shot.build { max-width: 240px; justify-self: center; }
+.train-grid:has(.wide-spec) { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+
+.power { display: flex; height: 34px; border-radius: 5px; overflow: hidden; margin: 4px 0 12px 0; }
+.pw-prop { background: #b7c4d3; color: var(--navy); font-family: var(--mono); font-size: 12px; line-height: 34px; padding-left: 10px; white-space: nowrap; }
+.pw-comp { background: var(--ok); }
+.so .pw-legend { font-size: 13.5px; line-height: 22px; color: var(--ink); text-align: left; }
+.k.prop { background: #b7c4d3; border-radius: 2px; }
+.k.comp { background: var(--ok); border-radius: 2px; }
+.so .pw-note { font-size: 13px; line-height: 20px; color: var(--muted); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+.tests { list-style: none; margin: 6px 0 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.tests li { list-style: none; border: 1px solid var(--line); border-radius: 10px; padding: 14px; background: #fff; }
+.tests video { width: 100%; height: 300px; object-fit: cover; border-radius: 6px; display: block; margin-bottom: 12px; background: var(--soft); }
+.tests b { display: block; font-size: 16px; color: var(--navy); font-weight: 500; margin: 2px 0 4px 0; }
+.so .tests p { font-size: 13.5px; line-height: 21px; }
+
+@media (max-width: 760px) {
+    .arch-panel { overflow-x: auto; }
+    .arch { min-width: 640px; }
+    .train-grid:has(.wide-spec) { grid-template-columns: 1fr; }
+    .wide-spec div { grid-template-columns: 110px 1fr; }
+    .tests { grid-template-columns: 1fr; }
+    .tests video { height: 360px; }
+}
+.hero-media.portrait { max-width: 660px; }
