@@ -899,3 +899,13 @@
     .tests video { height: 360px; }
 }
 .hero-media.portrait { max-width: 660px; }
+
+/* wider column for the research project pages */
+body:has(.so) #main { width: 100%; max-width: 1180px; box-sizing: border-box; }
+
+.hero-loop { margin: 0; }
+.hero-loop video { width: 100%; height: auto; display: block; border-radius: 8px; background: var(--soft); }
+.hero-loop figcaption { font-size: 13px; line-height: 20px; color: var(--muted); padding-top: 10px; }
+.shot.wide-video { max-width: 900px; margin-top: 22px; }
+.split.one { grid-template-columns: minmax(0, 1fr); }
+.split.one .prose { max-width: 820px; }

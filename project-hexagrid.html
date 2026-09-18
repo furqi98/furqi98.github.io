@@ -84,18 +84,18 @@
 <section class="so-sec">
   <p class="eyebrow">Phase 1</p>
   <h2>Make the VLM Compare Alternatives</h2>
-  <div class="split">
+  <div class="split one">
     <div class="prose">
       <p>The drone flies a hexagonal pattern and captures one aerial view at each vertex.</p>
       <p>Instead of asking the VLM to judge six images independently, the six views are composited into a single labelled mosaic. The VLM is then asked to compare the alternatives and identify the most promising edge, in one inference.</p>
       <p>The important idea is not simply &ldquo;use a VLM&rdquo;. It is:</p>
       <p class="callout-line">Give the model the alternatives simultaneously, so the task becomes comparative rather than six independent judgments.</p>
     </div>
-    <figure class="shot">
-      <video poster="assets/poster/hexagrid-edge-select.jpg" src="assets/video/hexagrid-edge-select.mp4" width="640" height="360" autoplay loop muted playsinline preload="metadata"></video>
-      <figcaption>Hexagon flight, the six captured views in one labelled mosaic, and the VLM&rsquo;s selection.</figcaption>
-    </figure>
   </div>
+  <figure class="shot wide-video">
+    <video poster="assets/poster/hexagrid-edge-select.jpg" src="assets/video/hexagrid-edge-select.mp4" width="640" height="360" autoplay loop muted playsinline preload="metadata"></video>
+    <figcaption>Hexagon flight, the six captured views in one labelled mosaic, and the VLM&rsquo;s selection.</figcaption>
+  </figure>
   <div class="p1">
     <figure><img src="assets/img/hexagrid/mosaic.jpg" width="377" height="295" alt="Mosaic of six labelled views" loading="lazy"><figcaption>Six labelled views, one image</figcaption></figure>
     <div class="p1-arrow" aria-hidden="true"><span>one VLM call</span></div>
