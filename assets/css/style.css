@@ -31,6 +31,8 @@ table { border-collapse: collapse; border-spacing: 0; }
     margin: 0px auto;
 }
 
+body:has(.research-proj) #main { width: 100%; max-width: 1180px; box-sizing: border-box; }
+
 #body {
     font-family: 'Roboto', roboto, sans-serif;
     color: #4a535e;
@@ -296,7 +298,7 @@ h3 {
 }
 
 .research-thumb {
-    width: 400px;
+    width: 520px;
     float: left;
     margin-top: 7px;
     padding-right: 30px;
@@ -304,7 +306,7 @@ h3 {
 }
 
 .research-thumb:hover { border-bottom: none; }
-.research-thumb.wide-thumb { width: 330px; }
+.research-thumb.wide-thumb { width: 430px; }
 .research-thumb.wide-thumb video { aspect-ratio: 666 / 840; object-fit: contain; }
 
 .research-thumb img,
@@ -326,7 +328,7 @@ h3 {
 .research-proj-title:hover { border-bottom: 1px solid #003373; }
 
 .research-proj p { font-size: 14px; line-height: 24px; }
-.research-proj p strong { color: #9c6a00; font-weight: 700; }
+.research-proj p strong { color: #003373; font-weight: 700; }
 
 .proj-meta {
     font-size: 13px;
