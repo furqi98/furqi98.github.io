@@ -325,6 +325,9 @@ h3 {
 .research-proj-title:hover { border-bottom: 1px solid #003373; }
 
 .research-proj p { font-size: 16px; line-height: 27px; text-align: justify; }
+.proj-text .proj-name { margin-bottom: 6px; }
+.proj-text .proj-desc { margin-top: 14px; }
+.proj-text .proj-links { margin-top: 14px; }
 .research-proj .proj-meta { font-size: 15px; line-height: 24px; }
 .research-proj .proj-links { font-size: 15px; line-height: 24px; }
 .research-proj p strong { color: #003373; font-weight: 700; }
