@@ -308,13 +308,11 @@ h3 {
 
 .research-thumb:hover { border-bottom: none; }
 .research-thumb.wide-thumb { flex-basis: 430px; width: 430px; }
-.research-thumb.wide-thumb video { aspect-ratio: 666 / 840; object-fit: contain; }
 
 .research-thumb img,
 .research-thumb video {
     width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
+    height: auto;
     border-radius: 6px;
     display: block;
     background: #f4f6f8;
