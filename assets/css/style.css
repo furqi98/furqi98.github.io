@@ -292,21 +292,22 @@ h3 {
 }
 
 .research-proj {
-    margin: 0 30px 26px 30px;
-    width: auto;
-    display: table;
+    margin: 0 30px 30px 30px;
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
 }
 
+.proj-text { flex: 1 1 0; min-width: 0; }
+
 .research-thumb {
+    flex: 0 0 520px;
     width: 520px;
-    float: left;
-    margin-top: 7px;
-    padding-right: 30px;
-    margin-bottom: 20px;
+    margin-top: 5px;
 }
 
 .research-thumb:hover { border-bottom: none; }
-.research-thumb.wide-thumb { width: 430px; }
+.research-thumb.wide-thumb { flex-basis: 430px; width: 430px; }
 .research-thumb.wide-thumb video { aspect-ratio: 666 / 840; object-fit: contain; }
 
 .research-thumb img,
@@ -492,7 +493,8 @@ h3 {
     .recent-work { width: calc(100% - 60px); }
     #profile-pic { float: none; margin-right: 0; text-align: left; }
 
-    .research-thumb { float: none; display: block; width: 100%; max-width: 420px; padding-right: 0; }
+    .research-proj { flex-direction: column; gap: 14px; }
+    .research-thumb, .research-thumb.wide-thumb { flex: none; width: 100%; max-width: 420px; }
     .hero-video iframe { height: 52vw; }
     .data-table { width: calc(100% - 60px); display: block; overflow-x: auto; }
 }
