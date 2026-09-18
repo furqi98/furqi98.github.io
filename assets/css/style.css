@@ -292,9 +292,9 @@ h3 {
 }
 
 .research-proj {
-    margin: 0 30px 30px 30px;
+    margin: 0 30px 34px 30px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 30px;
 }
 
@@ -303,7 +303,6 @@ h3 {
 .research-thumb {
     flex: 0 0 520px;
     width: 520px;
-    margin-top: 5px;
 }
 
 .research-thumb:hover { border-bottom: none; }
@@ -320,13 +319,15 @@ h3 {
 
 .research-proj-title {
     color: #003373;
-    font-size: 16px;
-    line-height: 26px;
+    font-size: 21px;
+    line-height: 30px;
 }
 
 .research-proj-title:hover { border-bottom: 1px solid #003373; }
 
-.research-proj p { font-size: 14px; line-height: 24px; }
+.research-proj p { font-size: 16px; line-height: 27px; text-align: justify; }
+.research-proj .proj-meta { font-size: 15px; line-height: 24px; }
+.research-proj .proj-links { font-size: 15px; line-height: 24px; }
 .research-proj p strong { color: #003373; font-weight: 700; }
 
 .proj-meta {
