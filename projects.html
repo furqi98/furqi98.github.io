@@ -30,10 +30,10 @@
       <p>
         <a class="research-proj-title" href="project-survey-rag.html">Survey-RAG: Language-Queryable Aerial Memory</a><br>
         <span class="proj-meta">Aerial autonomy &middot; open-vocabulary retrieval &middot; AirSim + PX4 &middot; CPU-only</span><br>
-        A drone surveys an area once, turns everything it sees into a searchable spatial memory, and
-        afterwards answers plain-language requests by retrieving the matching view and flying to its
-        recorded coordinates. <strong>0.93 P@1</strong> on a hand-labelled benchmark; 7 of 8 typed
-        requests flown correctly in a single AirSim + PX4 SITL closed-loop flight.
+        A UAV surveys an area once and stores the captured images with their locations. Later, an
+        operator can use a natural-language query to find a relevant image and send the UAV back to
+        that location. The system achieved <strong>0.93 P@1</strong> on a human-labelled benchmark
+        and <strong>7/8</strong> successful retrieval-to-flight requests in AirSim + PX4 SITL.
       </p>
       <p class="proj-links">
         <a href="project-survey-rag.html">Details</a>
@@ -51,11 +51,11 @@
       <p>
         <a class="research-proj-title" href="project-so101.html">Teaching a Robot to Pick and Place Through Demonstration</a><br>
         <span class="proj-meta">Imitation learning &middot; ACT &middot; SmolVLA &middot; Hugging Face LeRobot</span><br>
-        A physical study of how demonstration structure affects imitation learning. Using LeRobot
-        and a SO-101 leader&ndash;follower arm, I ran three progressively structured data-collection
-        experiments. The final dataset covered <strong>19 distinct locations, with four orientations
-        demonstrated at every location</strong> (76 configurations). The ACT policy was reliable
-        within that demonstrated region but did not reliably generalize to unseen regions.
+        I studied how the way demonstrations are collected affects imitation learning on a SO-101
+        robot arm. I ran three data-collection experiments with different levels of workspace
+        coverage and trained ACT policies on the resulting datasets. The final dataset covered
+        <strong>19 locations with four orientations at each location</strong>, but the policy still
+        struggled to generalize beyond the demonstrated region.
       </p>
       <p class="proj-links">
         <a href="project-so101.html">Details</a>
@@ -74,10 +74,10 @@
       <p>
         <a class="research-proj-title" href="project-hexagrid.html">Hexagrid VLM: Autonomous Landing-Site Selection</a><br>
         <span class="proj-meta">VLM-in-the-loop control &middot; AirSim + PX4 SITL &middot; Qwen2.5-VL, local</span><br>
-        Turning a VLM&rsquo;s visual judgment into an executable landing decision. Six views are
-        compared in a <strong>single inference</strong>, repeated grid votes lock onto one cell rather
-        than trusting one answer, and camera geometry turns that cell into a GPS target for an
-        automatic descent. Demonstrated in simulation with PX4 SITL and AirSim.
+        I built a VLM-based landing-site selection system for a simulated UAV. The system compares
+        <strong>six camera views</strong>, uses repeated 4&times;4 grid predictions to select a
+        suitable landing area, and uses camera geometry to convert the selected cell into a GPS
+        target for descent.
       </p>
       <p class="proj-links">
         <a href="project-hexagrid.html">Details</a>
@@ -95,10 +95,10 @@
       <p>
         <a class="research-proj-title" href="project-uav.html">UAV Research Platform: A Complete Drone System for Onboard AI</a><br>
         <span class="proj-meta">Hardware integration &middot; ArduPilot &middot; Jetson Orin NX &middot; RealSense</span><br>
-        A 550 mm carbon-fiber quadcopter built end to end: CUAV X7 Pro running ArduPilot, T-Motor
-        Antigravity 2806 EVO KV650 motors with 12-inch propellers, a Jetson Orin NX companion computer
-        with MAVSDK offboard control and onboard model inference, a RealSense RGB-D camera and a SIYI
-        video and telemetry link. Tested from an indoor hover to an <strong>autonomous survey mission</strong>.
+        I built a <strong>550 mm quadcopter</strong> as a platform for testing onboard AI and
+        autonomous flight. It uses a CUAV X7 Pro, Jetson Orin NX, RealSense RGB-D camera and MAVSDK,
+        with ArduPilot handling the flight controller. I tested the platform from manual flight
+        through autonomous survey missions.
       </p>
       <p class="proj-links">
         <a href="project-uav.html">Details</a>
