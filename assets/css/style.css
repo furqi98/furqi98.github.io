@@ -306,7 +306,6 @@ h3 {
 }
 
 .research-thumb:hover { border-bottom: none; }
-.research-thumb.wide-thumb { flex-basis: 430px; width: 430px; }
 
 .research-thumb img,
 .research-thumb video {
@@ -493,7 +492,7 @@ h3 {
     #profile-pic { float: none; margin-right: 0; text-align: left; }
 
     .research-proj { flex-direction: column; gap: 14px; }
-    .research-thumb, .research-thumb.wide-thumb { flex: none; width: 100%; max-width: 420px; }
+    .research-thumb { flex: none; width: 100%; max-width: 420px; }
     .hero-video iframe { height: 52vw; }
     .data-table { width: calc(100% - 60px); display: block; overflow-x: auto; }
 }
