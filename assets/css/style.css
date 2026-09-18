@@ -301,8 +301,8 @@ h3 {
 .proj-text { flex: 1 1 0; min-width: 0; }
 
 .research-thumb {
-    flex: 0 0 520px;
-    width: 520px;
+    flex: 0 0 440px;
+    width: 440px;
 }
 
 .research-thumb:hover { border-bottom: none; }
@@ -318,18 +318,18 @@ h3 {
 
 .research-proj-title {
     color: #003373;
-    font-size: 21px;
-    line-height: 30px;
+    font-size: 16px;
+    line-height: 26px;
 }
 
 .research-proj-title:hover { border-bottom: 1px solid #003373; }
 
-.research-proj p { font-size: 16px; line-height: 27px; text-align: justify; }
+.research-proj p { font-size: 14px; line-height: 24px; text-align: justify; }
 .proj-text .proj-name { margin-bottom: 6px; }
 .proj-text .proj-desc { margin-top: 14px; }
 .proj-text .proj-links { margin-top: 14px; }
-.research-proj .proj-meta { font-size: 15px; line-height: 24px; }
-.research-proj .proj-links { font-size: 15px; line-height: 24px; }
+.research-proj .proj-meta { font-size: 13px; line-height: 22px; }
+.research-proj .proj-links { font-size: 13px; line-height: 22px; }
 .research-proj p strong { color: #003373; font-weight: 700; }
 
 .proj-meta {
