@@ -263,6 +263,13 @@ ul {
 
 ul li { margin-bottom: 4px; }
 
+.cv-list { list-style: none; margin: 0 30px 26px 30px; max-width: 800px; }
+.cv-list li { margin-bottom: 18px; }
+.cv-list li:last-child { margin-bottom: 0; }
+.cv-role { display: block; font-size: 15px; line-height: 24px; color: #003373; }
+.cv-meta { display: block; font-size: 13px; line-height: 22px; color: #68717c; margin-bottom: 4px; }
+.cv-desc { display: block; font-size: 14px; line-height: 24px; text-align: justify; }
+
 .news-list { list-style-type: none; margin-left: 30px; }
 .news-list li { margin-bottom: 10px; }
 .news-list .date { color: #003373; display: inline-block; width: 78px; }
