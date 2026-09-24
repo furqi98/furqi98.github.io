@@ -27,13 +27,13 @@
 <!-- HERO -->
 <header class="so-hero">
   <p class="eyebrow">Aerial robotics &middot; hardware and integration</p>
-  <h1 class="so-title">UAV Research Platform: A Complete Drone System for Onboard AI</h1>
-  <p class="so-lede">A 550 mm quadcopter I built and integrated end to end, from airframe and propulsion to flight control, onboard computing, sensing and communication.</p>
+  <h1 class="so-title">UAV Research Platform: A Physical Platform for Onboard AI</h1>
+  <p class="so-lede">I built and integrated a 550 mm quadcopter as a platform for testing onboard AI and autonomous flight.</p>
   <p class="so-intro">
-    The drone flies ArduPilot on a CUAV X7 Pro flight controller and carries an NVIDIA Jetson Orin NX companion
-    computer, an Intel RealSense RGB-D camera and a SIYI video and telemetry link. The Jetson commands the flight
-    controller through MAVSDK, records RGB-D data and runs vision models onboard. I tested the system from an
-    indoor hover to an autonomous survey mission in the field.
+    The system uses a CUAV X7 Pro running ArduPilot, a Jetson Orin NX companion computer, an Intel RealSense RGB-D
+    camera and a SIYI video and telemetry link. The Jetson communicates with the flight controller through MAVSDK,
+    records RGB-D data and runs vision models onboard. I tested the platform from indoor hover through autonomous
+    survey missions.
   </p>
   <p class="tags"><span>ArduPilot</span><span>Jetson Orin NX</span><span>RealSense</span><span>MAVSDK</span><span>SIYI</span><span>QGroundControl</span></p>
 
@@ -64,9 +64,9 @@
 <!-- SYSTEM -->
 <section class="so-sec">
   <p class="eyebrow">The complete system</p>
-  <h2>How the Pieces Fit Together</h2>
+  <h2>System architecture</h2>
   <div class="prose">
-    <p>The platform is split into two layers. The flight controller keeps the vehicle stable and flies missions, while the companion computer handles perception and higher-level decisions and talks to the flight controller over MAVLink. Power, sensing and communication have to be integrated so that both layers work together in flight.</p>
+    <p>The flight controller handles stabilization and mission execution, while the Jetson handles perception and higher-level decisions. The two communicate over MAVLink.</p>
   </div>
   <div class="panel grid-bg arch-panel"><svg viewBox="0 0 900 470" class="diag arch" role="img" aria-label="System architecture: RealSense camera to Jetson Orin NX, Jetson to CUAV X7 Pro over MAVLink, flight controller to motors, GPS to flight controller, SIYI link to the ground station, and battery power through buck-boost converters"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs><rect class="zone" x="10" y="10" width="640" height="450" rx="12"/><text class="map-label" x="26" y="34">ON THE VEHICLE</text><rect class="zone ground" x="690" y="10" width="200" height="450" rx="12"/><text class="map-label" x="706" y="34">ON THE GROUND</text><g class="nd "><rect x="40" y="56" width="210" height="78" rx="8"/><text class="nd-t" x="52" y="78">Intel RealSense</text><text class="nd-l" x="52" y="98">RGB-D camera</text></g><g class="nd hi"><rect x="330" y="56" width="290" height="132" rx="8"/><text class="nd-t" x="342" y="78">NVIDIA Jetson Orin NX 16GB</text><text class="nd-l" x="342" y="98">companion computer</text><text class="nd-l" x="342" y="115">MAVSDK offboard control</text><text class="nd-l" x="342" y="132">RealSense RGB-D capture</text><text class="nd-l" x="342" y="149">onboard model inference</text></g><g class="nd hi2"><rect x="330" y="246" width="290" height="78" rx="8"/><text class="nd-t" x="342" y="268">CUAV X7 Pro</text><text class="nd-l" x="342" y="288">flight controller, ArduPilot</text></g><g class="nd "><rect x="40" y="246" width="210" height="78" rx="8"/><text class="nd-t" x="52" y="268">GPS</text><text class="nd-l" x="52" y="288">GNSS receiver</text></g><g class="nd "><rect x="330" y="372" width="290" height="70" rx="8"/><text class="nd-t" x="342" y="394">Propulsion</text><text class="nd-l" x="342" y="414">4 &#215; Antigravity 2806 EVO KV650</text><text class="nd-l" x="342" y="431">12-inch propellers</text></g><g class="nd "><rect x="40" y="372" width="210" height="70" rx="8"/><text class="nd-t" x="52" y="394">Power</text><text class="nd-l" x="52" y="414">74 Wh battery</text><text class="nd-l" x="52" y="431">buck-boost converters</text></g><g class="nd "><rect x="710" y="150" width="164" height="78" rx="8"/><text class="nd-t" x="722" y="172">SIYI air unit</text><text class="nd-l" x="722" y="192">video + telemetry link</text></g><g class="nd gnd"><rect x="710" y="300" width="164" height="78" rx="8"/><text class="nd-t" x="722" y="322">QGroundControl</text><text class="nd-l" x="722" y="342">mission planning</text><text class="nd-l" x="722" y="359">autonomous survey</text></g><line class="ln " x1="250" y1="95" x2="326" y2="95" marker-end="url(#ah)"/><text class="ln-t" x="288" y="86" text-anchor="middle">USB</text><line class="ln " x1="475" y1="188" x2="475" y2="242" marker-end="url(#ah)" marker-start="url(#ah)"/><text class="ln-t" x="548" y="220" text-anchor="middle">MAVLink (MAVSDK)</text><line class="ln " x1="250" y1="285" x2="326" y2="285" marker-end="url(#ah)"/><text class="ln-t" x="288" y="276" text-anchor="middle">GNSS</text><line class="ln " x1="475" y1="324" x2="475" y2="368" marker-end="url(#ah)"/><text class="ln-t" x="530" y="351" text-anchor="middle">motor outputs</text><line class="ln " x1="620" y1="120" x2="706" y2="180" marker-end="url(#ah)" marker-start="url(#ah)"/><text class="ln-t" x="0" y="0" text-anchor="middle"></text><line class="ln " x1="620" y1="285" x2="706" y2="210" marker-end="url(#ah)" marker-start="url(#ah)"/><text class="ln-t" x="0" y="0" text-anchor="middle"></text><text class="ln-t" x="650" y="124" text-anchor="middle">video</text><text class="ln-t" x="663" y="266" text-anchor="middle">telemetry</text><line class="ln dash" x1="792" y1="228" x2="792" y2="296" marker-end="url(#ah)" marker-start="url(#ah)"/><text class="ln-t" x="836" y="266" text-anchor="middle">radio link</text><line class="ln pwr" x1="250" y1="400" x2="326" y2="400" marker-end="url(#ah)"/><text class="ln-t" x="0" y="0" text-anchor="middle"></text><path class="ln pwr" d="M40 408 L22 408 L22 150 L325 150" marker-end="url(#ah)"/><text class="ln-t pwr-t" x="96" y="165">power to onboard electronics</text></svg></div>
   <p class="note">Simplified block diagram of the vehicle as built.</p>
@@ -94,9 +94,9 @@
 <!-- COMPUTE -->
 <section class="so-sec">
   <p class="eyebrow">Onboard AI compute</p>
-  <h2>Measured on the Drone&rsquo;s Own Jetson</h2>
+  <h2>Onboard inference</h2>
   <div class="prose">
-    <p>To check that the models used in my retrieval and landing work are practical on this vehicle, I measured them on the drone&rsquo;s Jetson Orin NX (16GB, JetPack 6), reading board input power with <code>tegrastats</code> at 5 Hz.</p>
+    <p>I measured the models used in my retrieval and landing work on the drone&rsquo;s Jetson Orin NX (16GB, JetPack 6). Board input power was recorded with <code>tegrastats</code> at 5 Hz.</p>
   </div>
   <div class="bench">
     <div>
@@ -112,7 +112,7 @@
         <span class="pw-prop" style="width:95%">Propulsion &asymp; 278 W</span><span class="pw-comp" style="width:5%"></span>
       </div>
       <p class="pw-legend"><span class="k prop"></span>Propulsion, roughly 278 W<br><span class="k comp"></span>Compute, 11 to 17 W (4 to 6% of total draw)</p>
-      <p class="pw-note">Indexing an entire 192-image survey on the Jetson used about 270 J, around 0.10% of the 74 Wh battery.</p>
+      <p class="pw-note">Indexing the 192-image survey used about 270 J of compute energy, around 0.10% of the 74 Wh battery.</p>
     </div>
   </div>
 </section>
@@ -120,7 +120,7 @@
 <!-- FLIGHT TESTING -->
 <section class="so-sec">
   <p class="eyebrow">Flight testing</p>
-  <h2>From First Hover to an Autonomous Survey</h2>
+  <h2>Flight testing</h2>
   <ol class="tests">
     <li><video poster="assets/poster/uav-hover.jpg" src="assets/video/uav-hover.mp4" width="540" height="960" autoplay loop muted playsinline preload="none"></video><span class="six-n">01</span><b>Indoor hover</b><p>A hover test in an indoor space.</p></li>
     <li><video poster="assets/poster/field-flight.jpg" src="assets/video/field-flight.mp4" width="236" height="420" autoplay loop muted playsinline preload="none"></video><span class="six-n">02</span><b>Outdoor flight</b><p>A test flight in open terrain.</p></li>
@@ -131,9 +131,9 @@
 <!-- CONNECTION -->
 <section class="so-sec">
   <p class="eyebrow">Connection to my research</p>
-  <h2>The Real Vehicle Behind the Simulated Work</h2>
+  <h2>Relation to the simulated work</h2>
   <div class="prose">
-    <p><a href="project-survey-rag.html">Survey-RAG</a> and <a href="project-hexagrid.html">Hexagrid VLM</a> were developed and evaluated in AirSim with PX4 SITL. This drone is the physical platform for that work: it carries the same class of companion computer and camera, flies autonomous survey missions, and the retrieval models were measured on its onboard Jetson.</p>
+    <p><a href="project-survey-rag.html">Survey-RAG</a> and <a href="project-hexagrid.html">Hexagrid VLM</a> were developed and evaluated in AirSim with PX4 SITL. This UAV provides the physical platform for future onboard deployment, and the retrieval models have already been measured on its Jetson.</p>
     <p>Running the full Survey-RAG and Hexagrid loops on this vehicle is future work.</p>
   </div>
   <p class="so-actions">

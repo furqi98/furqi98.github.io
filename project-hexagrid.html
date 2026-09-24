@@ -28,12 +28,11 @@
 <header class="so-hero">
   <p class="eyebrow">Aerial robotics &middot; VLM in the loop</p>
   <h1 class="so-title">Hexagrid VLM: Autonomous Landing-Site Selection</h1>
-  <p class="so-lede">Using a vision-language model to select, refine, and navigate to a landing site in previously unsurveyed terrain.</p>
+  <p class="so-lede">I built a VLM-based landing-site selection pipeline for a simulated UAV operating over previously unsurveyed terrain.</p>
   <p class="so-intro">
-    A drone explores an unknown area by sampling six viewpoints along a hexagonal path. A local vision-language
-    model compares the views and selects a promising direction. The system then repeatedly refines the selected
-    view using a 4&times;4 grid, locks onto a target cell through temporal voting, converts that cell into a GPS
-    target, and autonomously lands using PX4 SITL in AirSim.
+    The drone samples six viewpoints along a hexagonal path. A local vision-language model compares the views and
+    selects one direction. The selected view is then refined using a 4&times;4 grid, repeated predictions are
+    accumulated to select a target cell, and camera geometry converts that cell into a GPS target for landing.
   </p>
   <p class="tags"><span>VLM</span><span>Autonomous Navigation</span><span>AirSim</span><span>PX4</span><span>Geometric Grounding</span></p>
   <p class="so-actions">
@@ -71,25 +70,24 @@
 <!-- CORE IDEA -->
 <section class="so-sec">
   <p class="eyebrow">The core idea</p>
-  <h2>From a Vague Visual Judgment to a Precise Landing Target</h2>
+  <h2>Pipeline overview</h2>
   <div class="contrib">
-    <div><span class="six-n">A</span><b>Which direction?</b><p>Six viewpoints are captured around the vehicle. The VLM sees all six views together and selects the most promising edge.</p></div>
-    <div><span class="six-n">B</span><b>Where exactly?</b><p>The selected image is divided into a 4&times;4 grid. The VLM repeatedly identifies promising cells until one cell consistently wins.</p></div>
-    <div><span class="six-n">C</span><b>Where is that cell in the world?</b><p>The cell&rsquo;s pixel offset becomes a ground displacement using camera geometry and altitude, then a GPS coordinate using the vehicle heading.</p></div>
-    <div><span class="six-n">D</span><b>Execute</b><p>PX4 navigates toward the target. Once the vehicle reaches and settles over it, the landing command is triggered automatically.</p></div>
+    <div><span class="six-n">A</span><b>View selection</b><p>Six viewpoints are captured around the vehicle. The VLM sees all six views together and selects the most promising edge.</p></div>
+    <div><span class="six-n">B</span><b>Landing-cell selection</b><p>The selected image is divided into a 4&times;4 grid. The VLM repeatedly identifies promising cells until one cell consistently wins.</p></div>
+    <div><span class="six-n">C</span><b>Ground position</b><p>The cell&rsquo;s pixel offset becomes a ground displacement using camera geometry and altitude, then a GPS coordinate using the vehicle heading.</p></div>
+    <div><span class="six-n">D</span><b>Flight</b><p>PX4 navigates toward the target. Once the vehicle reaches and settles over it, the landing command is triggered automatically.</p></div>
   </div>
 </section>
 
 <!-- PHASE 1 -->
 <section class="so-sec">
   <p class="eyebrow">Phase 1</p>
-  <h2>Make the VLM Compare Alternatives</h2>
+  <h2>View selection</h2>
   <div class="split one">
     <div class="prose">
       <p>The drone flies a hexagonal pattern and captures one aerial view at each vertex.</p>
       <p>Instead of asking the VLM to judge six images independently, the six views are composited into a single labelled mosaic. The VLM is then asked to compare the alternatives and identify the most promising edge, in one inference.</p>
-      <p>The important idea is not simply &ldquo;use a VLM&rdquo;. It is:</p>
-      <p class="callout-line">Give the model the alternatives simultaneously, so the task becomes comparative rather than six independent judgments.</p>
+      <p>The six views are composited into one labelled image so the VLM can compare the alternatives in a single inference.</p>
     </div>
   </div>
   <figure class="shot wide-video">
@@ -101,16 +99,16 @@
     <div class="p1-arrow" aria-hidden="true"><span>one VLM call</span></div>
     <figure class="sel"><img src="assets/img/hexagrid/edge02.jpg" width="368" height="263" alt="Selected view edge 02" loading="lazy"><figcaption>Selected: <code>edge_02</code></figcaption></figure>
   </div>
-  <p class="note center">Six viewpoints &rarr; one comparative VLM decision. A design choice for comparative reasoning, not a guarantee that the choice is correct.</p>
+  <p class="note center">Six viewpoints are evaluated together in one VLM call. The comparison does not guarantee that the selected view is correct.</p>
 </section>
 
 <!-- PHASE 2 -->
 <section class="so-sec">
   <p class="eyebrow">Phase 2</p>
-  <h2>Don&rsquo;t Trust a Single Answer</h2>
+  <h2>Repeated grid predictions</h2>
   <div class="split">
     <div class="prose">
-      <p>After selecting the promising view, the system overlays a numbered 4&times;4 grid and queries the VLM repeatedly for the most suitable landing cell. Instead of committing to the first response, each cell accumulates temporal evidence:</p>
+      <p>After a view is selected, the system overlays a numbered 4&times;4 grid and queries the VLM repeatedly for a landing cell. Each prediction contributes to a running score for the selected cell.</p>
       <ul class="ticks">
         <li>repeated selections increase its score</li>
         <li>scores decay over time</li>
@@ -120,21 +118,21 @@
     </div>
     <div class="lesson small">
       <p class="lesson-k">Key insight</p>
-      <p class="insight">A single VLM response is treated as a hypothesis, not a command.</p>
+      <p class="insight">The system does not use a single VLM response to trigger the landing decision.</p>
       <p>This is designed to reduce dependence on any single VLM response. It is not a formal safety guarantee.</p>
     </div>
   </div>
   <ol class="rounds"><li><div class="g4"><span class="c">1</span><span class="c">2</span><span class="c">3</span><span class="c">4</span><span class="c">5</span><span class="c">6</span><span class="c">7</span><span class="c hot" style="--a:0.31">8</span><span class="c">9</span><span class="c">10</span><span class="c">11</span><span class="c">12</span><span class="c">13</span><span class="c">14</span><span class="c">15</span><span class="c">16</span></div><span class="r-k">Round 1</span><span class="r-v">cell 8: 1.00</span></li><li><div class="g4"><span class="c">1</span><span class="c">2</span><span class="c">3</span><span class="c">4</span><span class="c">5</span><span class="c">6</span><span class="c">7</span><span class="c hot" style="--a:0.46">8</span><span class="c">9</span><span class="c">10</span><span class="c">11</span><span class="c">12</span><span class="c">13</span><span class="c">14</span><span class="c">15</span><span class="c">16</span></div><span class="r-k">Round 2</span><span class="r-v">cell 8: 1.90</span></li><li><div class="g4"><span class="c">1</span><span class="c">2</span><span class="c">3</span><span class="c">4</span><span class="c">5</span><span class="c">6</span><span class="c">7</span><span class="c hot" style="--a:0.59">8</span><span class="c">9</span><span class="c">10</span><span class="c">11</span><span class="c">12</span><span class="c">13</span><span class="c">14</span><span class="c">15</span><span class="c">16</span></div><span class="r-k">Round 3</span><span class="r-v">cell 8: 2.71</span></li><li><div class="g4"><span class="c">1</span><span class="c">2</span><span class="c">3</span><span class="c">4</span><span class="c">5</span><span class="c">6</span><span class="c">7</span><span class="c hot" style="--a:0.71">8</span><span class="c">9</span><span class="c">10</span><span class="c">11</span><span class="c">12</span><span class="c">13</span><span class="c">14</span><span class="c">15</span><span class="c">16</span></div><span class="r-k">Round 4</span><span class="r-v">cell 8: 3.44</span></li><li><div class="g4"><span class="c">1</span><span class="c">2</span><span class="c">3</span><span class="c">4</span><span class="c">5</span><span class="c">6</span><span class="c">7</span><span class="c hot" style="--a:0.82">8</span><span class="c">9</span><span class="c">10</span><span class="c">11</span><span class="c">12</span><span class="c">13</span><span class="c">14</span><span class="c">15</span><span class="c">16</span></div><span class="r-k">Round 5</span><span class="r-v">cell 8: 4.10</span></li><li><div class="g4"><span class="c">1</span><span class="c">2</span><span class="c">3</span><span class="c">4</span><span class="c">5</span><span class="c">6</span><span class="c">7</span><span class="c hot" style="--a:0.91">8</span><span class="c">9</span><span class="c">10</span><span class="c">11</span><span class="c">12</span><span class="c">13</span><span class="c">14</span><span class="c">15</span><span class="c">16</span></div><span class="r-k">Round 6</span><span class="r-v">cell 8: 4.69</span></li><li><div class="g4"><span class="c">1</span><span class="c">2</span><span class="c">3</span><span class="c">4</span><span class="c">5</span><span class="c">6</span><span class="c">7</span><span class="c hot lock" style="--a:1.00">8</span><span class="c">9</span><span class="c">10</span><span class="c">11</span><span class="c">12</span><span class="c">13</span><span class="c">14</span><span class="c">15</span><span class="c">16</span></div><span class="r-k">Round 7</span><span class="r-v">cell 8: 5.22</span></li><li class="lock-card"><img src="assets/img/hexagrid/locked-cell.jpg" width="384" height="300" alt="Locked cell 8 in the mission-control view" loading="lazy"><span class="r-k">Lock</span><span class="r-v">cell 8 &middot; score 5.22 &middot; 7 hits</span></li></ol>
-  <p class="note center">Repeated agreement &rarr; stable target. Scores are from the vote history of the demonstrated run, where cell 8 was picked in every round.</p>
+  <p class="note center">In the demonstrated run, cell 8 was selected in all seven rounds and reached the lock threshold.</p>
 </section>
 
 <!-- PHASE 3 -->
 <section class="so-sec">
   <p class="eyebrow">Phase 3</p>
-  <h2>Ground the Visual Decision in the World</h2>
+  <h2>Image-to-ground conversion</h2>
   <div class="prose">
-    <p>The VLM identifies a cell in image space, but the aircraft needs a location in the world. The system converts the selected cell&rsquo;s offset from the camera centre into a metric ground displacement using the camera field of view, vehicle altitude and image geometry.</p>
-    <p>That displacement is rotated by the current vehicle heading into a north/east offset and combined with the vehicle&rsquo;s position to produce a target coordinate.</p>
+    <p>The selected cell is defined in image coordinates, but the aircraft needs a world position. The system converts the cell&rsquo;s offset from the image centre into a ground displacement using the camera field of view, vehicle altitude and image geometry.</p>
+    <p>The displacement is then rotated using the vehicle heading and combined with the vehicle position to produce the target coordinate.</p>
   </div>
   <div class="panel grid-bg geo-panel"><svg viewBox="0 0 640 250" class="diag geo" role="img" aria-label="Pixel offset of the locked cell converted to a ground offset using altitude and field of view, rotated by heading into north/east, then added to the vehicle position">
   <!-- camera cone -->
@@ -168,7 +166,6 @@
   <text class="geo-t" x="452" y="196">rotate by vehicle yaw</text>
   <text class="geo-t strong" x="452" y="214">+ vehicle position &#8594; GPS target</text>
 </svg></div>
-  <p class="pull">Semantic decision &rarr; geometric location.</p>
 </section>
 
 <!-- PHASE 4 -->
@@ -195,26 +192,26 @@
 <!-- FULL PIPELINE -->
 <section class="so-sec">
   <p class="eyebrow">The full pipeline</p>
-  <h2>One Loop: See &rarr; Decide &rarr; Ground &rarr; Act</h2>
-  <div class="bands"><div class="band"><p class="band-k">See</p><ol><li>Unknown terrain</li><li>Hexagonal exploration</li><li>6 aerial snapshots</li></ol></div><div class="band"><p class="band-k">Decide</p><ol><li>VLM comparative selection</li><li>Winning snapshot</li><li>4&times;4 grid</li><li>Temporal voting</li><li>Locked cell</li></ol></div><div class="band"><p class="band-k">Ground</p><ol><li>Pixel-to-ground geometry</li><li>GPS target</li></ol></div><div class="band"><p class="band-k">Act</p><ol><li>PX4 navigation</li><li>Automatic landing</li></ol></div></div>
+  <h2>System overview</h2>
+  <div class="bands"><div class="band"><p class="band-k">View selection</p><ol><li>Unknown terrain</li><li>Hexagonal exploration</li><li>6 aerial snapshots</li></ol></div><div class="band"><p class="band-k">Landing-cell selection</p><ol><li>VLM comparative selection</li><li>Winning snapshot</li><li>4&times;4 grid</li><li>Temporal voting</li><li>Locked cell</li></ol></div><div class="band"><p class="band-k">Geometric grounding</p><ol><li>Pixel-to-ground geometry</li><li>GPS target</li></ol></div><div class="band"><p class="band-k">Flight</p><ol><li>PX4 navigation</li><li>Automatic landing</li></ol></div></div>
 </section>
 
 <!-- WHY STRUCTURED -->
 <section class="so-sec">
   <p class="eyebrow">Why the system is structured this way</p>
-  <h2>Each Stage Removes a Different Ambiguity</h2>
+  <h2>Pipeline stages</h2>
   <div class="contrib">
-    <div><span class="six-n">01</span><b>Comparison</b><p class="q-small">Which view?</p><p>The six-view mosaic lets the VLM compare candidate directions rather than judging each view in isolation.</p></div>
-    <div><span class="six-n">02</span><b>Refinement</b><p class="q-small">Where in the view?</p><p>The 4&times;4 grid converts a broad scene-level decision into a localized target.</p></div>
-    <div><span class="six-n">03</span><b>Temporal consistency</b><p class="q-small">Can the decision persist?</p><p>Repeated VLM judgments provide evidence over time rather than relying on one response.</p></div>
-    <div><span class="six-n">04</span><b>Geometric grounding</b><p class="q-small">Where in the world?</p><p>Camera geometry converts an image-space decision into a physical navigation target.</p></div>
+    <div><span class="six-n">01</span><b>Comparison</b><p class="q-small">View</p><p>The six-view mosaic lets the VLM compare candidate directions rather than judging each view in isolation.</p></div>
+    <div><span class="six-n">02</span><b>Refinement</b><p class="q-small">Landing cell</p><p>The 4&times;4 grid converts a broad scene-level decision into a localized target.</p></div>
+    <div><span class="six-n">03</span><b>Temporal consistency</b><p class="q-small">Temporal consistency</p><p>Repeated VLM judgments provide evidence over time rather than relying on one response.</p></div>
+    <div><span class="six-n">04</span><b>Geometric grounding</b><p class="q-small">World position</p><p>Camera geometry converts an image-space decision into a physical navigation target.</p></div>
   </div>
 </section>
 
 <!-- MISSION CONTROL -->
 <section class="so-sec">
   <p class="eyebrow">Mission control</p>
-  <h2>Making the Decision Process Observable</h2>
+  <h2>Mission-control interface</h2>
   <div class="split">
     <div class="prose">
       <p>The system exposes each stage of the mission through a local mission-control interface, and pushes the current overlay and status into the QGroundControl video feed. The dashboard shows:</p>
@@ -226,7 +223,7 @@
         <li>live nadir view and selected landing cell</li>
         <li>vehicle state during alignment and landing</li>
       </ul>
-      <p>The purpose is observability: the operator can see how the visual decision evolves instead of receiving only a final landing command.</p>
+      <p>The dashboard shows the intermediate decisions and vehicle state during the mission.</p>
     </div>
     <figure class="shot tall"><img src="assets/img/hexagrid-edge-capture.jpg" width="832" height="988" alt="Mission-control dashboard during edge capture: phase stepper, live nadir feed and snapshot tray" loading="lazy"><figcaption>Phase stepper, live nadir feed and the snapshot tray filling in during edge capture.</figcaption></figure>
   </div>
@@ -239,16 +236,16 @@
   <div class="lesson-pair">
     <div class="lesson">
       <p class="lesson-k">Lesson</p>
-      <h3>A Camera Assumption Can Invalidate the Entire Geometry Pipeline</h3>
-      <p>An incorrect AirSim camera configuration produced a &ldquo;down&rdquo; camera that was not actually looking straight down. The images showed the horizon and the vehicle&rsquo;s own rotors, revealing that the assumed camera geometry was wrong.</p>
+      <h3>Camera-frame debugging</h3>
+      <p>An AirSim camera configuration produced a &lsquo;down&rsquo; camera that was not actually pointing straight down. The horizon and the vehicle rotors appeared in the images, showing that the assumed camera frame was incorrect.</p>
       <p>This mattered because the pixel-to-ground conversion depends on a true nadir view. The configuration was corrected with a &minus;90&deg; pitch and a stabilized gimbal, so the camera stays aligned with the ground.</p>
-      <p class="insight sm">Validate the physical meaning of the sensor frame before trusting downstream geometry.</p>
+      <p class="insight sm">The camera frame had to be verified before relying on the downstream geometry.</p>
     </div>
     <div class="lesson">
       <p class="lesson-k">Lesson</p>
-      <h3>Closing the Loop Without a Custom Handshake</h3>
-      <p>The flight controller and the Python mission logic run separately, and the flight controller does not provide a dedicated &ldquo;landed&rdquo; message.</p>
-      <p>Instead of adding another dependency between the two, the mission logic uses the simulator&rsquo;s vehicle state to determine arrival and touchdown. This keeps the mission state grounded in the vehicle&rsquo;s observed state.</p>
+      <h3>Arrival and landing state</h3>
+      <p>The flight controller and the Python mission logic run separately, and the flight controller does not provide a dedicated &lsquo;landed&rsquo; message.</p>
+      <p>The mission logic therefore uses the simulator&rsquo;s vehicle state to determine arrival and touchdown.</p>
     </div>
   </div>
 </section>
@@ -256,35 +253,35 @@
 <!-- SURVEY-RAG -->
 <section class="so-sec">
   <p class="eyebrow">Connection to Survey-RAG</p>
-  <h2>From Finding a Place to Landing There</h2>
+  <h2>Connection to Survey-RAG</h2>
   <div class="prose">
-    <p>Hexagrid VLM complements my <a href="project-survey-rag.html">Survey-RAG</a> work, and picks up from its arrival hold.</p>
+    <p>Hexagrid VLM complements <a href="project-survey-rag.html">Survey-RAG</a> by addressing the step after a location has been retrieved.</p>
   </div>
   <div class="axes">
-    <div class="axis"><p class="axis-k"><a href="project-survey-rag.html">Survey-RAG</a></p><p class="axis-v">&ldquo;Where did I see the thing I&rsquo;m looking for?&rdquo;</p></div>
-    <div class="axis hi"><p class="axis-k">Hexagrid VLM</p><p class="axis-v">&ldquo;Now that I&rsquo;m there, where should the aircraft land?&rdquo;</p></div>
+    <div class="axis"><p class="axis-k"><a href="project-survey-rag.html">Survey-RAG</a></p><p class="axis-v">Where did I see the object?</p></div>
+    <div class="axis hi"><p class="axis-k">Hexagrid VLM</p><p class="axis-v">Where should the aircraft land?</p></div>
   </div>
   <ol class="loop two">
     <li class="rag">Survey</li><li class="rag">Retrieve</li><li class="rag">Relocate</li><li class="hx">Select landing site</li><li class="hx">Land</li>
   </ol>
-  <p class="note">Blue steps: Survey-RAG. Dark steps: Hexagrid VLM. Together they explore different stages of an aerial autonomy loop.</p>
+  <p class="note">Survey-RAG retrieves a location from surveyed imagery. Hexagrid VLM selects a landing region and executes the landing in simulation.</p>
 </section>
 
 <!-- LEARNED -->
 <section class="so-sec">
   <p class="eyebrow">What I learned</p>
-  <h2>What This Experiment Taught Me</h2>
+  <h2>Observations from the experiment</h2>
   <div class="contrib three">
-    <div><span class="six-n">01</span><b>VLMs need structure around them</b><p>A strong visual model does not automatically produce a reliable control signal. The system needs mechanisms that turn uncertain model outputs into decisions that can be checked, repeated and grounded.</p></div>
-    <div><span class="six-n">02</span><b>Semantic reasoning and geometry must meet</b><p>A VLM can identify a visually meaningful region, but the aircraft ultimately needs a physical coordinate. The pixel-to-ground stage is the bridge between perception and motion.</p></div>
-    <div><span class="six-n">03</span><b>Sensor assumptions matter</b><p>A small camera-frame error can invalidate every geometric calculation downstream. Robot intelligence depends on the model and on the physical assumptions around it.</p></div>
+    <div><span class="six-n">01</span><b>Decision logic around the VLM</b><p>A VLM response is only one part of the landing decision. The system also needs repeated predictions and a rule for selecting a target.</p></div>
+    <div><span class="six-n">02</span><b>Image decisions need geometric grounding</b><p>The VLM selects a region in the image, while the flight controller needs a physical coordinate. The pixel-to-ground step connects the two.</p></div>
+    <div><span class="six-n">03</span><b>Sensor frames affect the result</b><p>An incorrect camera frame can invalidate the geometric calculation even when the VLM prediction is correct.</p></div>
   </div>
 </section>
 
 <!-- DEMONSTRATED -->
 <section class="so-sec">
-  <p class="eyebrow">What this project demonstrates</p>
-  <h2>Demonstrated System</h2>
+  <p class="eyebrow">System demonstrated</p>
+  <h2>What was demonstrated</h2>
   <div class="contrib three">
     <div><b>Local VLM</b><p>Vision-language reasoning runs locally, without sending imagery outside the machine.</p></div>
     <div><b>Multi-view reasoning</b><p>Six aerial viewpoints are compared as a single visual context.</p></div>
@@ -297,11 +294,9 @@
 
 <!-- FINAL -->
 <section class="so-sec final">
-  <p class="eyebrow">From visual reasoning to physical action</p>
-  <h2>A VLM Does Not Need to Control the Aircraft Directly</h2>
+  <h2>Role of the VLM</h2>
   <div class="prose">
-    <p>Hexagrid VLM explores a simple principle: the model provides the semantic judgment, while temporal reasoning, geometry and flight-control logic turn that judgment into an executable action.</p>
-    <p>This is the direction I am interested in for embodied AI: models that do not just describe the world, but participate in a grounded perception &rarr; decision &rarr; action loop.</p>
+    <p>The VLM provides the semantic landing decision. Temporal voting, geometric conversion and PX4 handle the subsequent steps.</p>
   </div>
   <p class="so-actions">
     <a class="btn primary" href="https://github.com/furqi98/hexagrid-vlm-landing" target="_blank" rel="noopener">View code</a>

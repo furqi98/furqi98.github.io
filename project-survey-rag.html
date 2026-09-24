@@ -28,11 +28,10 @@
 <header class="so-hero">
   <p class="eyebrow">Aerial robotics &middot; multimodal retrieval</p>
   <h1 class="so-title">Survey-RAG: Language-Queryable Aerial Memory</h1>
-  <p class="so-lede">Turning a UAV survey into searchable spatial memory for post-hoc natural-language retrieval and relocation.</p>
+  <p class="so-lede">I built Survey-RAG to study a post-hoc query problem: a UAV may survey an area before the operator knows what they will want to find. The system stores surveyed images together with their locations, allowing an operator to ask a natural-language query later, retrieve a relevant image, and send the UAV back to that location.</p>
   <p class="so-intro">
-    A UAV surveys an area once, indexing what it sees together with its spatial information. Later, an operator
-    can ask natural-language questions such as <b>&ldquo;Where is the fountain?&rdquo;</b> or <b>&ldquo;Show me the
-    flooded area&rdquo;</b> and retrieve the most relevant surveyed location before sending the UAV there.
+    A UAV surveys an area once and stores the captured images with their locations. Later, an operator can use a
+    natural-language query to find a relevant image and send the UAV back to that location.
   </p>
   <p class="so-actions">
     <a class="btn primary" href="https://youtu.be/lmt_aM5NoCk" target="_blank" rel="noopener">Watch the demonstration</a>
@@ -90,18 +89,18 @@
 <!-- KEY IDEA -->
 <section class="so-sec">
   <p class="eyebrow">The key idea</p>
-  <h2>Survey Once. Ask Later.</h2>
+  <h2>Post-hoc queries</h2>
 
   <div class="timelines">
     <div class="tl">
       <p class="tl-h">Conventional workflow</p>
       <ol><li>Question</li><li>Detect</li><li>Fly / search</li></ol>
-      <p class="tl-note">The question has to exist before the flight.</p>
+      <p class="tl-note">In a detector-driven workflow, the target has to be defined before the flight.</p>
     </div>
     <div class="tl hi">
       <p class="tl-h">Survey-RAG</p>
       <ol><li>Survey once</li><li>Store visual + spatial memory</li><li class="gap">Question later</li><li>Retrieve</li><li>Relocate</li></ol>
-      <p class="tl-note">The operator does not need to know the query at the time of the survey.</p>
+      <p class="tl-note">The query can be defined after the survey has been completed.</p>
     </div>
   </div>
 
@@ -137,23 +136,23 @@
 
 <!-- DETECTOR -->
 <section class="so-sec">
-  <p class="eyebrow">Why not just use a detector?</p>
+  <p class="eyebrow">Why retrieval instead?</p>
   <h2>Open-Vocabulary Retrieval Instead of a Fixed Detector</h2>
   <div class="prose">
-    <p>A detector-based system can be very effective when the objects of interest are known in advance. But post-hoc survey analysis creates a different problem.</p>
+    <p>A detector-based system is useful when the objects of interest are known in advance. In this setting, the query may only be defined after the survey.</p>
     <p>The operator may ask about something that was not anticipated when the survey was planned. Survey-RAG therefore treats the survey imagery as a searchable visual memory rather than committing the system to a fixed list of object classes.</p>
   </div>
   <div class="flows">
     <div class="flow"><em class="flow-t">Detector-driven approach</em><span>Predefined classes</span><i></i><span class="flow-m">Detector</span><i></i><span>Known objects</span></div>
     <div class="flow"><em class="flow-t">Survey-RAG</em><span>Survey imagery</span><i></i><span>Visual representation</span><i></i><span>Natural-language query</span><i></i><span class="flow-m">Retrieve relevant scene</span></div>
   </div>
-  <p class="pull">Survey-RAG does not require the query vocabulary to be fixed when the survey is performed.</p>
+  <p class="pull">The query vocabulary therefore does not have to be fixed when the survey is performed.</p>
 </section>
 
 <!-- HOW IT WORKS -->
 <section class="so-sec">
   <p class="eyebrow">How it works</p>
-  <h2>From Image to Spatial Memory</h2>
+  <h2>How the system works</h2>
   <ol class="six">
     <li><span class="six-n">01</span><b>Survey</b><p>The UAV flies a planned survey and captures nadir imagery. Each image is associated with its spatial information.</p></li>
     <li><span class="six-n">02</span><b>Index</b><p>The images are converted into visual embeddings using SigLIP2 and stored together with the survey location.</p></li>
@@ -235,24 +234,24 @@
   </div>
 
   <div class="lesson">
-    <p class="lesson-k">Research lesson</p>
-    <h3>The Benchmark Changed the Conclusion</h3>
-    <p>One of the most important lessons came from evaluating the system incorrectly the first time.</p>
-    <p>My initial benchmark used pseudo-ground-truth derived from the system&rsquo;s own captions. Under that evaluation, BM25 appeared to perform extremely well (0.85 P@1), because the evaluation target was effectively built from the same representation being tested.</p>
-    <p>I therefore rebuilt the benchmark using human-labelled ground truth across the survey images.</p>
+    <p class="lesson-k">Evaluation</p>
+    <h3>Benchmark correction</h3>
+    <p>The first evaluation used pseudo-ground-truth derived from the system&rsquo;s own captions.</p>
+    <p>The first evaluation used pseudo-ground-truth derived from the system&rsquo;s own captions. Under that setup, BM25 reached 0.85 P@1 because the evaluation target was derived from the same representation used by the method.</p>
+    <p>I rebuilt the benchmark using human-labelled ground truth across the survey images. With the revised labels, BM25 dropped to 0.64 P@1 while the hybrid retrieval system reached 0.93.</p>
     <div class="flip">
       <div><span>Caption-derived labels</span><b>BM25 0.85</b></div>
       <i aria-hidden="true"></i>
       <div><span>Human labels</span><b>BM25 0.64</b><b class="up">Hybrid 0.93</b></div>
     </div>
-    <p>This was a useful reminder that retrieval systems need evaluation targets that are independent of the representation being evaluated.</p>
+    <p>The revised benchmark made the comparison independent of the representation being evaluated.</p>
   </div>
 </section>
 
 <!-- GENERALIZATION -->
 <section class="so-sec">
-  <p class="eyebrow">Real-world generalization</p>
-  <h2>Does It Transfer Beyond the Original Survey?</h2>
+  <p class="eyebrow">External evaluation</p>
+  <h2>Evaluation on external UAV datasets</h2>
   <div class="prose">
     <p>I also evaluated the retrieval approach on three external UAV imagery datasets without retuning the retrieval system for each dataset.</p>
   </div>
@@ -262,10 +261,10 @@
   </table>
   <p class="note">SigLIP2 retrieval on the external datasets.</p>
   <div class="prose">
-    <p>The results show that the retrieval representation can transfer across different aerial imagery collections rather than being limited to the original survey.</p>
+    <p>The retrieval system also worked on the three external aerial datasets without retuning for each dataset.</p>
   </div>
 
-  <h3 class="so-h3">FloodNet: Searching for Scenes, Not Just Objects</h3>
+  <h3 class="so-h3">FloodNet scene queries</h3>
   <div class="flood">
     <div class="fd"><span class="fd-k">Query</span><b class="fd-q">&ldquo;flooded area after a hurricane&rdquo;</b></div>
     <i aria-hidden="true"></i>
@@ -277,17 +276,16 @@
     <div class="fd hi"><span class="fd-k">Enrichment</span><b>6&times;</b><small>more flooded scenes than chance</small></div>
   </div>
   <div class="prose">
-    <p>This illustrates the difference between searching for a specific object and searching for a <b>semantic scene or condition</b>. The 6&times; is enrichment of flooded scenes in the retrieved set, not a 6&times; accuracy gain.</p>
+    <p>The query describes a scene rather than a single object. The 6&times; value is enrichment in the retrieved set, not a 6&times; increase in accuracy.</p>
   </div>
 </section>
 
 <!-- RETRIEVAL TO ACTION -->
 <section class="so-sec">
-  <p class="eyebrow">From retrieval to action</p>
-  <h2>A Retrieved Image Becomes a Flight Target</h2>
+  <p class="eyebrow">Retrieval-to-flight</p>
+  <h2>Retrieval-to-flight experiment</h2>
   <div class="prose">
-    <p>Retrieval alone does not complete the task. The goal of Survey-RAG is to connect the retrieved visual memory back to the physical world.</p>
-    <p>Every indexed image is associated with its survey location. Once a relevant image is retrieved, its spatial information can be converted into a target for the UAV, which then flies back toward the location represented by the retrieved image.</p>
+    <p>Each indexed image is associated with the location where it was captured. After retrieval, that location is passed to the UAV as a navigation target.</p>
   </div>
   <ol class="act">
     <li><span class="act-k">Query</span><b>&ldquo;fly to the tennis court&rdquo;</b></li>
@@ -303,7 +301,7 @@
 <!-- CLOSED LOOP -->
 <section class="so-sec">
   <p class="eyebrow">Closed-loop demonstration</p>
-  <h2>From Language to Flight</h2>
+  <h2>Closed-loop demonstration</h2>
   <div class="yt">
     <iframe src="https://www.youtube-nocookie.com/embed/lmt_aM5NoCk?rel=0&amp;modestbranding=1" title="Survey-RAG demonstration" loading="lazy" allowfullscreen allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
   </div>
@@ -325,12 +323,12 @@
 
 <!-- FAILURE -->
 <section class="so-sec">
-  <p class="eyebrow">The failure</p>
-  <h2>The System Also Shows Where the Approach Breaks</h2>
+  <p class="eyebrow">Failure case</p>
+  <h2>Picnic-table failure</h2>
   <div class="prose">
     <p>The system failed on the picnic-table request.</p>
-    <p>This was consistent with a limitation already visible in the retrieval benchmark: very small objects can occupy too little of the aerial frame to produce a reliable representation.</p>
-    <p>The failure therefore connected the retrieval benchmark to the end-to-end flight experiment: the weak retrieval produced the wrong target, which then produced the wrong flight destination.</p>
+    <p>The failure was consistent with the retrieval benchmark: small objects can occupy too little of the aerial frame to produce a reliable representation.</p>
+    <p>The retrieval error produced the wrong target location, which led to the 99.1 m flight error.</p>
   </div>
   <ol class="chain-boxes">
     <li><span>Request</span><b>&ldquo;picnic table&rdquo;</b></li>
@@ -339,7 +337,7 @@
     <li class="bad"><span>Flight</span><b>99.1 m off, not in view</b></li>
   </ol>
 
-  <h3 class="so-h3">Resolution, Not an Abstract &ldquo;AI Limitation&rdquo;</h3>
+  <h3 class="so-h3">Effect of object scale</h3>
   <div class="split">
     <div class="prose">
       <p>The current limitation is strongly related to object scale. Objects occupying roughly less than 1% of the frame were difficult for the configurations tested.</p>
@@ -360,45 +358,42 @@
 
 <!-- LEARNED -->
 <section class="so-sec">
-  <p class="eyebrow">What I learned</p>
-  <h2>The Hardest Part Was Not Retrieval</h2>
+  <p class="eyebrow">Lessons from evaluation</p>
+  <h2>Main observations</h2>
   <div class="prose">
-    <p>The project began as a retrieval problem, but several of the most important lessons came from how the system was evaluated.</p>
+    <p>The experiments produced four main observations:</p>
   </div>
   <ol class="lessons">
-    <li>The benchmark itself must be independent of the retrieval representation.</li>
-    <li>A higher retrieval score is not enough: the retrieved result must still correspond to a useful physical location.</li>
-    <li>The same representation can support very different queries, including objects, places and scene-level conditions.</li>
-    <li>Retrieval quality and physical navigation are coupled: a retrieval error becomes a navigation error once the system acts on the result.</li>
+    <li>The benchmark should be independent of the representation being evaluated.</li>
+    <li>Retrieval accuracy alone is not enough; the retrieved image must correspond to a useful physical location.</li>
+    <li>The same visual representation can support object, place and scene-level queries.</li>
+    <li>A retrieval error becomes a navigation error once the retrieved location is used as a flight target.</li>
   </ol>
-  <p class="pull big">Survey-RAG is ultimately about connecting semantic retrieval to physical action.</p>
 </section>
 
 <!-- CONTRIBUTION -->
 <section class="so-sec">
-  <p class="eyebrow">The research contribution</p>
-  <h2>What Survey-RAG Adds</h2>
+  <p class="eyebrow">System summary</p>
+  <h2>What the system does</h2>
   <div class="contrib">
     <div><span class="six-n">01</span><b>Post-hoc querying</b><p>Questions can be asked after the UAV has completed the survey.</p></div>
-    <div><span class="six-n">02</span><b>Open-vocabulary visual retrieval</b><p>The survey is represented as searchable visual memory rather than a fixed list of detector classes.</p></div>
+    <div><span class="six-n">02</span><b>Open-vocabulary visual retrieval</b><p>The survey is stored as searchable visual memory instead of a fixed list of detector classes.</p></div>
     <div><span class="six-n">03</span><b>Spatial grounding</b><p>Retrieved imagery is linked to the physical location where it was captured.</p></div>
     <div><span class="six-n">04</span><b>Retrieval-to-flight</b><p>The retrieved location can be converted into a UAV navigation target.</p></div>
   </div>
-  <p class="closing-line">language <i>&rarr;</i> memory <i>&rarr;</i> location <i>&rarr;</i> action</p>
-  <p class="note center">The system closes the loop from language to memory to location to action.</p>
 </section>
 
 <!-- NEXT -->
 <section class="so-sec">
-  <p class="eyebrow">Next step</p>
-  <h2>From Searchable Memory to More Capable Aerial Agents</h2>
+  <p class="eyebrow">Next steps</p>
+  <h2>Limitations and next steps</h2>
   <div class="prose">
-    <p>The current system assumes that the UAV first completes a survey and answers questions afterward. The next step is to investigate how searchable aerial memory can support more capable autonomous agents.</p>
+    <p>The current system performs the survey first and answers queries afterwards. A next step is to investigate how the stored observations could support further reasoning or guide later inspection.</p>
     <p>Instead of only answering <b>&ldquo;Where was it?&rdquo;</b>, future systems could reason about:</p>
   </div>
   <div class="asks next"><span>What happened?</span><span>What changed?</span><span>What should I inspect next?</span></div>
   <div class="prose">
-    <p>This creates a bridge between aerial retrieval, multimodal reasoning and autonomous action.</p>
+    <p>This would extend the current retrieval system beyond finding a previously observed location.</p>
   </div>
 </section>
 
@@ -418,13 +413,6 @@
 
 <!-- FINAL -->
 <section class="so-sec final">
-  <p class="eyebrow">Survey once</p>
-  <h2>Survey Once. Remember What You Saw.</h2>
-  <div class="prose">
-    <p>Survey-RAG explores a simple idea: <b>a UAV should not have to forget everything it saw once the survey is over.</b></p>
-    <p>By associating aerial imagery with spatial information, the survey becomes a searchable memory. Natural-language queries can retrieve relevant scenes, and those retrieved locations can be connected back to UAV navigation.</p>
-    <p>The result is a pipeline from <b>language &rarr; visual memory &rarr; spatial retrieval &rarr; physical action.</b></p>
-  </div>
   <p class="so-actions">
     <a class="btn primary" href="https://youtu.be/lmt_aM5NoCk" target="_blank" rel="noopener">Watch the demonstration</a>
     <a class="btn" href="#benchmark">Explore the benchmark</a>

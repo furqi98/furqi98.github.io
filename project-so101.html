@@ -64,14 +64,10 @@
 <!-- THE QUESTION -->
 <section class="so-sec">
   <p class="eyebrow">The question</p>
-  <h2>A Simple Task, A More Interesting Question</h2>
+  <h2>Research question</h2>
   <div class="prose">
-    <p>The task was deliberately simple: pick up a cube and place it inside a box.</p>
-    <p>Rather than focusing on developing a new model, I used the SO-101 as a physical testbed to investigate a more practical question:</p>
-  </div>
-  <blockquote class="big-q">What happens when we change the structure of the demonstrations given to an imitation-learning policy?</blockquote>
-  <div class="prose">
-    <p>I collected demonstrations in three progressively different ways, keeping the overall manipulation task the same while changing how the object was distributed across the workspace.</p>
+    <p>The task was to pick up a cube and place it inside a box.</p>
+    <p>I used the SO-101 as a physical testbed to study how the structure of demonstrations affects what an imitation-learning policy learns. The manipulation task stayed the same across experiments; I changed how the cube was distributed across the workspace.</p>
   </div>
 </section>
 
@@ -110,9 +106,9 @@
 <!-- THREE STRATEGIES -->
 <section class="so-sec">
   <p class="eyebrow">Three data-collection experiments</p>
-  <h2>Same Robot. Same Task. Different Demonstrations.</h2>
+  <h2>Data-collection experiments</h2>
   <div class="prose">
-    <p>The key variable I changed was not the robot or the task, but the structure of the demonstrations.</p>
+    <p>The robot and task were kept the same across the experiments. I changed the spatial coverage and orientation coverage of the demonstrations.</p>
     <p>I progressively moved from unstructured placement to spatially structured demonstrations and finally to structured position-and-orientation variation.</p>
   </div>
   <ol class="stages">
@@ -131,8 +127,7 @@
   <div class="exp-grid">
     <div class="prose">
       <p>The first demonstrations were collected with the cube placed around the workspace without explicitly defining a structured set of object locations.</p>
-      <p>The resulting ACT policy struggled to reliably locate and grasp the cube.</p>
-      <p>This made it difficult to reason about the source of the failure because the spatial distribution of the demonstrations itself was not clearly defined.</p>
+      <p>The resulting ACT policy struggled to locate and grasp the cube. Because the object locations were not recorded as a structured set, it was difficult to relate the failures to workspace coverage.</p>
       <p class="outcome fail"><span>Outcome</span> The policy did not reliably locate or grasp the cube.</p>
       <p class="next">This motivated the next experiment: explicitly structuring the workspace.</p>
     </div>
@@ -178,8 +173,8 @@
   <p class="eyebrow">Experiment 03</p>
   <h2>Structured Position + Orientation</h2>
   <div class="prose">
-    <p>After observing the limitations of the first two datasets, I constrained the experiment further.</p>
-    <p>The workspace was restricted to a single grid cell. Within that single grid cell, I defined <b>19 distinct spatial locations</b>, marked on a transparent plastic sheet laid over the cell as a positioning template, so every demonstration used those exact positions.</p>
+    <p>After the first two experiments, I restricted the workspace and defined the demonstration locations explicitly.</p>
+    <p>The workspace was restricted to one grid cell containing <b>19 marked spatial locations</b>. A transparent plastic sheet was used as a positioning template so that the demonstrations used the same locations.</p>
     <p>At each of those 19 locations, the cube was demonstrated in four different orientations:</p>
     <p class="orient-line">Vertical &middot; 45&deg; right &middot; 45&deg; left &middot; Horizontal</p>
   </div>
@@ -220,12 +215,11 @@
 <!-- KEY OBSERVATION -->
 <section class="so-sec">
   <p class="eyebrow">Key observation</p>
-  <h2>ACT Learned the Demonstrated Task Space</h2>
+  <h2>Generalization outside the demonstrated region</h2>
   <div class="prose">
-    <p>The most important observation from the experiments was where the policy succeeded, and where it did not.</p>
-    <p>When the cube was placed in regions represented by the demonstrations, the ACT policy could learn the corresponding manipulation behavior.</p>
+    <p>The ACT policy could learn the manipulation behavior within regions represented in the demonstrations.</p>
     <p>When the cube was moved into spatial regions that were not represented in the demonstrations, the policy did not reliably generalize to those regions.</p>
-    <p>This suggested that, in this experimental setup, the learned behavior was strongly influenced by the distribution of demonstrated states.</p>
+    <p>In this experimental setup, the learned behavior was therefore strongly influenced by the distribution of demonstrated states.</p>
   </div>
 
   <div class="gen">
@@ -245,7 +239,7 @@
   <p class="pull">The policy did not automatically acquire reliable behavior across the entire workspace simply because it had seen the task performed somewhere within it.</p>
   <p class="note">An empirical observation from this physical setup and these datasets, not a general claim about ACT.</p>
 
-  <h3 class="so-h3">More Frames Did Not Automatically Mean Better Behavior</h3>
+  <h3 class="so-h3">Dataset size versus coverage</h3>
   <div class="compare">
     <div class="cmp">
       <p class="cmp-h">Six-grid dataset</p>
@@ -261,19 +255,18 @@
     </div>
   </div>
   <div class="prose">
-    <p>The structured dataset was smaller in total frame count than the six-grid dataset, yet produced substantially more reliable behavior within its demonstrated region.</p>
-    <p>This shifted the focus from simply collecting more frames toward understanding where and how demonstrations cover the task space.</p>
+    <p>The structured dataset contained fewer frames than the six-grid dataset, but the resulting policy was more reliable within the demonstrated region.</p>
+    <p>This suggests that where the demonstrations are collected can matter in addition to the total number of frames.</p>
   </div>
 </section>
 
 <!-- ORIENTATION -->
 <section class="so-sec">
   <p class="eyebrow">Why orientation?</p>
-  <h2>Orientation Was a Separate Bottleneck</h2>
+  <h2>Effect of orientation coverage</h2>
   <div class="prose">
-    <p>Spatial position was not the only variable affecting the learned behavior.</p>
-    <p>The cube could also appear at different orientations. A policy trained predominantly around one orientation can become tied to that particular grasp configuration.</p>
-    <p>I therefore introduced explicit orientation variation into the structured demonstrations.</p>
+    <p>Spatial position was not the only variable in the demonstrations. The cube could also appear at different orientations, which changes the required grasp configuration.</p>
+    <p>I therefore included four orientations at every one of the 19 spatial locations.</p>
     <p>Crucially, the four orientations were not distributed randomly across the dataset. <b>Every one of the 19 spatial locations contained all four orientations.</b></p>
     <p>This allowed the experiment to separate two forms of coverage:</p>
   </div>
@@ -319,10 +312,10 @@
 <!-- EVALUATION -->
 <section class="so-sec">
   <p class="eyebrow">Physical evaluation</p>
-  <h2>From Demonstrations to Autonomous Behavior</h2>
+  <h2>Physical evaluation</h2>
   <div class="prose">
-    <p>The learned policy was deployed on the physical SO-101 rather than evaluated only through training metrics.</p>
-    <p>During successful rollouts, the robot independently:</p>
+    <p>The final ACT policy was deployed on the physical SO-101 for evaluation.</p>
+    <p>In successful rollouts, the robot located the cube, approached it, aligned the gripper, grasped the cube, moved to the box and released it inside.</p>
   </div>
   <p class="chain">located the cube <i>&rarr;</i> approached it <i>&rarr;</i> oriented the gripper <i>&rarr;</i> grasped it <i>&rarr;</i> moved to the box <i>&rarr;</i> placed the cube inside</p>
   <div class="pair">
@@ -344,14 +337,10 @@
 <!-- VLA -->
 <section class="so-sec">
   <p class="eyebrow">Research direction</p>
-  <h2>From ACT to Vision-Language-Action</h2>
+  <h2>Extension to VLA policies</h2>
   <div class="prose">
-    <p>The observations from the ACT experiments motivated a broader question:</p>
-  </div>
-  <blockquote class="big-q sm">Can pretrained Vision-Language-Action models generalize beyond the specific configurations represented in physical demonstrations?</blockquote>
-  <div class="prose">
-    <p>I therefore extended the experiments toward VLA policies, including SmolVLA. I fine-tuned the 0.5B SmolVLA policy on the six-grid demonstration dataset.</p>
-    <p>The physical evaluation is intended to test whether pretrained multimodal representations provide stronger generalization across object placements than the behavior observed with the ACT policy.</p>
+    <p>The ACT experiments led to a follow-up question: whether pretrained Vision-Language-Action models can generalize beyond the configurations represented in the physical demonstrations.</p>
+    <p>I fine-tuned the 0.5B SmolVLA policy on the six-grid demonstration dataset. Physical evaluation is ongoing.</p>
     <p class="outcome pending"><span>Status</span> Physical evaluation is ongoing.</p>
   </div>
   <div class="flows">
@@ -366,7 +355,7 @@
   <p class="eyebrow">Open source</p>
   <h2>Data and Policies</h2>
   <div class="prose">
-    <p>The experiments are accompanied by publicly released datasets and trained policy checkpoints so that the demonstrations and learned models can be inspected independently.</p>
+    <p>I released the datasets and trained policy checkpoints so the demonstrations and learned models can be inspected.</p>
   </div>
   <p class="cards-h">Datasets</p>
   <div class="cards">
