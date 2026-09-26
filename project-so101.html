@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Teaching a Robot to Pick and Place Through Demonstration | Syed Furqan Ali</title>
-<meta name="description" content="A physical study of how demonstration structure affects imitation learning on a SO-101 robot arm, using the Hugging Face LeRobot framework and ACT.">
+<meta name="description" content="A physical study of how demonstration coverage affects imitation-learning generalization, on a SO-101 robot arm with ACT and Hugging Face LeRobot.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=202609241452">
-<link rel="stylesheet" href="assets/css/research.css?v=202609241452">
+<link rel="stylesheet" href="assets/css/style.css?v=202609261200">
+<link rel="stylesheet" href="assets/css/research.css?v=202609261200">
 </head>
 <body id="body">
 <div id="main">
@@ -28,379 +28,145 @@
 <header class="so-hero">
   <p class="eyebrow">Robot learning &middot; physical experiment</p>
   <h1 class="so-title">Teaching a Robot to Pick and Place Through Demonstration</h1>
-  <p class="so-lede">A physical study of how demonstration structure affects imitation learning on a SO-101 robot arm.</p>
+  <p class="so-lede">A study of how demonstration coverage affects imitation-learning generalization.</p>
   <p class="so-intro">
-    I used the Hugging Face <a href="https://github.com/huggingface/lerobot" target="_blank" rel="noopener">LeRobot</a> framework with a physical SO-101 leader&ndash;follower arm to
-    collect demonstrations and train an ACT policy for cube pick-and-place. I studied how the cube's position and
-    orientation in the demonstrations affect what the policy learns.
+    I trained an ACT policy on a physical SO-101 arm to pick up a cube and place it in a box, changing only how the demonstrations were collected.
+    With the cube placed randomly across the workspace, the policy struggled to reach or grasp it. I then divided the workspace into a six-cell grid
+    and recorded placements in each cell: the policy learned to localize the cube but could not grasp it reliably. Finally, I restricted the
+    demonstrations to a single cell with 19 marked positions and 4 cube orientations at each. The policy trained on this structured dataset
+    enabled the SO-101 arm to successfully reach the cube, orient the gripper, grasp the cube and place it in the box.
   </p>
+  <p class="tags"><span>SO-101</span><span>Hugging Face LeRobot</span><span>ACT</span><span>Dual RGB cameras</span><span>ResNet-18</span><span>RTX 5090</span><span>76 episodes &middot; 30,110 frames</span><span>19 positions &times; 4 orientations</span></p>
   <p class="so-actions">
     <a class="btn primary" href="https://youtu.be/oDDR4Vwr4Uo" target="_blank" rel="noopener">Watch the experiment</a>
-    <a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener">Dataset</a>
-    <a href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener">Trained policy</a>
     <a href="https://www.linkedin.com/feed/update/urn:li:activity:7479988721472266240/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://huggingface.co/Syed-Furqan" target="_blank" rel="noopener">Hugging Face</a>
+    <a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener">Dataset</a>
+    <a href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener">ACT checkpoint</a>
+    <a href="https://huggingface.co/datasets/Syed-Furqan/eval_pick_place_1_grid1" target="_blank" rel="noopener">Evaluation trajectories</a>
   </p>
-
-  <div class="hero-media">
-    <figure style="flex:1.333">
-      <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_7" target="_blank" rel="noopener"><video poster="assets/poster/so101-eval-ep7.jpg" src="assets/video/so101-eval-ep7.mp4" width="560" height="420" autoplay loop muted playsinline preload="metadata"></video></a>
-      <figcaption>Autonomous ACT rollout, top camera: approach &rarr; grasp &rarr; lift &rarr; place.</figcaption>
-    </figure>
-    <figure style="flex:0.562">
-      <video poster="assets/poster/so101-pick-place.jpg" src="assets/video/so101-pick-place.mp4" width="236" height="420" autoplay loop muted playsinline preload="metadata"></video>
-      <figcaption>The physical SO-101 follower arm.</figcaption>
-    </figure>
+  <div class="yt">
+    <iframe src="https://www.youtube-nocookie.com/embed/oDDR4Vwr4Uo?rel=0&amp;modestbranding=1" title="SO-101 pick-and-place through demonstration" allowfullscreen allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
   </div>
 
-  <dl class="stats">
-    <div><dt>SO-101</dt><dd>Physical leader&ndash;follower robot</dd></div>
-    <div><dt>76</dt><dd>Position&ndash;orientation configurations</dd></div>
-    <div><dt>19</dt><dd>Distinct spatial locations</dd></div>
-    <div><dt>4</dt><dd>Orientations at every location</dd></div>
-    <div><dt>~30K</dt><dd>Frames in final structured dataset</dd></div>
-  </dl>
+  <p class="eyebrow" style="margin-top:34px">Autonomous evaluation rollouts</p>
+  <div class="evals">
+    <figure>
+      <a class="ev" href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_2" target="_blank" rel="noopener"><video poster="assets/poster/so101-eval-dual-ep2.jpg" src="assets/video/so101-eval-dual-ep2.mp4" width="756" height="360" autoplay loop muted playsinline preload="metadata"></video><span class="ev-lab top">Top</span><span class="ev-lab wr">Wrist</span></a>
+      <figcaption><b>Evaluation episode 2</b></figcaption>
+    </figure>
+    <figure>
+      <a class="ev" href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_5" target="_blank" rel="noopener"><video poster="assets/poster/so101-eval-dual-ep5.jpg" src="assets/video/so101-eval-dual-ep5.mp4" width="756" height="360" autoplay loop muted playsinline preload="metadata"></video><span class="ev-lab top">Top</span><span class="ev-lab wr">Wrist</span></a>
+      <figcaption><b>Evaluation episode 5</b></figcaption>
+    </figure>
+    <figure>
+      <a class="ev" href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_7" target="_blank" rel="noopener"><video poster="assets/poster/so101-eval-dual-ep7.jpg" src="assets/video/so101-eval-dual-ep7.mp4" width="756" height="360" autoplay loop muted playsinline preload="metadata"></video><span class="ev-lab top">Top</span><span class="ev-lab wr">Wrist</span></a>
+      <figcaption><b>Evaluation episode 7</b></figcaption>
+    </figure>
+    <figure>
+      <a class="ev" href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_8" target="_blank" rel="noopener"><video poster="assets/poster/so101-eval-dual-ep8.jpg" src="assets/video/so101-eval-dual-ep8.mp4" width="756" height="360" autoplay loop muted playsinline preload="metadata"></video><span class="ev-lab top">Top</span><span class="ev-lab wr">Wrist</span></a>
+      <figcaption><b>Evaluation episode 8</b></figcaption>
+    </figure>
+  </div>
+  <p class="evals-note">Autonomous ACT rollouts on the physical SO-101, real time, top and wrist cameras side by side. Four of the nine recorded evaluation episodes; click any clip to open the full trajectory on Hugging Face.</p>
+
+  <ol class="rdr">
+    <li><div class="rdr-box"><p class="rdr-k">Research question</p><p class="rdr-v">Does more demonstration data necessarily produce better imitation learning, or does <b>where the data comes from</b> matter more?</p></div></li>
+    <li class="stage-arrow" aria-hidden="true"></li>
+    <li><div class="rdr-box"><p class="rdr-k">Experimental design</p><p class="rdr-v">Same robot, task and policy. Only the <b>spatial and orientation coverage</b> of the demonstrations changed, across three datasets.</p></div></li>
+    <li class="stage-arrow" aria-hidden="true"></li>
+    <li><div class="rdr-box"><p class="rdr-k">Result</p><p class="rdr-v"><b>76 structured demonstrations</b> (30K frames) outperformed <b>101 demonstrations</b> (55K frames) within the demonstrated region.</p></div></li>
+  </ol>
 </header>
 
-<!-- THE QUESTION -->
+<!-- THE EXPERIMENT -->
 <section class="so-sec">
-  <p class="eyebrow">The question</p>
-  <h2>Research question</h2>
+  <p class="eyebrow">The experiment</p>
+  <h2>Three datasets, one variable</h2>
   <div class="prose">
-    <p>The task was to pick up a cube and place it inside a box.</p>
-    <p>I used the SO-101 as a physical testbed to study how the structure of demonstrations affects what an imitation-learning policy learns. The manipulation task stayed the same across experiments; I changed how the cube was distributed across the workspace.</p>
-  </div>
-</section>
-
-<!-- SETUP -->
-<section class="so-sec">
-  <p class="eyebrow">The robot</p>
-  <h2>The Physical Setup</h2>
-  <div class="prose">
-    <p>The experiments were performed on a physical SO-101 leader&ndash;follower arm using the Hugging Face LeRobot framework.</p>
-    <p>A human operator controlled the leader arm while the follower reproduced the demonstrated motion. The demonstrations were recorded with dual-camera observations together with the robot state and action trajectory.</p>
-  </div>
-  <figure class="shot wide teleop">
-    <video poster="assets/poster/so101-teleop.jpg" src="assets/video/so101-teleop.mp4" width="854" height="480" autoplay loop muted playsinline preload="metadata"></video>
-    <figcaption><b>Teleoperation setup.</b> I move the leader arm by hand and the follower arm reproduces the motion while the demonstration is recorded (shown at 1.5&times; speed).</figcaption>
-  </figure>
-  <div class="media-row">
-    <figure style="flex:0.562"><video poster="assets/poster/so101-pick-place.jpg" src="assets/video/so101-pick-place.mp4" width="236" height="420" autoplay loop muted playsinline preload="none"></video><figcaption><b>Follower arm</b> executes the motion</figcaption></figure>
-    <figure style="flex:0.562"><video poster="assets/poster/build-leader-arm.jpg" src="assets/video/build-leader-arm.mp4" width="236" height="420" autoplay loop muted playsinline preload="none"></video><figcaption><b>Leader arm</b>, during assembly</figcaption></figure>
-    <figure style="flex:1.338"><video poster="assets/poster/so101-top.jpg" src="assets/video/so101-top.mp4" width="562" height="420" autoplay loop muted playsinline preload="none"></video><figcaption><b>Top camera</b> observation</figcaption></figure>
-    <figure style="flex:0.829"><video poster="assets/poster/so101-wrist.jpg" src="assets/video/so101-wrist.mp4" width="348" height="420" autoplay loop muted playsinline preload="none"></video><figcaption><b>Wrist camera</b> observation</figcaption></figure>
-  </div>
-</section>
-
-<!-- TASK -->
-<section class="so-sec">
-  <p class="eyebrow">The task</p>
-  <h2>Pick &rarr; Grasp &rarr; Place</h2>
-  <div class="prose">
-    <p>The manipulation objective was to pick up a green cube and place it inside a box.</p>
-    <p>Although the task is simple, successful execution requires the policy to learn where the object appears, how it is oriented, how to approach it, and how to align the gripper for grasping.</p>
-  </div>
-  <div class="steps"><figure class="step"><img src="assets/img/so101/step-cube.jpg" width="560" height="420" loading="lazy" alt="Cube: frame from autonomous evaluation episode 7"><figcaption><span class="step-n">01</span> Cube<small>The block rests on the table.</small></figcaption></figure><figure class="step"><img src="assets/img/so101/step-approach.jpg" width="560" height="420" loading="lazy" alt="Approach: frame from autonomous evaluation episode 7"><figcaption><span class="step-n">02</span> Approach<small>The arm moves toward it.</small></figcaption></figure><figure class="step"><img src="assets/img/so101/step-grasp.jpg" width="560" height="420" loading="lazy" alt="Grasp: frame from autonomous evaluation episode 7"><figcaption><span class="step-n">03</span> Grasp<small>The gripper aligns and closes.</small></figcaption></figure><figure class="step"><img src="assets/img/so101/step-lift.jpg" width="560" height="420" loading="lazy" alt="Lift: frame from autonomous evaluation episode 7"><figcaption><span class="step-n">04</span> Lift<small>The block leaves the table.</small></figcaption></figure><figure class="step"><img src="assets/img/so101/step-place.jpg" width="560" height="420" loading="lazy" alt="Box: frame from autonomous evaluation episode 7"><figcaption><span class="step-n">05</span> Box<small>The block is released into the box.</small></figcaption></figure></div>
-  <p class="note">Frames from a single autonomous evaluation rollout of the final ACT policy (top camera).</p>
-</section>
-
-<!-- THREE STRATEGIES -->
-<section class="so-sec">
-  <p class="eyebrow">Three data-collection experiments</p>
-  <h2>Data-collection experiments</h2>
-  <div class="prose">
-    <p>The robot and task were kept the same across the experiments. I changed the spatial coverage and orientation coverage of the demonstrations.</p>
-    <p>I progressively moved from unstructured placement to spatially structured demonstrations and finally to structured position-and-orientation variation.</p>
+    <p>I kept the task (pick a cube, place it in a box), the physical SO-101 leader&ndash;follower arm and the ACT policy fixed, and changed only the structure of the demonstrations.</p>
   </div>
   <ol class="stages">
-    <li><a href="#exp1"><span class="stage-n">01</span><svg viewBox="0 0 260 170" class="diag" role="img" aria-label="Unstructured placement: cube positions scattered without a defined layout"><rect class="ws" x="4" y="4" width="252" height="162" rx="6"/><rect class="box" x="15.0" y="15.0" width="30" height="30" rx="3"/><rect class="box-in" x="20.0" y="20.0" width="20" height="20" rx="2"/><rect class="cube" x="48.0" y="109.0" width="8" height="18" rx="1.4" transform="rotate(20 52.0 118.0)"/><rect class="cube" x="92.0" y="39.0" width="8" height="18" rx="1.4" transform="rotate(-35 96.0 48.0)"/><rect class="cube" x="128.0" y="119.0" width="8" height="18" rx="1.4" transform="rotate(70 132.0 128.0)"/><rect class="cube" x="168.0" y="61.0" width="8" height="18" rx="1.4" transform="rotate(10 172.0 70.0)"/><rect class="cube" x="210.0" y="109.0" width="8" height="18" rx="1.4" transform="rotate(-60 214.0 118.0)"/><rect class="cube" x="226.0" y="31.0" width="8" height="18" rx="1.4" transform="rotate(35 230.0 40.0)"/><rect class="cube" x="146.0" y="21.0" width="8" height="18" rx="1.4" transform="rotate(85 150.0 30.0)"/><rect class="cube" x="66.0" y="141.0" width="8" height="18" rx="1.4" transform="rotate(-15 70.0 150.0)"/><rect class="cube" x="192.0" y="141.0" width="8" height="18" rx="1.4" transform="rotate(50 196.0 150.0)"/><rect class="cube" x="108.0" y="81.0" width="8" height="18" rx="1.4" transform="rotate(-80 112.0 90.0)"/><rect class="cube" x="234.0" y="75.0" width="8" height="18" rx="1.4" transform="rotate(25 238.0 84.0)"/><rect class="cube" x="36.0" y="61.0" width="8" height="18" rx="1.4" transform="rotate(60 40.0 70.0)"/></svg><b>Unstructured Placement</b><span>Object placement was not explicitly organized.</span></a></li>
+    <li><a href="https://huggingface.co/datasets/Syed-Furqan/pick_and_place" target="_blank" rel="noopener"><span class="stage-n">01</span><svg viewBox="0 0 260 170" class="diag" role="img" aria-label="Unstructured placement: cube positions scattered without a defined layout"><rect class="ws" x="4" y="4" width="252" height="162" rx="6"/><rect class="box" x="15.0" y="15.0" width="30" height="30" rx="3"/><rect class="box-in" x="20.0" y="20.0" width="20" height="20" rx="2"/><rect class="cube" x="48.0" y="109.0" width="8" height="18" rx="1.4" transform="rotate(20 52.0 118.0)"/><rect class="cube" x="92.0" y="39.0" width="8" height="18" rx="1.4" transform="rotate(-35 96.0 48.0)"/><rect class="cube" x="128.0" y="119.0" width="8" height="18" rx="1.4" transform="rotate(70 132.0 128.0)"/><rect class="cube" x="168.0" y="61.0" width="8" height="18" rx="1.4" transform="rotate(10 172.0 70.0)"/><rect class="cube" x="210.0" y="109.0" width="8" height="18" rx="1.4" transform="rotate(-60 214.0 118.0)"/><rect class="cube" x="226.0" y="31.0" width="8" height="18" rx="1.4" transform="rotate(35 230.0 40.0)"/><rect class="cube" x="146.0" y="21.0" width="8" height="18" rx="1.4" transform="rotate(85 150.0 30.0)"/><rect class="cube" x="66.0" y="141.0" width="8" height="18" rx="1.4" transform="rotate(-15 70.0 150.0)"/><rect class="cube" x="192.0" y="141.0" width="8" height="18" rx="1.4" transform="rotate(50 196.0 150.0)"/><rect class="cube" x="108.0" y="81.0" width="8" height="18" rx="1.4" transform="rotate(-80 112.0 90.0)"/><rect class="cube" x="234.0" y="75.0" width="8" height="18" rx="1.4" transform="rotate(25 238.0 84.0)"/><rect class="cube" x="36.0" y="61.0" width="8" height="18" rx="1.4" transform="rotate(60 40.0 70.0)"/></svg><b>Unstructured</b><span>Cube placed freely across the workspace.<span class="stage-r fail">101 demos &rarr; unreliable localization and grasping</span></span></a></li>
     <li class="stage-arrow" aria-hidden="true"></li>
-    <li><a href="#exp2"><span class="stage-n">02</span><svg viewBox="0 0 260 170" class="diag" role="img" aria-label="Six-grid placement: workspace divided into six cells"><rect class="ws" x="4" y="4" width="252" height="162" rx="6"/><rect class="cell" x="4.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="12.0" y="18.0">1</text><rect class="cell" x="88.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="96.0" y="18.0">2</text><rect class="cell" x="172.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="180.0" y="18.0">3</text><rect class="cell" x="4.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="12.0" y="99.0">4</text><rect class="cell" x="88.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="96.0" y="99.0">5</text><rect class="cell" x="172.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="180.0" y="99.0">6</text><rect class="box" x="33.0" y="31.5" width="26" height="26" rx="3"/><rect class="box-in" x="38.0" y="36.5" width="16" height="16" rx="2"/><rect class="cube" x="108.4" y="29.0" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(30 111.5 36.4)"/><rect class="cube" x="143.7" y="51.6" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-45 146.8 59.1)"/><rect class="cube" x="210.9" y="24.9" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(80 214.0 32.4)"/><rect class="cube" x="194.1" y="53.3" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(10 197.2 60.7)"/><rect class="cube" x="229.4" y="45.2" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-20 232.5 52.6)"/><rect class="cube" x="30.3" y="118.1" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-60 33.4 125.5)"/><rect class="cube" x="59.7" y="101.9" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(15 62.8 109.3)"/><rect class="cube" x="126.9" y="130.2" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(40 130.0 137.7)"/><rect class="cube" x="108.4" y="101.9" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-10 111.5 109.3)"/><rect class="cube" x="147.9" y="114.0" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(90 151.0 121.5)"/><rect class="cube" x="202.5" y="103.5" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(55 205.6 110.9)"/><rect class="cube" x="226.0" y="134.3" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-30 229.1 141.7)"/></svg><b>Six-Grid Placement</b><span>Workspace divided into six spatial regions.</span></a></li>
+    <li><a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_box_grid" target="_blank" rel="noopener"><span class="stage-n">02</span><svg viewBox="0 0 260 170" class="diag" role="img" aria-label="Six-grid placement: workspace divided into six cells"><rect class="ws" x="4" y="4" width="252" height="162" rx="6"/><rect class="cell" x="4.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="12.0" y="18.0">1</text><rect class="cell" x="88.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="96.0" y="18.0">2</text><rect class="cell" x="172.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="180.0" y="18.0">3</text><rect class="cell" x="4.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="12.0" y="99.0">4</text><rect class="cell" x="88.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="96.0" y="99.0">5</text><rect class="cell" x="172.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="180.0" y="99.0">6</text><rect class="box" x="33.0" y="31.5" width="26" height="26" rx="3"/><rect class="box-in" x="38.0" y="36.5" width="16" height="16" rx="2"/><rect class="cube" x="108.4" y="29.0" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(30 111.5 36.4)"/><rect class="cube" x="143.7" y="51.6" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-45 146.8 59.1)"/><rect class="cube" x="210.9" y="24.9" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(80 214.0 32.4)"/><rect class="cube" x="194.1" y="53.3" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(10 197.2 60.7)"/><rect class="cube" x="229.4" y="45.2" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-20 232.5 52.6)"/><rect class="cube" x="30.3" y="118.1" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-60 33.4 125.5)"/><rect class="cube" x="59.7" y="101.9" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(15 62.8 109.3)"/><rect class="cube" x="126.9" y="130.2" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(40 130.0 137.7)"/><rect class="cube" x="108.4" y="101.9" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-10 111.5 109.3)"/><rect class="cube" x="147.9" y="114.0" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(90 151.0 121.5)"/><rect class="cube" x="202.5" y="103.5" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(55 205.6 110.9)"/><rect class="cube" x="226.0" y="134.3" width="6.2" height="14.879999999999999" rx="1.1" transform="rotate(-30 229.1 141.7)"/></svg><b>Six-grid</b><span>Cube distributed across six spatial regions.<span class="stage-r partial">101 demos &middot; 55K frames &rarr; coarse localization, unreliable grasping</span></span></a></li>
     <li class="stage-arrow" aria-hidden="true"></li>
-    <li><a href="#exp3"><span class="stage-n">03</span><svg viewBox="0 0 260 170" class="diag" role="img" aria-label="One grid cell selected for the structured dataset"><rect class="ws" x="4" y="4" width="252" height="162" rx="6"/><rect class="cell" x="4.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="12.0" y="18.0">1</text><rect class="cell cell-on" x="88.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="96.0" y="18.0">2</text><rect class="cell" x="172.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="180.0" y="18.0">3</text><rect class="cell" x="4.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="12.0" y="99.0">4</text><rect class="cell" x="88.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="96.0" y="99.0">5</text><rect class="cell" x="172.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="180.0" y="99.0">6</text><rect class="box" x="33.0" y="31.5" width="26" height="26" rx="3"/><rect class="box-in" x="38.0" y="36.5" width="16" height="16" rx="2"/><circle class="dot" cx="115.7" cy="13.7" r="2.2"/><circle class="dot" cx="130.0" cy="13.7" r="2.2"/><circle class="dot" cx="144.3" cy="13.7" r="2.2"/><circle class="dot" cx="108.6" cy="29.1" r="2.2"/><circle class="dot" cx="122.9" cy="29.1" r="2.2"/><circle class="dot" cx="137.1" cy="29.1" r="2.2"/><circle class="dot" cx="151.4" cy="29.1" r="2.2"/><circle class="dot" cx="101.4" cy="44.5" r="2.2"/><circle class="dot" cx="115.7" cy="44.5" r="2.2"/><circle class="dot" cx="130.0" cy="44.5" r="2.2"/><circle class="dot" cx="144.3" cy="44.5" r="2.2"/><circle class="dot" cx="158.6" cy="44.5" r="2.2"/><circle class="dot" cx="108.6" cy="59.9" r="2.2"/><circle class="dot" cx="122.9" cy="59.9" r="2.2"/><circle class="dot" cx="137.1" cy="59.9" r="2.2"/><circle class="dot" cx="151.4" cy="59.9" r="2.2"/><circle class="dot" cx="115.7" cy="75.3" r="2.2"/><circle class="dot" cx="130.0" cy="75.3" r="2.2"/><circle class="dot" cx="144.3" cy="75.3" r="2.2"/></svg><b>Structured Position + Orientation</b><span>19 distinct locations &times; 4 orientations at every location.</span></a></li>
+    <li><a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener"><span class="stage-n">03</span><svg viewBox="0 0 260 170" class="diag" role="img" aria-label="One grid cell selected for the structured dataset"><rect class="ws" x="4" y="4" width="252" height="162" rx="6"/><rect class="cell" x="4.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="12.0" y="18.0">1</text><rect class="cell cell-on" x="88.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="96.0" y="18.0">2</text><rect class="cell" x="172.0" y="4.0" width="84.0" height="81.0"/><text class="cell-n" x="180.0" y="18.0">3</text><rect class="cell" x="4.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="12.0" y="99.0">4</text><rect class="cell" x="88.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="96.0" y="99.0">5</text><rect class="cell" x="172.0" y="85.0" width="84.0" height="81.0"/><text class="cell-n" x="180.0" y="99.0">6</text><rect class="box" x="33.0" y="31.5" width="26" height="26" rx="3"/><rect class="box-in" x="38.0" y="36.5" width="16" height="16" rx="2"/><circle class="dot" cx="115.7" cy="13.7" r="2.2"/><circle class="dot" cx="130.0" cy="13.7" r="2.2"/><circle class="dot" cx="144.3" cy="13.7" r="2.2"/><circle class="dot" cx="108.6" cy="29.1" r="2.2"/><circle class="dot" cx="122.9" cy="29.1" r="2.2"/><circle class="dot" cx="137.1" cy="29.1" r="2.2"/><circle class="dot" cx="151.4" cy="29.1" r="2.2"/><circle class="dot" cx="101.4" cy="44.5" r="2.2"/><circle class="dot" cx="115.7" cy="44.5" r="2.2"/><circle class="dot" cx="130.0" cy="44.5" r="2.2"/><circle class="dot" cx="144.3" cy="44.5" r="2.2"/><circle class="dot" cx="158.6" cy="44.5" r="2.2"/><circle class="dot" cx="108.6" cy="59.9" r="2.2"/><circle class="dot" cx="122.9" cy="59.9" r="2.2"/><circle class="dot" cx="137.1" cy="59.9" r="2.2"/><circle class="dot" cx="151.4" cy="59.9" r="2.2"/><circle class="dot" cx="115.7" cy="75.3" r="2.2"/><circle class="dot" cx="130.0" cy="75.3" r="2.2"/><circle class="dot" cx="144.3" cy="75.3" r="2.2"/></svg><b>Structured position + orientation</b><span>19 locations &times; 4 orientations = 76 configurations.<span class="stage-r ok">76 demos &middot; 30K frames &rarr; reliable pick-and-place within the demonstrated region</span></span></a></li>
   </ol>
 </section>
 
-<!-- EXPERIMENT 1 -->
-<section class="so-sec exp" id="exp1">
-  <p class="eyebrow">Experiment 01</p>
-  <h2>Unstructured Placement</h2>
-  <div class="exp-grid">
-    <div class="prose">
-      <p>The first demonstrations were collected with the cube placed around the workspace without explicitly defining a structured set of object locations.</p>
-      <p>The resulting ACT policy struggled to locate and grasp the cube. Because the object locations were not recorded as a structured set, it was difficult to relate the failures to workspace coverage.</p>
-      <p class="outcome fail"><span>Outcome</span> The policy did not reliably locate or grasp the cube.</p>
-      <p class="next">This motivated the next experiment: explicitly structuring the workspace.</p>
-    </div>
-    <div class="panel grid-bg">
-      <svg viewBox="0 0 300 200" class="diag" role="img" aria-label="Unstructured placement: cube positions scattered without a defined layout"><rect class="ws" x="4" y="4" width="292" height="192" rx="6"/><rect class="box" x="15.0" y="15.0" width="30" height="30" rx="3"/><rect class="box-in" x="20.0" y="20.0" width="20" height="20" rx="2"/><rect class="cube" x="48.0" y="109.0" width="8" height="18" rx="1.4" transform="rotate(20 52.0 118.0)"/><rect class="cube" x="92.0" y="39.0" width="8" height="18" rx="1.4" transform="rotate(-35 96.0 48.0)"/><rect class="cube" x="128.0" y="119.0" width="8" height="18" rx="1.4" transform="rotate(70 132.0 128.0)"/><rect class="cube" x="168.0" y="61.0" width="8" height="18" rx="1.4" transform="rotate(10 172.0 70.0)"/><rect class="cube" x="210.0" y="109.0" width="8" height="18" rx="1.4" transform="rotate(-60 214.0 118.0)"/><rect class="cube" x="226.0" y="31.0" width="8" height="18" rx="1.4" transform="rotate(35 230.0 40.0)"/><rect class="cube" x="146.0" y="21.0" width="8" height="18" rx="1.4" transform="rotate(85 150.0 30.0)"/><rect class="cube" x="66.0" y="141.0" width="8" height="18" rx="1.4" transform="rotate(-15 70.0 150.0)"/><rect class="cube" x="192.0" y="141.0" width="8" height="18" rx="1.4" transform="rotate(50 196.0 150.0)"/><rect class="cube" x="108.0" y="81.0" width="8" height="18" rx="1.4" transform="rotate(-80 112.0 90.0)"/><rect class="cube" x="234.0" y="75.0" width="8" height="18" rx="1.4" transform="rotate(25 238.0 84.0)"/><rect class="cube" x="36.0" y="61.0" width="8" height="18" rx="1.4" transform="rotate(60 40.0 70.0)"/></svg>
-      <p class="panel-cap">Schematic. Cube positions were not recorded.</p>
-      <dl class="mini-stats"><div><dt>50 + 51</dt><dd>episodes, two sessions</dd></div><div><dt>26,519 + 33,370</dt><dd>frames</dd></div></dl>
-    </div>
-  </div>
-  <p class="hf-links"><span>On Hugging Face</span>
-    <a href="https://huggingface.co/datasets/Syed-Furqan/pick_and_place" target="_blank" rel="noopener">Dataset: pick_and_place</a>
-    <a href="https://huggingface.co/datasets/Syed-Furqan/picknplace" target="_blank" rel="noopener">Dataset: picknplace</a>
-    <a href="https://huggingface.co/Syed-Furqan/act_pick_and_place_policy" target="_blank" rel="noopener">Policy: act_pick_and_place_policy</a>
-    <a href="https://huggingface.co/Syed-Furqan/act_picknplace_policy" target="_blank" rel="noopener">Policy: act_picknplace_policy</a>
-  </p>
-</section>
-
-<!-- EXPERIMENT 2 -->
-<section class="so-sec exp" id="exp2">
-  <p class="eyebrow">Experiment 02</p>
-  <h2>Six-Grid Placement</h2>
-  <div class="exp-grid">
-    <div class="prose">
-      <p>I divided the workspace into six spatial regions and distributed the cube placements across those regions. The box stayed in a fixed cell while the cube was placed across the others.</p>
-      <p class="figure-line"><b>101</b> demonstrations &middot; <b>55,001</b> frames</p>
-      <p>The policy learned some coarse spatial structure: the robot could often move toward the correct cell. But grasping remained unreliable.</p>
-      <p>This suggested that simply increasing the number of demonstrations was not enough. The demonstrations were spread across a larger region of the workspace, reducing the number of examples available for each individual region.</p>
-      <p class="outcome partial"><span>Outcome</span> Coarse localization, but unreliable grasping.</p>
-    </div>
-    <div class="panel grid-bg">
-      <svg viewBox="0 0 360 240" class="diag" role="img" aria-label="Six-grid placement: workspace divided into six cells"><rect class="ws" x="4" y="4" width="352" height="232" rx="6"/><rect class="cell" x="4.0" y="4.0" width="117.3" height="116.0"/><text class="cell-n big" x="12.0" y="22.0">1</text><rect class="cell" x="121.3" y="4.0" width="117.3" height="116.0"/><text class="cell-n big" x="129.3" y="22.0">2</text><rect class="cell" x="238.7" y="4.0" width="117.3" height="116.0"/><text class="cell-n big" x="246.7" y="22.0">3</text><rect class="cell" x="4.0" y="120.0" width="117.3" height="116.0"/><text class="cell-n big" x="12.0" y="138.0">4</text><rect class="cell" x="121.3" y="120.0" width="117.3" height="116.0"/><text class="cell-n big" x="129.3" y="138.0">5</text><rect class="cell" x="238.7" y="120.0" width="117.3" height="116.0"/><text class="cell-n big" x="246.7" y="138.0">6</text><rect class="box" x="42.7" y="42.0" width="40" height="40" rx="3"/><rect class="box-in" x="47.7" y="47.0" width="30" height="30" rx="2"/><rect class="cube" x="149.2" y="38.4" width="10.0" height="24.0" rx="1.8" transform="rotate(30 154.2 50.4)"/><rect class="cube" x="198.5" y="70.9" width="10.0" height="24.0" rx="1.8" transform="rotate(-45 203.5 82.9)"/><rect class="cube" x="292.3" y="32.6" width="10.0" height="24.0" rx="1.8" transform="rotate(80 297.3 44.6)"/><rect class="cube" x="268.9" y="73.2" width="10.0" height="24.0" rx="1.8" transform="rotate(10 273.9 85.2)"/><rect class="cube" x="318.1" y="61.6" width="10.0" height="24.0" rx="1.8" transform="rotate(-20 323.1 73.6)"/><rect class="cube" x="40.1" y="166.0" width="10.0" height="24.0" rx="1.8" transform="rotate(-60 45.1 178.0)"/><rect class="cube" x="81.1" y="142.8" width="10.0" height="24.0" rx="1.8" transform="rotate(15 86.1 154.8)"/><rect class="cube" x="175.0" y="183.4" width="10.0" height="24.0" rx="1.8" transform="rotate(40 180.0 195.4)"/><rect class="cube" x="149.2" y="142.8" width="10.0" height="24.0" rx="1.8" transform="rotate(-10 154.2 154.8)"/><rect class="cube" x="204.3" y="160.2" width="10.0" height="24.0" rx="1.8" transform="rotate(90 209.3 172.2)"/><rect class="cube" x="280.6" y="145.1" width="10.0" height="24.0" rx="1.8" transform="rotate(55 285.6 157.1)"/><rect class="cube" x="313.5" y="189.2" width="10.0" height="24.0" rx="1.8" transform="rotate(-30 318.5 201.2)"/></svg>
-      <p class="panel-cap">Schematic. The box occupies one cell; cube placements are spread across the other cells.</p>
-    </div>
-  </div>
-  <p class="hf-links"><span>On Hugging Face</span>
-    <a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_box_grid" target="_blank" rel="noopener">Dataset: pick_place_box_grid</a>
-    <a href="https://huggingface.co/Syed-Furqan/act_pick_place_box_grid" target="_blank" rel="noopener">Policy: act_pick_place_box_grid</a>
-  </p>
-</section>
-
-<!-- EXPERIMENT 3 -->
-<section class="so-sec exp" id="exp3">
-  <p class="eyebrow">Experiment 03</p>
-  <h2>Structured Position + Orientation</h2>
-  <div class="prose">
-    <p>After the first two experiments, I restricted the workspace and defined the demonstration locations explicitly.</p>
-    <p>The workspace was restricted to one grid cell containing <b>19 marked spatial locations</b>. A transparent plastic sheet was used as a positioning template so that the demonstrations used the same locations.</p>
-    <p>At each of those 19 locations, the cube was demonstrated in four different orientations:</p>
-    <p class="orient-line">Vertical &middot; 45&deg; right &middot; 45&deg; left &middot; Horizontal</p>
-  </div>
-
-  <div class="equation" aria-label="19 locations times 4 orientations equals 76 unique configurations">
-    <div><b>19</b><span>locations</span></div><i>&times;</i>
-    <div><b>4</b><span>orientations at each</span></div><i>=</i>
-    <div class="eq-out"><b>76</b><span>unique configurations</span></div>
-  </div>
-
-  <div class="explorer">
-    <div class="explorer-map grid-bg">
-      <svg viewBox="0 0 440 440" class="diag map19" role="group" aria-label="Single grid cell with 19 locations; each location has four orientations"><rect class="cell-big" x="6" y="6" width="428" height="428" rx="10"/><text class="map-label" x="24" y="34">SINGLE GRID CELL</text><text class="map-label faint" x="416" y="34" text-anchor="end">schematic</text><g class="loc" data-loc="1" tabindex="0" role="button" aria-label="Location 1: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="138.0" cy="88.0" r="31"/><circle class="ring" cx="138.0" cy="88.0" r="27"/><rect class="cube soft" x="125.8" y="71.5" width="5.5" height="14" rx="1.0" transform="rotate(0 128.5 78.5)"/><rect class="cube soft" x="144.8" y="71.5" width="5.5" height="14" rx="1.0" transform="rotate(45 147.5 78.5)"/><rect class="cube soft" x="125.8" y="90.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 128.5 97.5)"/><rect class="cube soft" x="144.8" y="90.5" width="5.5" height="14" rx="1.0" transform="rotate(90 147.5 97.5)"/><text class="loc-n" x="113.0" y="68.0">1</text></g><g class="loc" data-loc="2" tabindex="0" role="button" aria-label="Location 2: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="220.0" cy="88.0" r="31"/><circle class="ring" cx="220.0" cy="88.0" r="27"/><rect class="cube soft" x="207.8" y="71.5" width="5.5" height="14" rx="1.0" transform="rotate(0 210.5 78.5)"/><rect class="cube soft" x="226.8" y="71.5" width="5.5" height="14" rx="1.0" transform="rotate(45 229.5 78.5)"/><rect class="cube soft" x="207.8" y="90.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 210.5 97.5)"/><rect class="cube soft" x="226.8" y="90.5" width="5.5" height="14" rx="1.0" transform="rotate(90 229.5 97.5)"/><text class="loc-n" x="195.0" y="68.0">2</text></g><g class="loc" data-loc="3" tabindex="0" role="button" aria-label="Location 3: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="302.0" cy="88.0" r="31"/><circle class="ring" cx="302.0" cy="88.0" r="27"/><rect class="cube soft" x="289.8" y="71.5" width="5.5" height="14" rx="1.0" transform="rotate(0 292.5 78.5)"/><rect class="cube soft" x="308.8" y="71.5" width="5.5" height="14" rx="1.0" transform="rotate(45 311.5 78.5)"/><rect class="cube soft" x="289.8" y="90.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 292.5 97.5)"/><rect class="cube soft" x="308.8" y="90.5" width="5.5" height="14" rx="1.0" transform="rotate(90 311.5 97.5)"/><text class="loc-n" x="277.0" y="68.0">3</text></g><g class="loc" data-loc="4" tabindex="0" role="button" aria-label="Location 4: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="97.0" cy="160.0" r="31"/><circle class="ring" cx="97.0" cy="160.0" r="27"/><rect class="cube soft" x="84.8" y="143.5" width="5.5" height="14" rx="1.0" transform="rotate(0 87.5 150.5)"/><rect class="cube soft" x="103.8" y="143.5" width="5.5" height="14" rx="1.0" transform="rotate(45 106.5 150.5)"/><rect class="cube soft" x="84.8" y="162.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 87.5 169.5)"/><rect class="cube soft" x="103.8" y="162.5" width="5.5" height="14" rx="1.0" transform="rotate(90 106.5 169.5)"/><text class="loc-n" x="72.0" y="140.0">4</text></g><g class="loc" data-loc="5" tabindex="0" role="button" aria-label="Location 5: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="179.0" cy="160.0" r="31"/><circle class="ring" cx="179.0" cy="160.0" r="27"/><rect class="cube soft" x="166.8" y="143.5" width="5.5" height="14" rx="1.0" transform="rotate(0 169.5 150.5)"/><rect class="cube soft" x="185.8" y="143.5" width="5.5" height="14" rx="1.0" transform="rotate(45 188.5 150.5)"/><rect class="cube soft" x="166.8" y="162.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 169.5 169.5)"/><rect class="cube soft" x="185.8" y="162.5" width="5.5" height="14" rx="1.0" transform="rotate(90 188.5 169.5)"/><text class="loc-n" x="154.0" y="140.0">5</text></g><g class="loc" data-loc="6" tabindex="0" role="button" aria-label="Location 6: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="261.0" cy="160.0" r="31"/><circle class="ring" cx="261.0" cy="160.0" r="27"/><rect class="cube soft" x="248.8" y="143.5" width="5.5" height="14" rx="1.0" transform="rotate(0 251.5 150.5)"/><rect class="cube soft" x="267.8" y="143.5" width="5.5" height="14" rx="1.0" transform="rotate(45 270.5 150.5)"/><rect class="cube soft" x="248.8" y="162.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 251.5 169.5)"/><rect class="cube soft" x="267.8" y="162.5" width="5.5" height="14" rx="1.0" transform="rotate(90 270.5 169.5)"/><text class="loc-n" x="236.0" y="140.0">6</text></g><g class="loc" data-loc="7" tabindex="0" role="button" aria-label="Location 7: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="343.0" cy="160.0" r="31"/><circle class="ring" cx="343.0" cy="160.0" r="27"/><rect class="cube soft" x="330.8" y="143.5" width="5.5" height="14" rx="1.0" transform="rotate(0 333.5 150.5)"/><rect class="cube soft" x="349.8" y="143.5" width="5.5" height="14" rx="1.0" transform="rotate(45 352.5 150.5)"/><rect class="cube soft" x="330.8" y="162.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 333.5 169.5)"/><rect class="cube soft" x="349.8" y="162.5" width="5.5" height="14" rx="1.0" transform="rotate(90 352.5 169.5)"/><text class="loc-n" x="318.0" y="140.0">7</text></g><g class="loc" data-loc="8" tabindex="0" role="button" aria-label="Location 8: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="56.0" cy="232.0" r="31"/><circle class="ring" cx="56.0" cy="232.0" r="27"/><rect class="cube soft" x="43.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(0 46.5 222.5)"/><rect class="cube soft" x="62.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(45 65.5 222.5)"/><rect class="cube soft" x="43.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 46.5 241.5)"/><rect class="cube soft" x="62.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(90 65.5 241.5)"/><text class="loc-n" x="31.0" y="212.0">8</text></g><g class="loc" data-loc="9" tabindex="0" role="button" aria-label="Location 9: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="138.0" cy="232.0" r="31"/><circle class="ring" cx="138.0" cy="232.0" r="27"/><rect class="cube soft" x="125.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(0 128.5 222.5)"/><rect class="cube soft" x="144.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(45 147.5 222.5)"/><rect class="cube soft" x="125.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 128.5 241.5)"/><rect class="cube soft" x="144.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(90 147.5 241.5)"/><text class="loc-n" x="113.0" y="212.0">9</text></g><g class="loc" data-loc="10" tabindex="0" role="button" aria-label="Location 10: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="220.0" cy="232.0" r="31"/><circle class="ring" cx="220.0" cy="232.0" r="27"/><rect class="cube soft" x="207.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(0 210.5 222.5)"/><rect class="cube soft" x="226.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(45 229.5 222.5)"/><rect class="cube soft" x="207.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 210.5 241.5)"/><rect class="cube soft" x="226.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(90 229.5 241.5)"/><text class="loc-n" x="195.0" y="212.0">10</text></g><g class="loc" data-loc="11" tabindex="0" role="button" aria-label="Location 11: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="302.0" cy="232.0" r="31"/><circle class="ring" cx="302.0" cy="232.0" r="27"/><rect class="cube soft" x="289.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(0 292.5 222.5)"/><rect class="cube soft" x="308.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(45 311.5 222.5)"/><rect class="cube soft" x="289.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 292.5 241.5)"/><rect class="cube soft" x="308.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(90 311.5 241.5)"/><text class="loc-n" x="277.0" y="212.0">11</text></g><g class="loc" data-loc="12" tabindex="0" role="button" aria-label="Location 12: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="384.0" cy="232.0" r="31"/><circle class="ring" cx="384.0" cy="232.0" r="27"/><rect class="cube soft" x="371.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(0 374.5 222.5)"/><rect class="cube soft" x="390.8" y="215.5" width="5.5" height="14" rx="1.0" transform="rotate(45 393.5 222.5)"/><rect class="cube soft" x="371.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 374.5 241.5)"/><rect class="cube soft" x="390.8" y="234.5" width="5.5" height="14" rx="1.0" transform="rotate(90 393.5 241.5)"/><text class="loc-n" x="359.0" y="212.0">12</text></g><g class="loc" data-loc="13" tabindex="0" role="button" aria-label="Location 13: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="97.0" cy="304.0" r="31"/><circle class="ring" cx="97.0" cy="304.0" r="27"/><rect class="cube soft" x="84.8" y="287.5" width="5.5" height="14" rx="1.0" transform="rotate(0 87.5 294.5)"/><rect class="cube soft" x="103.8" y="287.5" width="5.5" height="14" rx="1.0" transform="rotate(45 106.5 294.5)"/><rect class="cube soft" x="84.8" y="306.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 87.5 313.5)"/><rect class="cube soft" x="103.8" y="306.5" width="5.5" height="14" rx="1.0" transform="rotate(90 106.5 313.5)"/><text class="loc-n" x="72.0" y="284.0">13</text></g><g class="loc" data-loc="14" tabindex="0" role="button" aria-label="Location 14: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="179.0" cy="304.0" r="31"/><circle class="ring" cx="179.0" cy="304.0" r="27"/><rect class="cube soft" x="166.8" y="287.5" width="5.5" height="14" rx="1.0" transform="rotate(0 169.5 294.5)"/><rect class="cube soft" x="185.8" y="287.5" width="5.5" height="14" rx="1.0" transform="rotate(45 188.5 294.5)"/><rect class="cube soft" x="166.8" y="306.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 169.5 313.5)"/><rect class="cube soft" x="185.8" y="306.5" width="5.5" height="14" rx="1.0" transform="rotate(90 188.5 313.5)"/><text class="loc-n" x="154.0" y="284.0">14</text></g><g class="loc" data-loc="15" tabindex="0" role="button" aria-label="Location 15: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="261.0" cy="304.0" r="31"/><circle class="ring" cx="261.0" cy="304.0" r="27"/><rect class="cube soft" x="248.8" y="287.5" width="5.5" height="14" rx="1.0" transform="rotate(0 251.5 294.5)"/><rect class="cube soft" x="267.8" y="287.5" width="5.5" height="14" rx="1.0" transform="rotate(45 270.5 294.5)"/><rect class="cube soft" x="248.8" y="306.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 251.5 313.5)"/><rect class="cube soft" x="267.8" y="306.5" width="5.5" height="14" rx="1.0" transform="rotate(90 270.5 313.5)"/><text class="loc-n" x="236.0" y="284.0">15</text></g><g class="loc" data-loc="16" tabindex="0" role="button" aria-label="Location 16: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="343.0" cy="304.0" r="31"/><circle class="ring" cx="343.0" cy="304.0" r="27"/><rect class="cube soft" x="330.8" y="287.5" width="5.5" height="14" rx="1.0" transform="rotate(0 333.5 294.5)"/><rect class="cube soft" x="349.8" y="287.5" width="5.5" height="14" rx="1.0" transform="rotate(45 352.5 294.5)"/><rect class="cube soft" x="330.8" y="306.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 333.5 313.5)"/><rect class="cube soft" x="349.8" y="306.5" width="5.5" height="14" rx="1.0" transform="rotate(90 352.5 313.5)"/><text class="loc-n" x="318.0" y="284.0">16</text></g><g class="loc" data-loc="17" tabindex="0" role="button" aria-label="Location 17: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="138.0" cy="376.0" r="31"/><circle class="ring" cx="138.0" cy="376.0" r="27"/><rect class="cube soft" x="125.8" y="359.5" width="5.5" height="14" rx="1.0" transform="rotate(0 128.5 366.5)"/><rect class="cube soft" x="144.8" y="359.5" width="5.5" height="14" rx="1.0" transform="rotate(45 147.5 366.5)"/><rect class="cube soft" x="125.8" y="378.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 128.5 385.5)"/><rect class="cube soft" x="144.8" y="378.5" width="5.5" height="14" rx="1.0" transform="rotate(90 147.5 385.5)"/><text class="loc-n" x="113.0" y="356.0">17</text></g><g class="loc" data-loc="18" tabindex="0" role="button" aria-label="Location 18: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="220.0" cy="376.0" r="31"/><circle class="ring" cx="220.0" cy="376.0" r="27"/><rect class="cube soft" x="207.8" y="359.5" width="5.5" height="14" rx="1.0" transform="rotate(0 210.5 366.5)"/><rect class="cube soft" x="226.8" y="359.5" width="5.5" height="14" rx="1.0" transform="rotate(45 229.5 366.5)"/><rect class="cube soft" x="207.8" y="378.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 210.5 385.5)"/><rect class="cube soft" x="226.8" y="378.5" width="5.5" height="14" rx="1.0" transform="rotate(90 229.5 385.5)"/><text class="loc-n" x="195.0" y="356.0">18</text></g><g class="loc" data-loc="19" tabindex="0" role="button" aria-label="Location 19: vertical, 45 degrees right, 45 degrees left, horizontal"><circle class="hit" cx="302.0" cy="376.0" r="31"/><circle class="ring" cx="302.0" cy="376.0" r="27"/><rect class="cube soft" x="289.8" y="359.5" width="5.5" height="14" rx="1.0" transform="rotate(0 292.5 366.5)"/><rect class="cube soft" x="308.8" y="359.5" width="5.5" height="14" rx="1.0" transform="rotate(45 311.5 366.5)"/><rect class="cube soft" x="289.8" y="378.5" width="5.5" height="14" rx="1.0" transform="rotate(-45 292.5 385.5)"/><rect class="cube soft" x="308.8" y="378.5" width="5.5" height="14" rx="1.0" transform="rotate(90 311.5 385.5)"/><text class="loc-n" x="277.0" y="356.0">19</text></g></svg>
-    </div>
-    <div class="explorer-panel" aria-live="polite">
-      <p class="eyebrow">Select a location</p>
-      <p class="loc-title">Location <span id="locN">1</span></p>
-      <p class="loc-sub">Four demonstrations at this same spatial location:</p>
-      <div class="orient-grid"><div class="orient sm"><svg viewBox="0 0 56 56" class="orient-svg" aria-hidden="true"><line class="cross" x1="28.0" y1="6" x2="28.0" y2="50"/><line class="cross" x1="6" y1="28.0" x2="50" y2="28.0"/><rect class="cube" x="22.5" y="14.0" width="11" height="28" rx="2.0" transform="rotate(0 28.0 28.0)"/><circle class="pin" cx="28.0" cy="28.0" r="2.4"/></svg><span>Vertical</span></div><div class="orient sm"><svg viewBox="0 0 56 56" class="orient-svg" aria-hidden="true"><line class="cross" x1="28.0" y1="6" x2="28.0" y2="50"/><line class="cross" x1="6" y1="28.0" x2="50" y2="28.0"/><rect class="cube" x="22.5" y="14.0" width="11" height="28" rx="2.0" transform="rotate(45 28.0 28.0)"/><circle class="pin" cx="28.0" cy="28.0" r="2.4"/></svg><span>45&deg; right</span></div><div class="orient sm"><svg viewBox="0 0 56 56" class="orient-svg" aria-hidden="true"><line class="cross" x1="28.0" y1="6" x2="28.0" y2="50"/><line class="cross" x1="6" y1="28.0" x2="50" y2="28.0"/><rect class="cube" x="22.5" y="14.0" width="11" height="28" rx="2.0" transform="rotate(-45 28.0 28.0)"/><circle class="pin" cx="28.0" cy="28.0" r="2.4"/></svg><span>45&deg; left</span></div><div class="orient sm"><svg viewBox="0 0 56 56" class="orient-svg" aria-hidden="true"><line class="cross" x1="28.0" y1="6" x2="28.0" y2="50"/><line class="cross" x1="6" y1="28.0" x2="50" y2="28.0"/><rect class="cube" x="22.5" y="14.0" width="11" height="28" rx="2.0" transform="rotate(90 28.0 28.0)"/><circle class="pin" cx="28.0" cy="28.0" r="2.4"/></svg><span>Horizontal</span></div></div>
-      <p class="loc-rule"><b>1</b> location &rarr; <b>4</b> orientations</p>
-      <p class="loc-foot">Every one of the 19 locations has all four orientations. Hover or tap any location on the map.</p>
-    </div>
-  </div>
-  <p class="note spaced">Schematic: the arrangement of the 19 marks is illustrative; the counts are exact.</p>
-
-  <div class="prose">
-    <p>The final dataset contained <b>76 demonstrations</b> and approximately <b>30,000 frames</b> (30,110).</p>
-    <p class="outcome ok"><span>Outcome</span> Reliable pick-and-place within the demonstrated cell.</p>
-  </div>
-  <p class="hf-links"><span>On Hugging Face</span>
-    <a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener">Dataset: pick_place_1_grid</a>
-    <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener">Dataset visualization</a>
-    <a href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener">Policy: act_pick_place_1_grid_policy</a>
-    <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_8" target="_blank" rel="noopener">Evaluation visualization</a>
-  </p>
-</section>
-
-<!-- KEY OBSERVATION -->
+<!-- THE RESULT -->
 <section class="so-sec">
-  <p class="eyebrow">Key observation</p>
-  <h2>Generalization outside the demonstrated region</h2>
-  <div class="prose">
-    <p>The ACT policy could learn the manipulation behavior within regions represented in the demonstrations.</p>
-    <p>When the cube was moved into spatial regions that were not represented in the demonstrations, the policy did not reliably generalize to those regions.</p>
-    <p>In this experimental setup, the learned behavior was therefore strongly influenced by the distribution of demonstrated states.</p>
-  </div>
-
-  <div class="gen">
-    <figure class="panel grid-bg">
-      <figcaption class="gen-h">Training</figcaption>
-      <svg viewBox="0 0 300 200" class="diag" role="img" aria-label="Demonstrated region with training locations"><rect class="ws" x="4" y="4" width="292" height="192" rx="6"/><rect class="region" x="24" y="34" width="150" height="132" rx="6"/><text class="map-label" x="30" y="26">DEMONSTRATED REGION</text><circle class="dot" cx="44.0" cy="66" r="3.2"/><circle class="dot" cx="71.5" cy="66" r="3.2"/><circle class="dot" cx="99.0" cy="66" r="3.2"/><circle class="dot" cx="126.5" cy="66" r="3.2"/><circle class="dot" cx="154.0" cy="66" r="3.2"/><circle class="dot" cx="44.0" cy="100" r="3.2"/><circle class="dot" cx="71.5" cy="100" r="3.2"/><circle class="dot" cx="99.0" cy="100" r="3.2"/><circle class="dot" cx="126.5" cy="100" r="3.2"/><circle class="dot" cx="154.0" cy="100" r="3.2"/><circle class="dot" cx="44.0" cy="134" r="3.2"/><circle class="dot" cx="71.5" cy="134" r="3.2"/><circle class="dot" cx="99.0" cy="134" r="3.2"/><circle class="dot" cx="126.5" cy="134" r="3.2"/><circle class="dot" cx="154.0" cy="134" r="3.2"/></svg>
-      <p class="panel-cap">Demonstrations cover one region.</p>
-    </figure>
-    <div class="gen-arrow" aria-hidden="true"><span>ACT</span></div>
-    <figure class="panel grid-bg">
-      <figcaption class="gen-h">Physical evaluation</figcaption>
-      <svg viewBox="0 0 300 200" class="diag" role="img" aria-label="Evaluation: demonstrated region versus unseen positions"><rect class="ws" x="4" y="4" width="292" height="192" rx="6"/><rect class="region" x="24" y="34" width="150" height="132" rx="6"/><text class="map-label" x="30" y="26">DEMONSTRATED REGION</text><circle class="dot ok" cx="44.0" cy="66" r="4"/><circle class="dot ok" cx="71.5" cy="66" r="4"/><circle class="dot ok" cx="99.0" cy="66" r="4"/><circle class="dot ok" cx="126.5" cy="66" r="4"/><circle class="dot ok" cx="154.0" cy="66" r="4"/><circle class="dot ok" cx="44.0" cy="100" r="4"/><circle class="dot ok" cx="71.5" cy="100" r="4"/><circle class="dot ok" cx="99.0" cy="100" r="4"/><circle class="dot ok" cx="126.5" cy="100" r="4"/><circle class="dot ok" cx="154.0" cy="100" r="4"/><circle class="dot ok" cx="44.0" cy="134" r="4"/><circle class="dot ok" cx="71.5" cy="134" r="4"/><circle class="dot ok" cx="99.0" cy="134" r="4"/><circle class="dot ok" cx="126.5" cy="134" r="4"/><circle class="dot ok" cx="154.0" cy="134" r="4"/><text class="map-label warn" x="282" y="26" text-anchor="end">UNSEEN</text><text class="q" x="222" y="72" text-anchor="middle">?</text><text class="q" x="262" y="106" text-anchor="middle">?</text><text class="q" x="222" y="140" text-anchor="middle">?</text><text class="q" x="262" y="172" text-anchor="middle">?</text></svg>
-      <p class="panel-cap"><span class="k ok"></span>Demonstrated region &rarr; learned behavior<br><span class="k warn"></span>Unseen region &rarr; unreliable behavior</p>
-    </figure>
-  </div>
-
-  <p class="pull">The policy did not automatically acquire reliable behavior across the entire workspace simply because it had seen the task performed somewhere within it.</p>
-  <p class="note">An empirical observation from this physical setup and these datasets, not a general claim about ACT.</p>
-
-  <h3 class="so-h3">Dataset size versus coverage</h3>
+  <p class="eyebrow">The result</p>
+  <h2>Coverage, not dataset size</h2>
   <div class="compare">
     <div class="cmp">
-      <p class="cmp-h">Six-grid dataset</p>
+      <p class="cmp-h">02 &middot; Six-grid</p>
       <p class="cmp-n"><b>101</b> demonstrations</p>
       <p class="cmp-n"><b>55,001</b> frames</p>
-      <p class="cmp-d">Demonstrations distributed across six spatial regions.</p>
+      <p class="cmp-d">Coarse localization, unreliable grasping.</p>
     </div>
     <div class="cmp hi">
-      <p class="cmp-h">Structured dataset</p>
+      <p class="cmp-h">03 &middot; Structured</p>
       <p class="cmp-n"><b>76</b> demonstrations</p>
-      <p class="cmp-n"><b>~30,000</b> frames</p>
-      <p class="cmp-d">19 locations within one grid &times; 4 orientations at every location.</p>
+      <p class="cmp-n"><b>30,110</b> frames</p>
+      <p class="cmp-d">Reliable pick-and-place within the demonstrated region.</p>
     </div>
   </div>
-  <div class="prose">
-    <p>The structured dataset contained fewer frames than the six-grid dataset, but the resulting policy was more reliable within the demonstrated region.</p>
-    <p>This suggests that where the demonstrations are collected can matter in addition to the total number of frames.</p>
+  <div class="finding">
+    <p><b>Finding:</b> dataset size alone did not explain performance. The structured 76-episode dataset produced more reliable behavior within its demonstrated region than the 101-episode six-grid dataset, while spatial regions absent from the demonstrations remained difficult for the policy.</p>
   </div>
+  <p class="pull eq">More data &ne; more coverage.</p>
 </section>
 
-<!-- ORIENTATION -->
-<section class="so-sec">
-  <p class="eyebrow">Why orientation?</p>
-  <h2>Effect of orientation coverage</h2>
+<!-- WHY IT MATTERS -->
+<section class="so-sec brief">
+  <p class="eyebrow">Why this matters</p>
+  <h2>Next: generalization in VLA policies</h2>
   <div class="prose">
-    <p>Spatial position was not the only variable in the demonstrations. The cube could also appear at different orientations, which changes the required grasp configuration.</p>
-    <p>I therefore included four orientations at every one of the 19 spatial locations.</p>
-    <p>Crucially, the four orientations were not distributed randomly across the dataset. <b>Every one of the 19 spatial locations contained all four orientations.</b></p>
-    <p>This allowed the experiment to separate two forms of coverage:</p>
-  </div>
-
-  <div class="axes">
-    <div class="axis"><p class="axis-k">Position</p><p class="axis-v">19 distinct locations</p><p class="axis-q">Where is the object?</p></div>
-    <div class="axis"><p class="axis-k">Orientation</p><p class="axis-v">4 orientations at every location</p><p class="axis-q">How is the object presented?</p></div>
-  </div>
-  <p class="axes-sum"><b>19 &times; 4 = 76</b> position&ndash;orientation configurations</p>
-
-  <div class="orient-card grid-bg">
-    <p class="orient-card-h">Four Orientations at the Same Location</p>
-    <div class="orient-grid big"><div class="orient"><svg viewBox="0 0 90 90" class="orient-svg" aria-hidden="true"><line class="cross" x1="45.0" y1="6" x2="45.0" y2="84"/><line class="cross" x1="6" y1="45.0" x2="84" y2="45.0"/><rect class="cube" x="36.0" y="23.0" width="18" height="44" rx="3.2" transform="rotate(0 45.0 45.0)"/><circle class="pin" cx="45.0" cy="45.0" r="2.4"/></svg><span>Vertical</span></div><div class="orient"><svg viewBox="0 0 90 90" class="orient-svg" aria-hidden="true"><line class="cross" x1="45.0" y1="6" x2="45.0" y2="84"/><line class="cross" x1="6" y1="45.0" x2="84" y2="45.0"/><rect class="cube" x="36.0" y="23.0" width="18" height="44" rx="3.2" transform="rotate(45 45.0 45.0)"/><circle class="pin" cx="45.0" cy="45.0" r="2.4"/></svg><span>45&deg; right</span></div><div class="orient"><svg viewBox="0 0 90 90" class="orient-svg" aria-hidden="true"><line class="cross" x1="45.0" y1="6" x2="45.0" y2="84"/><line class="cross" x1="6" y1="45.0" x2="84" y2="45.0"/><rect class="cube" x="36.0" y="23.0" width="18" height="44" rx="3.2" transform="rotate(-45 45.0 45.0)"/><circle class="pin" cx="45.0" cy="45.0" r="2.4"/></svg><span>45&deg; left</span></div><div class="orient"><svg viewBox="0 0 90 90" class="orient-svg" aria-hidden="true"><line class="cross" x1="45.0" y1="6" x2="45.0" y2="84"/><line class="cross" x1="6" y1="45.0" x2="84" y2="45.0"/><rect class="cube" x="36.0" y="23.0" width="18" height="44" rx="3.2" transform="rotate(90 45.0 45.0)"/><circle class="pin" cx="45.0" cy="45.0" r="2.4"/></svg><span>Horizontal</span></div></div>
-    <p class="orient-card-foot">The same four orientations were demonstrated at every one of the 19 spatial locations.</p>
-  </div>
-</section>
-
-<!-- TRAINING -->
-<section class="so-sec">
-  <p class="eyebrow">Training</p>
-  <h2>Training the ACT Policy</h2>
-  <div class="train-grid">
-    <div class="prose">
-      <p>The policies were trained using the Hugging Face LeRobot framework and ACT (Action Chunking Transformer), an existing policy architecture available in LeRobot.</p>
-      <p>The final ACT policy was trained locally on an RTX 5090 using dual-camera observations, a ResNet-18 backbone, batch size 8, and 100,000 training steps. The ACT policies for the earlier datasets used the same architecture, backbone and number of training steps, so the demonstrations were the main variable that changed between experiments.</p>
-    </div>
-    <dl class="spec">
-      <div><dt>Framework</dt><dd>Hugging Face LeRobot</dd></div>
-      <div><dt>Policy</dt><dd>ACT</dd></div>
-      <div><dt>Dataset</dt><dd><a href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener">pick_place_1_grid</a></dd></div>
-      <div><dt>Demonstrations</dt><dd>76</dd></div>
-      <div><dt>Frames</dt><dd>30,110 at 30 fps</dd></div>
-      <div><dt>Configurations</dt><dd>19 locations &times; 4 orientations</dd></div>
-      <div><dt>Observations</dt><dd>Top + wrist camera, joint state</dd></div>
-      <div><dt>Vision backbone</dt><dd>ResNet-18</dd></div>
-      <div><dt>Batch size</dt><dd>8</dd></div>
-      <div><dt>Training steps</dt><dd>100,000</dd></div>
-      <div><dt>Hardware</dt><dd>Local RTX 5090</dd></div>
-    </dl>
-  </div>
-</section>
-
-<!-- EVALUATION -->
-<section class="so-sec">
-  <p class="eyebrow">Physical evaluation</p>
-  <h2>Physical evaluation</h2>
-  <div class="prose">
-    <p>The final ACT policy was deployed on the physical SO-101 for evaluation.</p>
-    <p>In successful rollouts, the robot located the cube, approached it, aligned the gripper, grasped the cube, moved to the box and released it inside.</p>
-  </div>
-  <p class="chain">located the cube <i>&rarr;</i> approached it <i>&rarr;</i> oriented the gripper <i>&rarr;</i> grasped it <i>&rarr;</i> moved to the box <i>&rarr;</i> placed the cube inside</p>
-  <div class="pair">
-    <figure>
-      <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Fpick_place_1_grid%2Fepisode_6" target="_blank" rel="noopener"><video poster="assets/poster/so101-demo-ep6.jpg" src="assets/video/so101-demo-ep6.mp4" width="560" height="420" autoplay loop muted playsinline preload="none"></video></a>
-      <figcaption><span class="tag">Demonstration</span> Teleoperated training episode 6</figcaption>
-    </figure>
-    <figure>
-      <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_7" target="_blank" rel="noopener"><video poster="assets/poster/so101-eval-ep7.jpg" src="assets/video/so101-eval-ep7.mp4" width="560" height="420" autoplay loop muted playsinline preload="none"></video></a>
-      <figcaption><span class="tag ok">Autonomous</span> ACT policy, evaluation episode 7</figcaption>
-    </figure>
-  </div>
-  <p class="so-actions">
-    <a class="btn primary" href="https://youtu.be/oDDR4Vwr4Uo" target="_blank" rel="noopener">Watch full rollout</a>
-    <a href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2FSyed-Furqan%2Feval_pick_place_1_grid1%2Fepisode_8" target="_blank" rel="noopener">Browse evaluation episodes</a>
-  </p>
-</section>
-
-<!-- VLA -->
-<section class="so-sec">
-  <p class="eyebrow">Research direction</p>
-  <h2>Extension to VLA policies</h2>
-  <div class="prose">
-    <p>The ACT experiments led to a follow-up question: whether pretrained Vision-Language-Action models can generalize beyond the configurations represented in the physical demonstrations.</p>
-    <p>I fine-tuned the 0.5B SmolVLA policy on the six-grid demonstration dataset. Physical evaluation is ongoing.</p>
-    <p class="outcome pending"><span>Status</span> Physical evaluation is ongoing.</p>
+    <p>The failure outside the demonstrated region motivates my interest in robot foundation models: <b>can pretrained Vision-Language-Action policies generalize beyond the states represented in physical demonstrations?</b></p>
+    <p>I have fine-tuned <a href="https://huggingface.co/Syed-Furqan/smolvla_pick_place_box_grid" target="_blank" rel="noopener">SmolVLA (0.5B)</a> on the six-grid dataset and am evaluating its physical generalization.</p>
   </div>
   <div class="flows">
     <div class="flow"><span>Physical demonstrations</span><i></i><span class="flow-m">ACT</span><i></i><span>Physical evaluation</span><em>Completed</em></div>
     <div class="flow"><span>Physical demonstrations</span><i></i><span class="flow-m vla">SmolVLA</span><i></i><span>Generalization test</span><em class="pending">Ongoing</em></div>
   </div>
-  <p class="hf-links"><span>On Hugging Face</span><a href="https://huggingface.co/Syed-Furqan/smolvla_pick_place_box_grid" target="_blank" rel="noopener">Policy: smolvla_pick_place_box_grid</a></p>
 </section>
 
-<!-- OPEN DATA -->
+<!-- DETAILS -->
 <section class="so-sec">
-  <p class="eyebrow">Open source</p>
-  <h2>Data and Policies</h2>
-  <div class="prose">
-    <p>I released the datasets and trained policy checkpoints so the demonstrations and learned models can be inspected.</p>
-  </div>
-  <p class="cards-h">Datasets</p>
-  <div class="cards">
-    <a class="card hi" href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener"><code>pick_place_1_grid</code><span>76 episodes &middot; 30,110 frames &middot; dual camera</span><small>Experiment 03 &middot; 19 locations &times; 4 orientations</small></a>
-    <a class="card" href="https://huggingface.co/datasets/Syed-Furqan/pick_place_box_grid" target="_blank" rel="noopener"><code>pick_place_box_grid</code><span>101 episodes &middot; 55,001 frames</span><small>Experiment 02 &middot; six-grid placement</small></a>
-    <a class="card" href="https://huggingface.co/datasets/Syed-Furqan/eval_pick_place_1_grid1" target="_blank" rel="noopener"><code>eval_pick_place_1_grid1</code><span>Evaluation rollouts</span><small>Physical evaluation trajectories &middot; 9 episodes</small></a>
-    <a class="card" href="https://huggingface.co/datasets/Syed-Furqan/pick_and_place" target="_blank" rel="noopener"><code>pick_and_place</code><span>50 episodes &middot; 26,519 frames</span><small>Experiment 01 &middot; unstructured</small></a>
-    <a class="card" href="https://huggingface.co/datasets/Syed-Furqan/picknplace" target="_blank" rel="noopener"><code>picknplace</code><span>51 episodes &middot; 33,370 frames</span><small>Experiment 01 &middot; unstructured</small></a>
-  </div>
-  <p class="cards-h">Trained policy checkpoints</p>
-  <div class="cards">
-    <a class="card hi" href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener"><code>act_pick_place_1_grid_policy</code><span>ACT</span><small>Trained on pick_place_1_grid</small></a>
-    <a class="card" href="https://huggingface.co/Syed-Furqan/act_pick_place_box_grid" target="_blank" rel="noopener"><code>act_pick_place_box_grid</code><span>ACT</span><small>Trained on pick_place_box_grid</small></a>
-    <a class="card" href="https://huggingface.co/Syed-Furqan/smolvla_pick_place_box_grid" target="_blank" rel="noopener"><code>smolvla_pick_place_box_grid</code><span>SmolVLA</span><small>Trained on pick_place_box_grid</small></a>
-    <a class="card" href="https://huggingface.co/Syed-Furqan/act_pick_and_place_policy" target="_blank" rel="noopener"><code>act_pick_and_place_policy</code><span>ACT</span><small>Trained on pick_and_place</small></a>
-    <a class="card" href="https://huggingface.co/Syed-Furqan/act_picknplace_policy" target="_blank" rel="noopener"><code>act_picknplace_policy</code><span>ACT</span><small>Trained on picknplace</small></a>
-  </div>
-</section>
-
-<!-- WHAT I LEARNED -->
-<section class="so-sec">
-  <p class="eyebrow">What I learned</p>
-  <h2>Demonstration Coverage Matters</h2>
-  <div class="prose">
-    <p>The most important lesson from the experiment was that imitation learning is not only about the amount of data, it is also about the coverage and structure of the demonstrations.</p>
-    <p>In this physical experiment, two dimensions became particularly important:</p>
-  </div>
-  <div class="axes">
-    <div class="axis"><p class="axis-k">Position</p><p class="axis-q">Where the object appears</p></div>
-    <div class="axis"><p class="axis-k">Orientation</p><p class="axis-q">How the object is presented</p></div>
-  </div>
-  <div class="prose">
-    <p>Unseen spatial regions remained difficult for the learned ACT policy, while explicitly introducing multiple orientations at each demonstrated position helped remove orientation as a separate constraint on the grasp behavior.</p>
-  </div>
+  <p class="eyebrow">Open data</p>
+  <h2>Datasets and checkpoints</h2>
+  <details class="more" style="margin-top:6px">
+    <summary>All datasets, checkpoints and training details</summary>
+    <p class="cards-h">Datasets</p>
+    <div class="cards">
+      <a class="card hi" href="https://huggingface.co/datasets/Syed-Furqan/pick_place_1_grid" target="_blank" rel="noopener"><code>pick_place_1_grid</code><span>76 episodes &middot; 30,110 frames</span><small>03 &middot; 19 locations &times; 4 orientations</small></a>
+      <a class="card" href="https://huggingface.co/datasets/Syed-Furqan/pick_place_box_grid" target="_blank" rel="noopener"><code>pick_place_box_grid</code><span>101 episodes &middot; 55,001 frames</span><small>02 &middot; six-grid</small></a>
+      <a class="card" href="https://huggingface.co/datasets/Syed-Furqan/pick_and_place" target="_blank" rel="noopener"><code>pick_and_place</code><span>50 episodes &middot; 26,519 frames</span><small>01 &middot; unstructured</small></a>
+      <a class="card" href="https://huggingface.co/datasets/Syed-Furqan/picknplace" target="_blank" rel="noopener"><code>picknplace</code><span>51 episodes &middot; 33,370 frames</span><small>01 &middot; unstructured</small></a>
+      <a class="card" href="https://huggingface.co/datasets/Syed-Furqan/eval_pick_place_1_grid1" target="_blank" rel="noopener"><code>eval_pick_place_1_grid1</code><span>9 evaluation episodes</span><small>Physical ACT rollouts</small></a>
+    </div>
+    <p class="cards-h">Policy checkpoints</p>
+    <div class="cards">
+      <a class="card hi" href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener"><code>act_pick_place_1_grid_policy</code><span>ACT</span><small>Trained on 03</small></a>
+      <a class="card" href="https://huggingface.co/Syed-Furqan/act_pick_place_box_grid" target="_blank" rel="noopener"><code>act_pick_place_box_grid</code><span>ACT</span><small>Trained on 02</small></a>
+      <a class="card" href="https://huggingface.co/Syed-Furqan/smolvla_pick_place_box_grid" target="_blank" rel="noopener"><code>smolvla_pick_place_box_grid</code><span>SmolVLA</span><small>Trained on 02</small></a>
+      <a class="card" href="https://huggingface.co/Syed-Furqan/act_pick_and_place_policy" target="_blank" rel="noopener"><code>act_pick_and_place_policy</code><span>ACT</span><small>Trained on 01 (pick_and_place)</small></a>
+      <a class="card" href="https://huggingface.co/Syed-Furqan/act_picknplace_policy" target="_blank" rel="noopener"><code>act_picknplace_policy</code><span>ACT</span><small>Trained on 01 (picknplace)</small></a>
+    </div>
+    <p class="note">All ACT policies used the same architecture, ResNet-18 backbone and 100,000 training steps (batch size 8), so the demonstrations were the main variable between experiments. For dataset 03, a transparent sheet marked the 19 locations so every orientation was demonstrated at the same positions.</p>
+  </details>
 </section>
 
 <!-- FINAL -->
 <section class="so-sec final">
   <p class="so-actions">
-    <a class="btn primary" href="https://huggingface.co/Syed-Furqan" target="_blank" rel="noopener">Explore the datasets</a>
-    <a class="btn" href="https://huggingface.co/Syed-Furqan/act_pick_place_1_grid_policy" target="_blank" rel="noopener">View trained policies</a>
-    <a class="btn" href="https://youtu.be/oDDR4Vwr4Uo" target="_blank" rel="noopener">Watch the experiment</a>
+    <a class="btn primary" href="https://youtu.be/oDDR4Vwr4Uo" target="_blank" rel="noopener">Watch the experiment</a>
+    <a class="btn" href="https://huggingface.co/Syed-Furqan" target="_blank" rel="noopener">All data on Hugging Face</a>
     <a class="btn" href="projects.html">Back to all projects</a>
   </p>
-  <p class="note">Also on <a href="https://www.linkedin.com/feed/update/urn:li:activity:7479988721472266240/" target="_blank" rel="noopener">LinkedIn</a>. All datasets and checkpoints: <a href="https://huggingface.co/Syed-Furqan" target="_blank" rel="noopener">huggingface.co/Syed-Furqan</a>.</p>
+  <p class="note">Also on <a href="https://www.linkedin.com/feed/update/urn:li:activity:7479988721472266240/" target="_blank" rel="noopener">LinkedIn</a>.</p>
 </section>
 
 </div>
@@ -412,23 +178,5 @@
 </div>
 <script src="assets/js/config.js"></script>
 <script src="assets/js/site.js"></script>
-<script>
-(function () {
-  var locs = document.querySelectorAll(".map19 .loc");
-  var out = document.getElementById("locN");
-  if (!locs.length || !out) return;
-  function pick(el) {
-    locs.forEach(function (l) { l.classList.toggle("on", l === el); });
-    out.textContent = el.getAttribute("data-loc");
-  }
-  locs.forEach(function (l) {
-    l.addEventListener("mouseenter", function () { pick(l); });
-    l.addEventListener("focus", function () { pick(l); });
-    l.addEventListener("click", function () { pick(l); });
-    l.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(l); } });
-  });
-  pick(locs[6]);
-})();
-</script>
 </body>
 </html>
