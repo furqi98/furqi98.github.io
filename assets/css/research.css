@@ -852,7 +852,7 @@
 
 .so .pull + .prose { margin-top: 16px; }
 .so .axis-v, .so .axis-q, .so .pull, .so .identity { text-align: left; }
-.shot.teleop { max-width: 760px; margin: 22px 0 18px 0; }
+.shot.teleop { max-width: 520px; margin: 22px 0 18px 0; }
 .shot figcaption b { color: var(--ink); font-weight: 500; }
 
 /* ================= UAV platform ================= */
@@ -952,3 +952,51 @@ body:has(.so) #main { width: 100%; max-width: 1180px; box-sizing: border-box; }
     .rdr { grid-template-columns: 1fr; }
 }
 .so .so-lede, .so .cmp-d, .so .evals-note, .so .brief p { text-align: left; }
+
+/* ---------- SO-101 research journey ---------- */
+.setup-list { list-style: none; margin: 0 0 6px 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.setup-list li { list-style: none; font-size: 13.5px; line-height: 20px; color: var(--ink); padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--soft); }
+.result { max-width: 820px; margin: 22px 0 0 0; padding: 12px 16px; border-radius: 6px; background: var(--soft); }
+.result.fail { box-shadow: inset 3px 0 0 var(--fail); }
+.result.partial { box-shadow: inset 3px 0 0 var(--warn); }
+.result.ok { box-shadow: inset 3px 0 0 var(--ok); }
+.so .result-k { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+.result.fail .result-k { color: var(--fail); }
+.result.partial .result-k { color: var(--warn); }
+.result ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.result li { list-style: none; font-size: 14px; line-height: 22px; color: var(--ink); }
+.result li::before { content: "\2022"; color: #9aa6b3; margin-right: 8px; }
+.so .figure-line.solo { font-size: 17px; line-height: 28px; color: var(--navy); margin: 6px 0 0 0; text-align: left; }
+.breakthrough { margin-top: 34px; padding: 24px 24px 20px 24px; border: 1px solid var(--ok); border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(26, 127, 90, 0.25); }
+.breakthrough .eyebrow { color: var(--ok); }
+.so .bt-lede { font-size: 18px; line-height: 28px; color: var(--ink); margin-bottom: 14px; text-align: left; }
+.chain-boxes.five { grid-template-columns: repeat(5, 1fr); max-width: none; margin-bottom: 24px; }
+.chain-boxes.five li { border-color: rgba(26, 127, 90, 0.35); }
+.chain-boxes.five span { color: var(--ok); }
+.lessons li b { color: var(--navy); font-weight: 500; }
+.od { border-top: 1px solid var(--line); }
+.od-row { display: grid; grid-template-columns: 200px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.so .od-k { font-family: var(--mono); font-size: 11.5px; line-height: 20px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: left; padding-top: 6px; }
+.od-row.hi .od-k { color: var(--link); }
+.od-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.od-links a { display: flex; flex-direction: column; gap: 2px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.so .od-links a:hover { border: 1px solid var(--link); }
+.od-links small { font-size: 11.5px; line-height: 16px; color: var(--muted); }
+.od-links code { font-family: var(--mono); font-size: 13px; color: var(--link); word-break: break-all; }
+.so .final .pull { text-align: left; }
+@media (max-width: 760px) {
+    .chain-boxes.five { grid-template-columns: 1fr 1fr; }
+    .chain-boxes.five li + li::before { display: none; }
+    .od-row { grid-template-columns: 1fr; gap: 6px; }
+    .breakthrough { padding: 18px 14px 14px 14px; }
+}
+.so .result-v { font-size: 15px; line-height: 24px; color: var(--ink); text-align: left; }
+.result.fail .result-v b { color: var(--fail); font-weight: 500; }
+.result.partial .result-v b { color: var(--warn); font-weight: 500; }
+.exp-grid .so-h3 { margin: 26px 0 10px 0; }
+.exp-grid .result { margin-top: 16px; }
+@media (min-width: 761px) { .explorer { grid-template-columns: minmax(0, 440px) minmax(0, 1fr); } }
+.equation.sm { justify-content: flex-start; gap: 14px; margin: 18px 0 0 0; padding: 16px 0 0 0; border-bottom: 0; }
+.equation.sm b { font-size: 40px; line-height: 44px; }
+.equation.sm i { font-size: 26px; }
+.equation.sm span { font-size: 10px; }
