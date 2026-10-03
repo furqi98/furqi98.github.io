@@ -853,6 +853,7 @@
 .so .pull + .prose { margin-top: 16px; }
 .so .axis-v, .so .axis-q, .so .pull, .so .identity { text-align: left; }
 .shot.teleop { max-width: 520px; margin: 22px 0 18px 0; }
+.media-row.teleop-row { max-width: 800px; margin: 22px 0 18px 0; }
 .shot figcaption b { color: var(--ink); font-weight: 500; }
 
 /* ================= UAV platform ================= */
